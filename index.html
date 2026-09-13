@@ -8,7 +8,541 @@
     <link rel="manifest" href="manifest.json">
 
     <style>
+        body { font-family: 'Segoe UI<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartSoft - පාසල් කාලසටහන් පද්ධතිය</title>
+    
+    <link rel="manifest" href="manifest.json">
+
+    <style>
+        /* මූලික සැකසුම් */
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f0f4f8; margin: 0; padding: 15px; font-size: 13px; }
+        
+        /* Layout */
+        .layout { display: flex; gap: 15px; height: 95vh; }
+        .panel { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow-y: auto; box-sizing: border-box; }
+        .left-panel { flex: 1.2; min-width: 300px; }
+        .right-panel { flex: 3; display: flex; flex-direction: column; min-width: 0; }
+        
+        h4 { margin-top: 0; margin-bottom: 10px; color: #2b6cb0; border-bottom: 2px solid #edf2f7; padding-bottom: 5px; font-size: 14px; }
+        h2.school-title { text-align: center; color: #2d3748; margin: 0 0 5px 0; font-size: 22px; }
+        h3.main-title { text-align: center; color: #4a5568; margin: 0 0 15px 0; font-size: 16px; font-weight: normal; }
+        
+        /* බොත්තම් සහ ආදාන (Inputs) */
+        .btn-auto { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 100%; padding: 12px; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-bottom: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn-print { background-color: #2c3e50; color: white; width: 100%; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
+        .btn-add { background-color: #3182ce; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 5px;}
+        .btn-small { background-color: #38a169; color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer; }
+        .btn-edit-data { background-color: #d69e2e; color: white; width: 100%; padding: 10px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-bottom: 15px;}
+        .btn-edit-data:hover { background-color: #b7791f; }
+
+        .input-row { display: flex; gap: 5px; margin-bottom: 8px; }
+        input, select { flex: 1; padding: 8px; border: 1px solid #cbd5e0; border-radius: 4px; font-size: 13px; }
+        
+        .basket-box { background: #ebf8ff; padding: 10px; border: 1px dashed #90cdf4; border-radius: 5px; margin-bottom: 10px; }
+        .basket-items { font-size: 12px; color: #2b6cb0; margin-bottom: 5px; line-height: 1.5; }
+
+        .rules-list { max-height: 200px; overflow-y: auto; background: #f7fafc; border: 1px solid #e2e8f0; padding: 5px; border-radius: 4px; margin-bottom: 15px;}
+        .rule-item { background: white; padding: 8px; border: 1px solid #edf2f7; margin-bottom: 5px; border-radius: 4px; font-size: 12px; display: flex; justify-content: space-between; align-items: center;}
+        .rule-item button { background: #e53e3e; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; }
+
+        .view-controls { background: #e2e8f0; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;}
+        .radio-group { display: flex; gap: 15px; font-weight: bold; font-size: 14px; background: white; padding: 8px 15px; border-radius: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); flex-wrap: wrap;}
+        .radio-group label { cursor: pointer; display: flex; align-items: center; gap: 5px;}
+
+        .day-tabs { display: flex; gap: 5px; margin-bottom: 0; flex-wrap: wrap;}
+        .tab { padding: 8px 15px; background: white; border-radius: 15px; cursor: pointer; font-weight: bold; border: 1px solid #cbd5e0;}
+        .tab.active { background: #2b6cb0; color: white; border-color: #2b6cb0;}
+        
+        /* වගුව Mobile Scrolling සඳහා */
+        .table-container { width: 100%; overflow-x: auto; flex-grow: 1; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; background: white; min-width: 700px; }
+        th, td { border: 1px solid #e2e8f0; text-align: center; vertical-align: middle; padding: 2px; }
+        th { background-color: #2d3748; color: white; padding: 8px; font-size: 12px; }
+        td:first-child { background-color: #edf2f7; font-weight: bold; width: 60px; font-size: 11px; position: sticky; left: 0; z-index: 1;}
+        .interval { background-color: #fc8181 !important; color: white; font-weight: bold; padding: 4px; font-size: 12px; letter-spacing: 1px; }
+        
+        .card { padding: 5px; border-radius: 4px; font-size: 11px; font-weight: bold; width: 95%; margin: 3px auto; line-height: 1.3; border-left: 3px solid; }
+        .card span { font-weight: normal; font-size: 10px; color: #4a5568; display: block; }
+        .core-card { background-color: #fefcbf; border-left-color: #d69e2e; color: #744210; }
+        .basket-card { background-color: #c6f6d5; border-left-color: #38a169; color: #22543d; }
+        .empty-slot { color: #a0aec0; font-size: 10px; font-style: italic; }
+
+        .footer { text-align: center; font-size: 11px; color: #a0aec0; padding-top: 15px; margin-top: 15px; }
+
+        /* Modal (Popup) */
+        .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items:center; justify-content:center; padding: 10px; box-sizing: border-box;}
+        .modal { background: white; padding: 20px; border-radius: 8px; width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .close-btn { position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 20px; font-weight: bold; color: #e53e3e; background: none; border: none; }
+        .data-grid { display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
+        .data-col { flex: 1; min-width: 200px; border: 1px solid #e2e8f0; padding: 10px; border-radius: 5px; background: #f7fafc; max-height: 300px; overflow-y: auto; }
+        .data-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #edf2f7; font-size: 13px; }
+        .action-btns button { padding: 6px; margin-left: 4px; font-size: 12px; cursor: pointer; border: none; border-radius: 3px; }
+        .btn-edit { background: #f6e05e; color: #744210; }
+        .btn-delete { background: #fc8181; color: white; }
+
+        /* 📱 ජංගම දුරකථන සඳහා Responsive සැකසුම් (Mobile Design) */
+        @media screen and (max-width: 768px) {
+            body { padding: 10px; }
+            .layout { flex-direction: column; height: auto; }
+            .panel { width: 100%; min-width: 100%; height: auto; overflow: visible; }
+            .input-row { flex-direction: column; }
+            .btn-small { width: 100%; margin-top: 5px; }
+            .view-controls { flex-direction: column; align-items: stretch; }
+            .radio-group { justify-content: space-between; }
+            .day-tabs { justify-content: center; }
+            h2.school-title { font-size: 20px; }
+            h3.main-title { font-size: 14px; }
+            #classTabsContainer { flex-direction: column; align-items: stretch !important; }
+        }
+
+        /* 🖨️ Print / PDF Settings */
+        @media print {
+            @page { margin: 0; size: landscape; } 
+            body { background-color: white; padding: 15mm; font-size: 12px; margin: 0; }
+            .left-panel, .view-controls, .btn-auto, .btn-print, .input-row.school-input, .modal-overlay, .btn-edit-data { display: none !important; }
+            .layout { height: auto; display: block; }
+            .right-panel { flex: none; width: 100%; box-shadow: none; padding: 0; overflow: visible; display: block; }
+            .table-container { overflow-x: visible; }
+            h2.school-title { font-size: 24px; color: black; margin-bottom: 5px; }
+            h3.main-title { font-size: 16px; color: black; margin-bottom: 20px; font-weight: bold; }
+            table { border: 2px solid #000; margin-bottom: 30px; min-width: 100%; }
+            th, td { border: 1px solid #000 !important; color: black !important; padding: 4px !important; }
+            th { background-color: #f0f0f0 !important; color: black !important; }
+            .card { border: 1px solid #666; box-shadow: none; padding: 3px; }
+            .interval { background-color: #e0e0e0 !important; color: black !important; border: 1px solid #000 !important; }
+            .footer { position: fixed; bottom: 0; width: 100%; color: black; border-top: 1px solid #000; padding-top: 5px; font-weight: bold; font-size: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- දත්ත කළමනාකරණ කවුළුව (Modal Popup) -->
+    <div id="dataModal" class="modal-overlay">
+        <div class="modal">
+            <button class="close-btn" onclick="closeDataModal()">✖</button>
+            <h3 style="margin-top:0; color:#2b6cb0;">⚙️ පද්ධති දත්ත සංස්කරණය</h3>
+            <p style="font-size: 12px; color: gray;">මෙහිදී ඔබට අලුතින් ශ්‍රේණි, ගුරුවරු සහ විෂයයන් එක් කිරීමට, වෙනස් කිරීමට (✏️) හෝ මකා දැමීමට (❌) හැක.</p>
+
+            <div class="input-row" style="margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; flex-direction: row;">
+                <input type="text" id="newClassInput" placeholder="නව ශ්‍රේණිය (උදා: 12)">
+                <button class="btn-small" style="background:#3182ce; margin-top:0;" onclick="addMasterClass()">ශ්‍රේණිය එක් කරන්න</button>
+            </div>
+
+            <div class="data-grid">
+                <div class="data-col">
+                    <h4 style="border-bottom: 2px solid #cbd5e0; margin-top:0;">📚 ශ්‍රේණි / පන්ති</h4>
+                    <div id="modalClasses"></div>
+                </div>
+                <div class="data-col">
+                    <h4 style="border-bottom: 2px solid #cbd5e0; margin-top:0;">🧑‍🏫 ගුරුවරුන්</h4>
+                    <div id="modalTeachers"></div>
+                </div>
+                <div class="data-col">
+                    <h4 style="border-bottom: 2px solid #cbd5e0; margin-top:0;">📖 විෂයයන්</h4>
+                    <div id="modalSubjects"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layout">
+        <!-- වම් පස මෙනුව -->
+        <div class="panel left-panel">
+            
+            <div class="input-row school-input" style="margin-bottom: 15px;">
+                <input type="text" id="schoolNameInput" placeholder="පාසලේ නම මෙහි ඇතුළත් කරන්න" onkeyup="updateSchoolName()" style="border-color: #3182ce; border-width: 2px; font-weight: bold; text-align: center;">
+            </div>
+
+            <button class="btn-auto" onclick="generateTimetable()">⚡ ස්වයංක්‍රීයව සකසන්න</button>
+            <button class="btn-print" onclick="window.print()">🖨️ කාලසටහන Print / PDF</button>
+            <button class="btn-edit-data" onclick="openDataModal()">⚙️ ඇතුළත් කළ දත්ත සංස්කරණය</button>
+            
+            <h4>1. මූලික දත්ත එක් කරන්න</h4>
+            <div class="input-row" style="flex-direction: row;">
+                <input type="text" id="inTeacher" placeholder="නව ගුරුවරයා">
+                <button class="btn-small" style="margin-top:0;" onclick="addMasterTeacher()">එක් කරන්න</button>
+            </div>
+            <div class="input-row" style="flex-direction: row;">
+                <input type="text" id="inSubject" placeholder="නව විෂයය">
+                <button class="btn-small" style="margin-top:0;" onclick="addMasterSubject()">එක් කරන්න</button>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 15px 0;">
+
+            <h4>2. ඉගැන්වීම් නීතියක් සකසන්න</h4>
+            <div class="input-row">
+                <select id="rClass"></select>
+                <select id="rType" onchange="toggleRuleType()">
+                    <option value="core">සාමාන්‍ය විෂයය</option>
+                    <option value="basket">කාණ්ඩ විෂයය</option>
+                </select>
+            </div>
+
+            <div id="coreRuleDiv">
+                <div class="input-row"><select id="rSubjectCore"><option value="">-- විෂයය --</option></select></div>
+                <div class="input-row"><select id="rTeacherCore"><option value="">-- ගුරුවරයා --</option></select></div>
+                <div class="input-row"><input type="number" id="rPeriodsCore" placeholder="සතියකට පීරියඩ් ගණන" min="1" max="8"></div>
+                <button class="btn-add" onclick="addCoreRule()">+ නීතිය ඇතුළත් කරන්න</button>
+            </div>
+
+            <div id="basketRuleDiv" class="basket-box" style="display: none;">
+                <div class="input-row">
+                    <select id="rSubjectBasket"><option value="">-- විෂයය --</option></select>
+                    <select id="rTeacherBasket"><option value="">-- ගුරුවරයා --</option></select>
+                </div>
+                <button class="btn-small" style="width:100%; margin-bottom:10px;" onclick="addToTempBasket()">+ කාණ්ඩයට එක් කරන්න</button>
+                <div id="tempBasketItems" class="basket-items"></div>
+                <div class="input-row"><input type="number" id="rPeriodsBasket" placeholder="සතියකට පීරියඩ් ගණන" min="1" max="8"></div>
+                <button class="btn-add" style="background:#2b6cb0;" onclick="addBasketRule()">+ කාණ්ඩ නීතිය ඇතුළත් කරන්න</button>
+            </div>
+            
+            <h4 style="margin-top: 15px;">ඇතුළත් කර ඇති නීති</h4>
+            <div class="rules-list" id="rulesList"></div>
+        </div>
+
+        <!-- දකුණු පස (කාලසටහන) -->
+        <div class="panel right-panel">
+            
+            <h2 id="displaySchoolName" class="school-title">ඔබේ පාසලේ නම</h2>
+            <h3 id="mainTitle" class="main-title">පාසල් ප්‍රධාන කාලසටහන</h3>
+
+            <div class="view-controls">
+                <div class="radio-group">
+                    <label><input type="radio" name="viewMode" id="viewMaster" value="master" checked onchange="changeViewMode()"> 🏫 දවස අනුව</label>
+                    <label><input type="radio" name="viewMode" id="viewClass" value="class" onchange="changeViewMode()"> 📚 පන්තිය අනුව</label>
+                </div>
+
+                <div class="day-tabs" id="dayTabsContainer">
+                    <div class="tab active" onclick="selectDay('Monday', this)">සඳුදා</div>
+                    <div class="tab" onclick="selectDay('Tuesday', this)">අඟහරුවාදා</div>
+                    <div class="tab" onclick="selectDay('Wednesday', this)">බදාදා</div>
+                    <div class="tab" onclick="selectDay('Thursday', this)">බ්‍රහස්පතින්දා</div>
+                    <div class="tab" onclick="selectDay('Friday', this)">සිකුරාදා</div>
+                </div>
+
+                <div id="classTabsContainer" style="display: none; align-items: center; gap: 10px;">
+                    <label style="font-weight: bold; color: #2d3748;">පන්තිය තෝරන්න:</label>
+                    <select id="classSelector" onchange="selectClass(this.value)" style="padding: 8px 10px; font-weight: bold; border-radius: 4px; font-size: 14px; border: 1px solid #a0aec0; width: 100%;">
+                    </select>
+                </div>
+            </div>
+
+            <!-- Mobile scrolling සඳහා අලුතින් එක් කළ Wrapper එක -->
+            <div class="table-container">
+                <table>
+                    <thead id="tableHeader"></thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="footer">
+                Copyright &copy; 2026- Kelum Konara | SmartSoft
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let classes = ['6', '7', '8', '9', '10', '11'];
+        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+        const dayNames = { 'Monday':'සඳුදා', 'Tuesday':'අඟහරුවාදා', 'Wednesday':'බදාදා', 'Thursday':'බ්‍රහස්පතින්දා', 'Friday':'සිකුරාදා' };
+        
+        let currentDay = 'Monday';
+        let currentViewMode = 'master'; 
+        let currentSelectedClass = '6';
+        
+        let masterTeachers = ['නිමල් සර්', 'සුනිල් සර්', 'කමලා මිස්', 'අමල් සර්', 'සමන් සර්', 'මාලා මිස්'];
+        let masterSubjects = ['ගණිතය', 'විද්‍යාව', 'සිංහල', 'ඉංග්‍රීසි', 'චිත්‍ර', 'නැටුම්', 'සංගීතය'];
+        
+        let teachingRules = [
+            { id: 1, grade: '6', subject: 'ගණිතය', teacher: 'නිමල් සර්', periods: 6, type: 'core' },
+            { id: 2, grade: '6', subject: 'විද්‍යාව', teacher: 'සුනිල් සර්', periods: 6, type: 'core' },
+            { id: 3, grade: '6', subject: 'සිංහල', teacher: 'කමලා මිස්', periods: 5, type: 'core' },
+            { id: 4, grade: '6', subject: 'සෞන්දර්ය (කාණ්ඩ)', teacher: 'චිත්‍ර-අමල්, නැටුම්-සමන්', periods: 3, type: 'basket' }
+        ];
+        
+        let tempBasketArr = [];
+        let generatedTimetable = {};
+
+        window.onload = () => {
+            updateDropdowns();
+            initEmptyTimetable();
+            renderTable();
+            renderRules();
+        };
+
+        function updateSchoolName() {
+            let name = document.getElementById('schoolNameInput').value;
+            document.getElementById('displaySchoolName').innerText = name ? name : "ඔබේ පාසලේ නම";
+        }
+
+        function openDataModal() {
+            document.getElementById('dataModal').style.display = 'flex';
+            renderDataModal();
+        }
+        function closeDataModal() {
+            document.getElementById('dataModal').style.display = 'none';
+            updateDropdowns(); 
+            initEmptyTimetable();
+            renderTable();
+        }
+
+        function renderDataModal() {
+            let cHtml = '';
+            classes.forEach(c => cHtml += `<div class="data-item"><span>${c} ශ්‍රේණිය</span><div class="action-btns"><button class="btn-edit" onclick="editItem('class', '${c}')">✏️</button><button class="btn-delete" onclick="deleteItem('class', '${c}')">❌</button></div></div>`);
+            document.getElementById('modalClasses').innerHTML = cHtml;
+            
+            let tHtml = '';
+            masterTeachers.forEach(t => tHtml += `<div class="data-item"><span>${t}</span><div class="action-btns"><button class="btn-edit" onclick="editItem('teacher', '${t}')">✏️</button><button class="btn-delete" onclick="deleteItem('teacher', '${t}')">❌</button></div></div>`);
+            document.getElementById('modalTeachers').innerHTML = tHtml;
+            
+            let sHtml = '';
+            masterSubjects.forEach(s => sHtml += `<div class="data-item"><span>${s}</span><div class="action-btns"><button class="btn-edit" onclick="editItem('subject', '${s}')">✏️</button><button class="btn-delete" onclick="deleteItem('subject', '${s}')">❌</button></div></div>`);
+            document.getElementById('modalSubjects').innerHTML = sHtml;
+        }
+
+        function addMasterClass() {
+            let c = document.getElementById('newClassInput').value.trim();
+            if(c && !classes.includes(c)) { classes.push(c); renderDataModal(); }
+            document.getElementById('newClassInput').value = "";
+        }
+
+        function editItem(type, oldVal) {
+            let newVal = prompt(`"${oldVal}" වෙනුවට නව නාමය ඇතුළත් කරන්න:`, oldVal);
+            if(!newVal || newVal.trim() === "" || newVal === oldVal) return;
+            newVal = newVal.trim();
+
+            if (type === 'class') {
+                classes[classes.indexOf(oldVal)] = newVal;
+                teachingRules.forEach(r => { if(r.grade === oldVal) r.grade = newVal; });
+            } else if (type === 'teacher') {
+                masterTeachers[masterTeachers.indexOf(oldVal)] = newVal;
+                teachingRules.forEach(r => { if(r.teacher.includes(oldVal)) r.teacher = r.teacher.replace(new RegExp(oldVal, 'g'), newVal); });
+            } else if (type === 'subject') {
+                masterSubjects[masterSubjects.indexOf(oldVal)] = newVal;
+                teachingRules.forEach(r => { if(r.subject.includes(oldVal)) r.subject = r.subject.replace(new RegExp(oldVal, 'g'), newVal); });
+            }
+            renderDataModal(); renderRules();
+        }
+
+        function deleteItem(type, val) {
+            if(!confirm(`"${val}" සම්පූර්ණයෙන්ම මකා දැමීමට අවශ්‍ය බව විශ්වාසද?`)) return;
+
+            if (type === 'class') {
+                classes = classes.filter(c => c !== val);
+                teachingRules = teachingRules.filter(r => r.grade !== val);
+            } else if (type === 'teacher') {
+                masterTeachers = masterTeachers.filter(t => t !== val);
+            } else if (type === 'subject') {
+                masterSubjects = masterSubjects.filter(s => s !== val);
+            }
+            renderDataModal(); renderRules();
+        }
+
+        function addMasterTeacher() {
+            let t = document.getElementById('inTeacher').value.trim();
+            if(t && !masterTeachers.includes(t)) { masterTeachers.push(t); updateDropdowns(); }
+            document.getElementById('inTeacher').value = "";
+        }
+        function addMasterSubject() {
+            let s = document.getElementById('inSubject').value.trim();
+            if(s && !masterSubjects.includes(s)) { masterSubjects.push(s); updateDropdowns(); }
+            document.getElementById('inSubject').value = "";
+        }
+
+        function updateDropdowns() {
+            let tHtml = '<option value="">-- ගුරුවරයා තෝරන්න --</option>' + masterTeachers.map(t => `<option value="${t}">${t}</option>`).join('');
+            let sHtml = '<option value="">-- විෂයය තෝරන්න --</option>' + masterSubjects.map(s => `<option value="${s}">${s}</option>`).join('');
+            let cHtml = classes.map(c => `<option value="${c}">${c} ශ්‍රේණිය</option>`).join('');
+            
+            document.getElementById('rTeacherCore').innerHTML = tHtml; document.getElementById('rTeacherBasket').innerHTML = tHtml;
+            document.getElementById('rSubjectCore').innerHTML = sHtml; document.getElementById('rSubjectBasket').innerHTML = sHtml;
+            document.getElementById('rClass').innerHTML = cHtml;
+            document.getElementById('classSelector').innerHTML = cHtml; 
+            
+            if(!classes.includes(currentSelectedClass) && classes.length > 0) currentSelectedClass = classes[0];
+        }
+
+        function toggleRuleType() {
+            let type = document.getElementById('rType').value;
+            document.getElementById('coreRuleDiv').style.display = type === 'core' ? 'block' : 'none';
+            document.getElementById('basketRuleDiv').style.display = type === 'basket' ? 'block' : 'none';
+        }
+
+        function addCoreRule() {
+            const rClass = document.getElementById('rClass').value;
+            const rSubject = document.getElementById('rSubjectCore').value;
+            const rTeacher = document.getElementById('rTeacherCore').value;
+            const rPeriods = parseInt(document.getElementById('rPeriodsCore').value);
+            if(!rSubject || !rTeacher || !rPeriods) return alert("කරුණාකර සියලුම දත්ත තෝරන්න!");
+            teachingRules.push({ id: Date.now(), grade: rClass, subject: rSubject, teacher: rTeacher, periods: rPeriods, type: 'core' });
+            document.getElementById('rPeriodsCore').value = ""; renderRules();
+        }
+
+        function addToTempBasket() {
+            const s = document.getElementById('rSubjectBasket').value;
+            const t = document.getElementById('rTeacherBasket').value;
+            if(!s || !t) return;
+            tempBasketArr.push({ subject: s, teacher: t });
+            document.getElementById('tempBasketItems').innerHTML += `<div>✔️ ${s} (${t})</div>`;
+        }
+
+        function addBasketRule() {
+            if(tempBasketArr.length === 0) return alert("කරුණාකර විෂයයන් එක් කරන්න!");
+            const rClass = document.getElementById('rClass').value;
+            const rPeriods = parseInt(document.getElementById('rPeriodsBasket').value);
+            if(!rPeriods) return alert("පීරියඩ් ගණන ඇතුළත් කරන්න!");
+            let combinedSubject = tempBasketArr.map(i => i.subject).join(' / ') + " (කාණ්ඩ)";
+            let combinedTeacher = tempBasketArr.map(i => i.teacher).join(', ');
+            teachingRules.push({ id: Date.now(), grade: rClass, subject: combinedSubject, teacher: combinedTeacher, periods: rPeriods, type: 'basket' });
+            tempBasketArr = []; document.getElementById('tempBasketItems').innerHTML = ""; document.getElementById('rPeriodsBasket').value = ""; renderRules();
+        }
+
+        function renderRules() {
+            let html = "";
+            teachingRules.forEach(r => {
+                let color = r.type === 'basket' ? 'color: #38a169;' : 'color: #d69e2e;';
+                html += `<div class="rule-item">
+                            <div><b>${r.grade} ශ්‍රේණිය</b><br><span style="${color}">${r.subject}</span><br>
+                            <span style="color:gray">${r.teacher} (${r.periods} periods)</span></div>
+                            <button onclick="deleteRule(${r.id})">X</button>
+                         </div>`;
+            });
+            document.getElementById('rulesList').innerHTML = html;
+        }
+
+        function deleteRule(id) { teachingRules = teachingRules.filter(r => r.id !== id); renderRules(); }
+
+        function changeViewMode() {
+            if (document.getElementById('viewMaster').checked) {
+                currentViewMode = 'master';
+                document.getElementById('dayTabsContainer').style.display = 'flex';
+                document.getElementById('classTabsContainer').style.display = 'none';
+            } else {
+                currentViewMode = 'class';
+                document.getElementById('dayTabsContainer').style.display = 'none';
+                document.getElementById('classTabsContainer').style.display = 'flex';
+            }
+            renderTable(); 
+        }
+
+        function selectClass(cls) { currentSelectedClass = cls; renderTable(); }
+        function selectDay(day, el) {
+            currentDay = day;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            renderTable();
+        }
+
+        function initEmptyTimetable() {
+            days.forEach(day => {
+                generatedTimetable[day] = {};
+                for(let p=1; p<=8; p++) {
+                    generatedTimetable[day][p] = {};
+                    classes.forEach(c => generatedTimetable[day][p][c] = null);
+                }
+            });
+        }
+
+        function generateTimetable() {
+            if(teachingRules.length === 0) return alert("කරුණාකර පළමුව නීති ඇතුළත් කරන්න!");
+            initEmptyTimetable();
+            let unassigned = [];
+            let shuffledRules = [...teachingRules].sort(() => Math.random() - 0.5);
+
+            shuffledRules.forEach(rule => {
+                let periodsToAssign = rule.periods;
+                for(let day of days) {
+                    for(let p = 1; p <= 8; p++) {
+                        if (periodsToAssign === 0) break;
+
+                        if (generatedTimetable[day][p][rule.grade] === null) {
+                            let isTeacherBusy = false;
+                            let ruleTeachers = rule.teacher.split(','); 
+                            for(let c of classes) {
+                                let cell = generatedTimetable[day][p][c];
+                                if (cell) {
+                                    for(let t of ruleTeachers) {
+                                        if(cell.teacher.includes(t.trim())) { isTeacherBusy = true; break; }
+                                    }
+                                }
+                            }
+                            if (!isTeacherBusy) {
+                                generatedTimetable[day][p][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
+                                periodsToAssign--;
+                            }
+                        }
+                    }
+                }
+                if(periodsToAssign > 0) unassigned.push(rule.subject + " (" + rule.grade + ")");
+            });
+            if(unassigned.length > 0) alert("ගැටීම් නිසා සමහර විෂයයන් සම්පූර්ණයෙන්ම ඇතුළත් කළ නොහැකි විය: \n" + unassigned.join(', '));
+            renderTable();
+        }
+
+        function renderTable() {
+            if(classes.length === 0) {
+                document.getElementById('tableHeader').innerHTML = ""; document.getElementById('tableBody').innerHTML = "<tr><td style='padding:20px; color:red;'>කරුණාකර පළමුව දත්ත සංස්කරණය වෙත ගොස් ශ්‍රේණි ඇතුළත් කරන්න.</td></tr>";
+                return;
+            }
+
+            let h = `<tr><th>පීරියඩ්</th>`;
+            
+            if (currentViewMode === 'master') {
+                classes.forEach(c => h += `<th>${c} ශ්‍රේණිය</th>`);
+                document.getElementById('mainTitle').innerText = `පාසල් ප්‍රධාන කාලසටහන - ${dayNames[currentDay]}`;
+            } else {
+                days.forEach(d => h += `<th>${dayNames[d]}</th>`);
+                document.getElementById('mainTitle').innerText = `${currentSelectedClass} ශ්‍රේණියේ කාලසටහන (දින 5 සඳහා)`;
+            }
+            h += `</tr>`;
+            document.getElementById('tableHeader').innerHTML = h;
+
+            let b = "";
+            for (let p = 1; p <= 8; p++) {
+                b += `<tr><td>P ${p}</td>`;
+                
+                if (currentViewMode === 'master') {
+                    classes.forEach(c => {
+                        let cellData = generatedTimetable[currentDay][p][c] || null;
+                        b += getCellHTML(cellData);
+                    });
+                } else {
+                    days.forEach(d => {
+                        let cellData = generatedTimetable[d] && generatedTimetable[d][p] ? generatedTimetable[d][p][currentSelectedClass] : null;
+                        b += getCellHTML(cellData);
+                    });
+                }
+                b += `</tr>`;
+                
+                if (p === 4) {
+                    let colSpan = currentViewMode === 'master' ? classes.length + 1 : days.length + 1;
+                    b += `<tr><td colspan="${colSpan}" class="interval">විවේක කාලය</td></tr>`;
+                }
+            }
+            document.getElementById('tableBody').innerHTML = b;
+        }
+
+        function getCellHTML(cellData) {
+            if (cellData) {
+                let css = cellData.type === 'basket' ? 'basket-card' : 'core-card';
+                return `<td><div class="card ${css}">${cellData.subject} <span>(${cellData.teacher})</span></div></td>`;
+            } else {
+                return `<td><span class="empty-slot">- හිස් -</span></td>`;
+            }
+        }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+            .then(() => console.log("Service Worker Registered for Installability"))
+            .catch(err => console.log("Service Worker Failed", err));
+        }
+    </script>
+</body>
+</html>', Tahoma, sans-serif; background-color: #f0f4f8; margin: 0; padding: 15px; font-size: 13px; }
         
         .layout { display: flex; gap: 15px; height: 95vh; }
         .panel { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow-y: auto; }
