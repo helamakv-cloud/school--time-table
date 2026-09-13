@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartSoft - පාසල් කාලසටහන් පද්ධතිය</title>
+    
+    <link rel="manifest" href="manifest.json">
+
     <style>
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f0f4f8; margin: 0; padding: 15px; font-size: 13px; }
         
@@ -20,6 +23,8 @@
         .btn-print { background-color: #2c3e50; color: white; width: 100%; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
         .btn-add { background-color: #3182ce; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 5px;}
         .btn-small { background-color: #38a169; color: white; border: none; padding: 6px; border-radius: 4px; cursor: pointer; }
+        .btn-edit-data { background-color: #d69e2e; color: white; width: 100%; padding: 8px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-bottom: 15px;}
+        .btn-edit-data:hover { background-color: #b7791f; }
 
         .input-row { display: flex; gap: 5px; margin-bottom: 8px; }
         input, select { flex: 1; padding: 6px; border: 1px solid #cbd5e0; border-radius: 4px; font-size: 12px; }
@@ -53,10 +58,21 @@
 
         .footer { text-align: center; font-size: 11px; color: #a0aec0; padding-top: 15px; margin-top: auto; }
 
+        /* Modal (Popup) සඳහා CSS */
+        .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items:center; justify-content:center; }
+        .modal { background: white; padding: 20px; border-radius: 8px; width: 90%; max-width: 800px; max-height: 85vh; overflow-y: auto; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .close-btn { position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 20px; font-weight: bold; color: #e53e3e; background: none; border: none; }
+        .data-grid { display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
+        .data-col { flex: 1; min-width: 200px; border: 1px solid #e2e8f0; padding: 10px; border-radius: 5px; background: #f7fafc; max-height: 300px; overflow-y: auto; }
+        .data-item { display: flex; justify-content: space-between; align-items: center; padding: 5px; border-bottom: 1px solid #edf2f7; font-size: 12px; }
+        .action-btns button { padding: 4px; margin-left: 2px; font-size: 11px; cursor: pointer; border: none; border-radius: 3px; }
+        .btn-edit { background: #f6e05e; color: #744210; }
+        .btn-delete { background: #fc8181; color: white; }
+
         @media print {
-            @page { margin: 10mm; size: landscape; } 
-            body { background-color: white; padding: 0; font-size: 12px; margin: 0; }
-            .left-panel, .view-controls, .btn-auto, .btn-print, .input-row.school-input { display: none !important; }
+            @page { margin: 0; size: landscape; } 
+            body { background-color: white; padding: 15mm; font-size: 12px; margin: 0; }
+            .left-panel, .view-controls, .btn-auto, .btn-print, .input-row.school-input, .modal-overlay { display: none !important; }
             .layout { height: auto; display: block; }
             .right-panel { flex: none; width: 100%; box-shadow: none; padding: 0; overflow: visible; display: block; }
             h2.school-title { font-size: 24px; color: black; margin-bottom: 5px; }
@@ -72,6 +88,35 @@
 </head>
 <body>
 
+    <!-- දත්ත කළමනාකරණ කවුළුව (Modal Popup) -->
+    <div id="dataModal" class="modal-overlay">
+        <div class="modal">
+            <button class="close-btn" onclick="closeDataModal()">✖</button>
+            <h3 style="margin-top:0; color:#2b6cb0;">⚙️ පද්ධති දත්ත සංස්කරණය</h3>
+            <p style="font-size: 12px; color: gray;">මෙහිදී ඔබට අලුතින් ශ්‍රේණි (පන්ති), ගුරුවරු සහ විෂයයන් එක් කිරීමට, වෙනස් කිරීමට (✏️) හෝ මකා දැමීමට (❌) හැක.</p>
+
+            <div class="input-row" style="margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">
+                <input type="text" id="newClassInput" placeholder="නව ශ්‍රේණිය (උදා: 12)">
+                <button class="btn-small" style="background:#3182ce;" onclick="addMasterClass()">ශ්‍රේණිය එක් කරන්න</button>
+            </div>
+
+            <div class="data-grid">
+                <div class="data-col">
+                    <h4 style="border-bottom: 2px solid #cbd5e0; margin-top:0;">📚 ශ්‍රේණි / පන්ති</h4>
+                    <div id="modalClasses"></div>
+                </div>
+                <div class="data-col">
+                    <h4 style="border-bottom: 2px solid #cbd5e0; margin-top:0;">🧑‍🏫 ගුරුවරුන්</h4>
+                    <div id="modalTeachers"></div>
+                </div>
+                <div class="data-col">
+                    <h4 style="border-bottom: 2px solid #cbd5e0; margin-top:0;">📖 විෂයයන්</h4>
+                    <div id="modalSubjects"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="layout">
         <!-- වම් පස මෙනුව -->
         <div class="panel left-panel">
@@ -83,7 +128,7 @@
             <button class="btn-auto" onclick="generateTimetable()">⚡ ස්වයංක්‍රීයව සකසන්න</button>
             <button class="btn-print" onclick="window.print()">🖨️ කාලසටහන Print / PDF</button>
             
-            <h4>1. ගුරුවරු සහ විෂයයන් එක් කරන්න</h4>
+            <h4>1. මූලික දත්ත එක් කරන්න</h4>
             <div class="input-row">
                 <input type="text" id="inTeacher" placeholder="නව ගුරුවරයා">
                 <button class="btn-small" onclick="addMasterTeacher()">එක් කරන්න</button>
@@ -92,15 +137,16 @@
                 <input type="text" id="inSubject" placeholder="නව විෂයය">
                 <button class="btn-small" onclick="addMasterSubject()">එක් කරන්න</button>
             </div>
+            
+            <!-- දත්ත සංස්කරණ බොත්තම -->
+            <button class="btn-edit-data" onclick="openDataModal()">⚙️ ඇතුළත් කළ දත්ත සංස්කරණය</button>
 
             <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 15px 0;">
 
             <h4>2. ඉගැන්වීම් නීතියක් සකසන්න</h4>
             <div class="input-row">
                 <select id="rClass">
-                    <option value="6">6 ශ්‍රේණිය</option><option value="7">7 ශ්‍රේණිය</option>
-                    <option value="8">8 ශ්‍රේණිය</option><option value="9">9 ශ්‍රේණිය</option>
-                    <option value="10">10 ශ්‍රේණිය</option><option value="11">11 ශ්‍රේණිය</option>
+                    <!-- JS මගින් ශ්‍රේණි පිරවේ -->
                 </select>
                 <select id="rType" onchange="toggleRuleType()">
                     <option value="core">සාමාන්‍ය විෂයය</option>
@@ -169,7 +215,8 @@
     </div>
 
     <script>
-        const classes = ['6', '7', '8', '9', '10', '11'];
+        // දත්ත ගබඩාව (දැන් Classes ද වෙනස් කළ හැක)
+        let classes = ['6', '7', '8', '9', '10', '11'];
         const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
         const dayNames = { 'Monday':'සඳුදා', 'Tuesday':'අඟහරුවාදා', 'Wednesday':'බදාදා', 'Thursday':'බ්‍රහස්පතින්දා', 'Friday':'සිකුරාදා' };
         
@@ -184,16 +231,13 @@
             { id: 1, grade: '6', subject: 'ගණිතය', teacher: 'නිමල් සර්', periods: 6, type: 'core' },
             { id: 2, grade: '6', subject: 'විද්‍යාව', teacher: 'සුනිල් සර්', periods: 6, type: 'core' },
             { id: 3, grade: '6', subject: 'සිංහල', teacher: 'කමලා මිස්', periods: 5, type: 'core' },
-            { id: 4, grade: '6', subject: 'සෞන්දර්ය (කාණ්ඩ)', teacher: 'චිත්‍ර-අමල්, නැටුම්-සමන්', periods: 3, type: 'basket' },
-            { id: 5, grade: '7', subject: 'විද්‍යාව', teacher: 'සුනිල් සර්', periods: 6, type: 'core' },
-            { id: 6, grade: '7', subject: 'ගණිතය', teacher: 'රුවන් සර්', periods: 6, type: 'core' }
+            { id: 4, grade: '6', subject: 'සෞන්දර්ය (කාණ්ඩ)', teacher: 'චිත්‍ර-අමල්, නැටුම්-සමන්', periods: 3, type: 'basket' }
         ];
         
         let tempBasketArr = [];
         let generatedTimetable = {};
 
         window.onload = () => {
-            initClassDropdown();
             updateDropdowns();
             initEmptyTimetable();
             renderTable();
@@ -205,32 +249,71 @@
             document.getElementById('displaySchoolName').innerText = name ? name : "ඔබේ පාසලේ නම";
         }
 
-        function initClassDropdown() {
-            let html = "";
-            classes.forEach(c => html += `<option value="${c}">${c} ශ්‍රේණිය</option>`);
-            document.getElementById('classSelector').innerHTML = html;
+        // --- දත්ත සංස්කරණ කවුළුව (Modal) ක්‍රියාකාරීත්වය ---
+        function openDataModal() {
+            document.getElementById('dataModal').style.display = 'flex';
+            renderDataModal();
         }
-
-        function changeViewMode() {
-            if (document.getElementById('viewMaster').checked) {
-                currentViewMode = 'master';
-                document.getElementById('dayTabsContainer').style.display = 'flex';
-                document.getElementById('classTabsContainer').style.display = 'none';
-            } else {
-                currentViewMode = 'class';
-                document.getElementById('dayTabsContainer').style.display = 'none';
-                document.getElementById('classTabsContainer').style.display = 'flex';
-            }
-            renderTable(); 
-        }
-
-        function selectClass(cls) { currentSelectedClass = cls; renderTable(); }
-        function selectDay(day, el) {
-            currentDay = day;
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
+        function closeDataModal() {
+            document.getElementById('dataModal').style.display = 'none';
+            updateDropdowns(); 
+            initEmptyTimetable();
             renderTable();
         }
+
+        function renderDataModal() {
+            // ශ්‍රේණි පෙන්වීම
+            let cHtml = '';
+            classes.forEach(c => cHtml += `<div class="data-item"><span>${c} ශ්‍රේණිය</span><div class="action-btns"><button class="btn-edit" onclick="editItem('class', '${c}')">✏️</button><button class="btn-delete" onclick="deleteItem('class', '${c}')">❌</button></div></div>`);
+            document.getElementById('modalClasses').innerHTML = cHtml;
+            // ගුරුවරු පෙන්වීම
+            let tHtml = '';
+            masterTeachers.forEach(t => tHtml += `<div class="data-item"><span>${t}</span><div class="action-btns"><button class="btn-edit" onclick="editItem('teacher', '${t}')">✏️</button><button class="btn-delete" onclick="deleteItem('teacher', '${t}')">❌</button></div></div>`);
+            document.getElementById('modalTeachers').innerHTML = tHtml;
+            // විෂයයන් පෙන්වීම
+            let sHtml = '';
+            masterSubjects.forEach(s => sHtml += `<div class="data-item"><span>${s}</span><div class="action-btns"><button class="btn-edit" onclick="editItem('subject', '${s}')">✏️</button><button class="btn-delete" onclick="deleteItem('subject', '${s}')">❌</button></div></div>`);
+            document.getElementById('modalSubjects').innerHTML = sHtml;
+        }
+
+        function addMasterClass() {
+            let c = document.getElementById('newClassInput').value.trim();
+            if(c && !classes.includes(c)) { classes.push(c); renderDataModal(); }
+            document.getElementById('newClassInput').value = "";
+        }
+
+        function editItem(type, oldVal) {
+            let newVal = prompt(`"${oldVal}" වෙනුවට නව නාමය ඇතුළත් කරන්න:`, oldVal);
+            if(!newVal || newVal.trim() === "" || newVal === oldVal) return;
+            newVal = newVal.trim();
+
+            if (type === 'class') {
+                classes[classes.indexOf(oldVal)] = newVal;
+                teachingRules.forEach(r => { if(r.grade === oldVal) r.grade = newVal; });
+            } else if (type === 'teacher') {
+                masterTeachers[masterTeachers.indexOf(oldVal)] = newVal;
+                teachingRules.forEach(r => { if(r.teacher.includes(oldVal)) r.teacher = r.teacher.replace(oldVal, newVal); });
+            } else if (type === 'subject') {
+                masterSubjects[masterSubjects.indexOf(oldVal)] = newVal;
+                teachingRules.forEach(r => { if(r.subject.includes(oldVal)) r.subject = r.subject.replace(oldVal, newVal); });
+            }
+            renderDataModal(); renderRules();
+        }
+
+        function deleteItem(type, val) {
+            if(!confirm(`"${val}" සම්පූර්ණයෙන්ම මකා දැමීමට අවශ්‍ය බව විශ්වාසද?`)) return;
+
+            if (type === 'class') {
+                classes = classes.filter(c => c !== val);
+                teachingRules = teachingRules.filter(r => r.grade !== val);
+            } else if (type === 'teacher') {
+                masterTeachers = masterTeachers.filter(t => t !== val);
+            } else if (type === 'subject') {
+                masterSubjects = masterSubjects.filter(s => s !== val);
+            }
+            renderDataModal(); renderRules();
+        }
+        // -----------------------------------------------------
 
         function addMasterTeacher() {
             let t = document.getElementById('inTeacher').value.trim();
@@ -246,8 +329,14 @@
         function updateDropdowns() {
             let tHtml = '<option value="">-- ගුරුවරයා තෝරන්න --</option>' + masterTeachers.map(t => `<option value="${t}">${t}</option>`).join('');
             let sHtml = '<option value="">-- විෂයය තෝරන්න --</option>' + masterSubjects.map(s => `<option value="${s}">${s}</option>`).join('');
+            let cHtml = classes.map(c => `<option value="${c}">${c} ශ්‍රේණිය</option>`).join('');
+            
             document.getElementById('rTeacherCore').innerHTML = tHtml; document.getElementById('rTeacherBasket').innerHTML = tHtml;
             document.getElementById('rSubjectCore').innerHTML = sHtml; document.getElementById('rSubjectBasket').innerHTML = sHtml;
+            document.getElementById('rClass').innerHTML = cHtml;
+            document.getElementById('classSelector').innerHTML = cHtml; // Class View Toggle Dropdown
+            
+            if(!classes.includes(currentSelectedClass) && classes.length > 0) currentSelectedClass = classes[0];
         }
 
         function toggleRuleType() {
@@ -300,10 +389,30 @@
 
         function deleteRule(id) { teachingRules = teachingRules.filter(r => r.id !== id); renderRules(); }
 
+        function changeViewMode() {
+            if (document.getElementById('viewMaster').checked) {
+                currentViewMode = 'master';
+                document.getElementById('dayTabsContainer').style.display = 'flex';
+                document.getElementById('classTabsContainer').style.display = 'none';
+            } else {
+                currentViewMode = 'class';
+                document.getElementById('dayTabsContainer').style.display = 'none';
+                document.getElementById('classTabsContainer').style.display = 'flex';
+            }
+            renderTable(); 
+        }
+
+        function selectClass(cls) { currentSelectedClass = cls; renderTable(); }
+        function selectDay(day, el) {
+            currentDay = day;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            renderTable();
+        }
+
         function initEmptyTimetable() {
             days.forEach(day => {
                 generatedTimetable[day] = {};
-                // පීරියඩ් 8ම හිස් ලෙස සාදයි
                 for(let p=1; p<=8; p++) {
                     generatedTimetable[day][p] = {};
                     classes.forEach(c => generatedTimetable[day][p][c] = null);
@@ -321,7 +430,6 @@
                 let periodsToAssign = rule.periods;
                 for(let day of days) {
                     for(let p = 1; p <= 8; p++) {
-                        // (මීට පෙර p === 5 skip කළ කොටස ඉවත් කර ඇත, දැන් පීරියඩ් 8ම පරීක්ෂා කරයි)
                         if (periodsToAssign === 0) break;
 
                         if (generatedTimetable[day][p][rule.grade] === null) {
@@ -349,6 +457,11 @@
         }
 
         function renderTable() {
+            if(classes.length === 0) {
+                document.getElementById('tableHeader').innerHTML = ""; document.getElementById('tableBody').innerHTML = "<tr><td style='padding:20px; color:red;'>කරුණාකර පළමුව දත්ත සංස්කරණය වෙත ගොස් ශ්‍රේණි ඇතුළත් කරන්න.</td></tr>";
+                return;
+            }
+
             let h = `<tr><th>පීරියඩ්</th>`;
             
             if (currentViewMode === 'master') {
@@ -367,18 +480,17 @@
                 
                 if (currentViewMode === 'master') {
                     classes.forEach(c => {
-                        let cellData = generatedTimetable[currentDay][p][c];
+                        let cellData = generatedTimetable[currentDay][p][c] || null;
                         b += getCellHTML(cellData);
                     });
                 } else {
                     days.forEach(d => {
-                        let cellData = generatedTimetable[d][p][currentSelectedClass];
+                        let cellData = generatedTimetable[d] && generatedTimetable[d][p] ? generatedTimetable[d][p][currentSelectedClass] : null;
                         b += getCellHTML(cellData);
                     });
                 }
                 b += `</tr>`;
                 
-                // 4 වැනි පීරියඩ් එකට පසුව විවේක කාලය පේළියක් ලෙස පෙන්වීම
                 if (p === 4) {
                     let colSpan = currentViewMode === 'master' ? classes.length + 1 : days.length + 1;
                     b += `<tr><td colspan="${colSpan}" class="interval">විවේක කාලය</td></tr>`;
@@ -394,6 +506,12 @@
             } else {
                 return `<td><span class="empty-slot">- හිස් -</span></td>`;
             }
+        }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+            .then(() => console.log("Service Worker Registered for Installability"))
+            .catch(err => console.log("Service Worker Failed", err));
         }
     </script>
 </body>
