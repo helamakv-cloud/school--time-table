@@ -8,54 +8,73 @@
     <link rel="manifest" href="manifest.json">
 
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f0f4f8; margin: 0; padding: 15px; font-size: 13px; }
+        /* මූලික සැකසුම් - ASC Professional Look */
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #e2e8f0; margin: 0; padding: 10px; font-size: 13px; color: #2d3748; }
         
-        .layout { display: flex; gap: 15px; height: 95vh; }
-        .panel { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow-y: auto; box-sizing: border-box; }
-        .left-panel { flex: 1.2; min-width: 310px; }
+        /* Layout */
+        .layout { display: flex; gap: 10px; height: 97vh; }
+        .panel { background: white; padding: 15px; border-radius: 4px; border: 1px solid #cbd5e0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow-y: auto; box-sizing: border-box; }
+        .left-panel { flex: 1.2; min-width: 340px; max-width: 400px; background-color: #f7fafc; padding: 12px;}
         .right-panel { flex: 3; display: flex; flex-direction: column; min-width: 0; }
         
-        h4 { margin-top: 0; margin-bottom: 10px; color: #2b6cb0; border-bottom: 2px solid #edf2f7; padding-bottom: 5px; font-size: 14px; }
-        h2.school-title { text-align: center; color: #2d3748; margin: 0 0 5px 0; font-size: 22px; }
-        h3.main-title { text-align: center; color: #4a5568; margin: 0 0 15px 0; font-size: 16px; font-weight: normal; }
+        h2.school-title { text-align: center; color: #1a202c; margin: 0 0 5px 0; font-size: 20px; font-weight: 700; }
+        h3.main-title { text-align: center; color: #4a5568; margin: 0 0 15px 0; font-size: 15px; font-weight: normal; }
         
-        .btn-auto { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 100%; padding: 12px; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-bottom: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .btn-print-menu { background-color: #2c3e50; color: white; width: 100%; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
-        .btn-add { background-color: #3182ce; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 5px;}
-        .btn-small { background-color: #38a169; color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer; }
+        /* Professional Buttons */
+        .btn-primary { background-color: #3182ce; color: white; width: 100%; padding: 10px; border: 1px solid #2b6cb0; border-radius: 3px; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 8px; transition: 0.2s; }
+        .btn-primary:hover { background-color: #2b6cb0; }
+        .btn-auto { background-color: #2c5282; font-size: 14px; margin-top: 5px;}
+        .btn-auto:hover { background-color: #1a365d; }
+        .btn-print-menu { background-color: #4a5568; border-color: #2d3748; }
+        .btn-print-menu:hover { background-color: #2d3748; }
+        .btn-small { background-color: #38a169; color: white; border: 1px solid #2f855a; padding: 6px 10px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: bold; width: 100%; }
+        .btn-small:hover { background-color: #2f855a; }
+        .btn-delete { background: #e53e3e; color: white; border: none; padding: 3px 6px; border-radius: 3px; cursor: pointer; font-size: 10px; }
+
+        /* ASC Style Fieldsets (Group Boxes) */
+        fieldset { border: 1px solid #cbd5e0; border-radius: 4px; padding: 12px 10px; margin-bottom: 12px; background: white; }
+        legend { font-size: 12px; font-weight: bold; color: #2b6cb0; background: white; padding: 0 5px; border-radius: 3px; border: 1px solid #cbd5e0; }
+
+        /* Form Grid - Perfect Alignment */
+        .form-grid { display: grid; grid-template-columns: 85px 1fr; gap: 8px; align-items: center; margin-bottom: 8px; }
+        .form-grid label { font-size: 11px; font-weight: 600; color: #4a5568; text-align: right; padding-right: 5px; }
+        .form-grid .full-width { grid-column: 1 / -1; display: flex; gap: 5px; }
         
-        .input-row { display: flex; gap: 5px; margin-bottom: 8px; align-items: center; }
-        input, select { flex: 1; padding: 8px; border: 1px solid #cbd5e0; border-radius: 4px; font-size: 12px; }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 6px 8px; border: 1px solid #a0aec0; border-radius: 3px; font-size: 12px; box-sizing: border-box; outline: none; }
+        input[type="text"]:focus, select:focus { border-color: #3182ce; box-shadow: 0 0 3px rgba(49, 130, 206, 0.3); }
         
-        .basket-box { background: #ebf8ff; padding: 10px; border: 1px dashed #90cdf4; border-radius: 5px; margin-bottom: 10px; }
-        .rules-list { max-height: 200px; overflow-y: auto; background: #f7fafc; border: 1px solid #e2e8f0; padding: 5px; border-radius: 4px; margin-bottom: 15px;}
-        .rule-item { background: white; padding: 8px; border: 1px solid #edf2f7; margin-bottom: 5px; border-radius: 4px; font-size: 11px; display: flex; justify-content: space-between; align-items: center;}
-        .rule-item button { background: #e53e3e; color: white; border: none; padding: 2px 5px; border-radius: 3px; cursor: pointer; font-size: 10px; }
+        .basket-box { background: #f0f4f8; padding: 8px; border: 1px dashed #a0aec0; border-radius: 3px; margin-bottom: 8px; }
+        .basket-items { font-size: 11px; color: #2d3748; margin-bottom: 5px; line-height: 1.6; background: white; padding: 4px; border-radius: 2px; min-height: 20px; border: 1px solid #e2e8f0;}
+
+        .rules-list { max-height: 180px; overflow-y: auto; background: #fff; border: 1px solid #e2e8f0; padding: 4px; border-radius: 3px;}
+        .rule-item { background: #f7fafc; padding: 6px; border: 1px solid #edf2f7; margin-bottom: 4px; border-radius: 3px; font-size: 11px; display: flex; justify-content: space-between; align-items: center;}
         
-        .view-controls { background: #e2e8f0; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;}
-        .radio-group { display: flex; gap: 15px; font-weight: bold; font-size: 13px; background: white; padding: 8px 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); flex-wrap: wrap; justify-content: center;}
-        .radio-group label { cursor: pointer; display: flex; align-items: center; gap: 5px;}
+        /* View Controls Ribbon */
+        .view-controls { background: #edf2f7; padding: 10px; border-radius: 4px; margin-bottom: 12px; border: 1px solid #cbd5e0; display: flex; flex-direction: column; gap: 10px;}
+        .radio-group { display: flex; gap: 15px; font-weight: bold; font-size: 12px; justify-content: center; flex-wrap: wrap;}
+        .radio-group label { cursor: pointer; display: flex; align-items: center; gap: 4px; color: #2d3748;}
         
-        .table-container { width: 100%; overflow-x: auto; flex-grow: 1; }
-        table { width: 100%; border-collapse: collapse; table-layout: fixed; background: white; min-width: 700px; margin-bottom: 20px;}
-        th, td { border: 1px solid #e2e8f0; text-align: center; vertical-align: middle; padding: 2px; }
-        th { background-color: #2d3748; color: white; padding: 8px; font-size: 12px; }
-        td:first-child { background-color: #edf2f7; font-weight: bold; width: 60px; font-size: 11px; position: sticky; left: 0; z-index: 1;}
-        .interval { background-color: #fc8181 !important; color: white; font-weight: bold; padding: 4px; font-size: 12px; letter-spacing: 1px; }
-        .day-header { background-color: #4a5568 !important; color: white; font-weight: bold; padding: 5px; font-size: 13px; letter-spacing: 1px; text-align: center; }
+        /* Professional Table */
+        .table-container { width: 100%; overflow-x: auto; flex-grow: 1; border: 1px solid #cbd5e0; border-radius: 4px; background: white;}
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 700px; }
+        th, td { border: 1px solid #cbd5e0; text-align: center; vertical-align: middle; padding: 2px; }
+        th { background-color: #e2e8f0; color: #1a202c; padding: 6px; font-size: 12px; border-bottom: 2px solid #a0aec0; }
+        td:first-child { background-color: #edf2f7; font-weight: bold; width: 50px; font-size: 11px; position: sticky; left: 0; z-index: 1; border-right: 2px solid #cbd5e0;}
+        .interval { background-color: #cbd5e0 !important; color: #2d3748; font-weight: bold; padding: 3px; font-size: 11px; letter-spacing: 2px; }
+        .day-header { background-color: #4a5568 !important; color: white; font-weight: bold; padding: 4px; font-size: 12px; text-align: center; }
         
-        .card { padding: 5px; border-radius: 4px; font-size: 11px; font-weight: bold; width: 95%; margin: 3px auto; line-height: 1.3; border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        .card span { font-weight: normal; font-size: 10px; color: #333; display: block; }
+        .card { padding: 4px; border-radius: 2px; font-size: 11px; font-weight: bold; width: 96%; margin: 2px auto; line-height: 1.2; border: 1px solid rgba(0,0,0,0.15); box-shadow: 0 1px 2px rgba(0,0,0,0.05); color: #1a202c; }
+        .card span { font-weight: normal; font-size: 9px; color: #4a5568; display: block; margin-top: 2px;}
         .empty-slot { color: #a0aec0; font-size: 10px; font-style: italic; }
 
-        .footer { text-align: center; font-size: 11px; color: #a0aec0; padding-top: 15px; margin-top: 15px; }
+        .footer { text-align: center; font-size: 10px; color: #718096; padding-top: 10px; margin-top: 10px; border-top: 1px solid #e2e8f0; }
 
         /* Modals */
-        .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items:center; justify-content:center; padding: 10px; box-sizing: border-box;}
-        .modal { background: white; padding: 20px; border-radius: 8px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .close-btn { position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 20px; font-weight: bold; color: #e53e3e; background: none; border: none; }
+        .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items:center; justify-content:center; padding: 10px; box-sizing: border-box;}
+        .modal { background: #f7fafc; padding: 15px; border-radius: 4px; width: 100%; max-width: 500px; border: 1px solid #cbd5e0; box-shadow: 0 4px 20px rgba(0,0,0,0.2); position: relative; }
+        .close-btn { position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 16px; font-weight: bold; color: #a0aec0; background: none; border: none; }
+        .close-btn:hover { color: #e53e3e; }
         
-        /* Print Layouts */
         #printArea { display: none; }
 
         @media print {
@@ -94,9 +113,9 @@
             .layout-4 .card span { font-size: 6px; }
             .layout-4 .interval { font-size: 8px !important; padding: 1px !important; }
 
-            th { background-color: #f0f0f0 !important; color: black !important; -webkit-print-color-adjust: exact; }
+            th { background-color: #e2e8f0 !important; color: black !important; -webkit-print-color-adjust: exact; }
             .card { border: none; box-shadow: none; background: transparent !important; }
-            .interval { background-color: #e0e0e0 !important; color: black !important; border: 1px solid #000 !important; -webkit-print-color-adjust: exact; }
+            .interval { background-color: #cbd5e0 !important; color: black !important; border: 1px solid #000 !important; -webkit-print-color-adjust: exact; }
             .day-header { background-color: #ccc !important; color: black !important; -webkit-print-color-adjust: exact; }
             .print-footer { text-align: center; font-size: 9px; color: black; margin-top: 5px; border-top: 1px solid #000; padding-top: 3px; }
         }
@@ -106,24 +125,24 @@
 
     <!-- Print Modal -->
     <div id="printModal" class="modal-overlay">
-        <div class="modal" style="max-width: 500px; text-align: center;">
+        <div class="modal">
             <button class="close-btn" onclick="closeModals()">✖</button>
-            <h3 style="margin-top:0; color:#2c3e50;">🖨️ මුද්‍රණ මෙනුව</h3>
+            <h3 style="margin-top:0; color:#2c3e50; border-bottom: 1px solid #cbd5e0; padding-bottom:8px;">🖨️ මුද්‍රණ මෙනුව</h3>
             
-            <div style="background: #f7fafc; padding: 15px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #e2e8f0; text-align: left;">
-                <label style="font-weight: bold; font-size: 13px; color: #2d3748;">A4 පිටුවකට මුද්‍රණය වන ප්‍රමාණය:</label>
-                <div class="radio-group" style="margin-top: 10px; background: transparent; box-shadow: none; padding: 0; justify-content: flex-start;">
+            <fieldset style="margin-top: 10px; background:#fff;">
+                <legend>පිටු සැකසුම (Layout)</legend>
+                <div class="radio-group" style="justify-content: flex-start;">
                     <label><input type="radio" name="printLayout" value="1" checked> 1ක් පෙන්වන්න</label>
                     <label><input type="radio" name="printLayout" value="2"> 2ක් පෙන්වන්න</label>
                     <label><input type="radio" name="printLayout" value="4"> 4ක් පෙන්වන්න</label>
                 </div>
-            </div>
+            </fieldset>
 
-            <p style="font-size: 12px; color: gray; margin-bottom: 15px;">මුද්‍රණය කිරීමට අවශ්‍ය කාලසටහන් වර්ගය තෝරන්න.</p>
+            <p style="font-size: 11px; color: #4a5568; margin-bottom: 10px;">කරුණාකර මුද්‍රණය කිරීමට අවශ්‍ය කාලසටහන් වර්ගය තෝරන්න:</p>
             
-            <button class="btn-auto" style="background: #3182ce;" onclick="triggerPrint('all_master')">🏫 සම්පූර්ණ ප්‍රධාන කාලසටහන (All-in-One)</button>
-            <button class="btn-auto" style="background: #38a169;" onclick="triggerPrint('classes')">📚 සියලුම පන්ති කාලසටහන් (වෙන වෙනම)</button>
-            <button class="btn-auto" style="background: #d69e2e;" onclick="triggerPrint('teachers')">🧑‍🏫 සියලුම ගුරුවරුන්ගේ කාලසටහන් (වෙන වෙනම)</button>
+            <button class="btn-primary" onclick="triggerPrint('all_master')">🏫 සම්පූර්ණ ප්‍රධාන කාලසටහන (All-in-One)</button>
+            <button class="btn-primary" style="background-color: #38a169; border-color:#2f855a;" onclick="triggerPrint('classes')">📚 සියලුම පන්ති කාලසටහන්</button>
+            <button class="btn-primary" style="background-color: #d69e2e; border-color:#b7791f;" onclick="triggerPrint('teachers')">🧑‍🏫 සියලුම ගුරුවරුන්ගේ කාලසටහන්</button>
         </div>
     </div>
 
@@ -131,48 +150,89 @@
     <div id="printArea"></div>
 
     <div class="layout">
+        <!-- වම් පස මෙනුව (ASC Data Entry View) -->
         <div class="panel left-panel">
-            <div class="input-row" style="margin-bottom: 15px;">
-                <input type="text" id="schoolNameInput" placeholder="පාසලේ නම මෙහි ඇතුළත් කරන්න" onkeyup="updateSchoolName()" style="border-color: #3182ce; border-width: 2px; font-weight: bold; text-align: center;">
-            </div>
-
-            <button class="btn-auto" onclick="generateTimetable()">⚡ ස්වයංක්‍රීයව සකසන්න</button>
-            <button class="btn-print-menu" onclick="openPrintModal()">🖨️ කාලසටහන් මුද්‍රණය කිරීම</button>
             
-            <h4>1. මූලික දත්ත එක් කරන්න</h4>
-            <div class="input-row" style="flex-direction: column;">
-                <input type="text" id="inTeacher" placeholder="නව ගුරුවරයාගේ නම">
-                <div style="display: flex; gap: 5px; width: 100%;">
-                    <label style="font-size: 11px; display: flex; align-items: center;"><input type="checkbox" id="isClassTeacher" onchange="toggleCTGrade()"> පන්තිභාරද?</label>
-                    <select id="inTeacherClass" style="display:none; padding:4px;"><option value="">-- පන්තිය --</option></select>
+            <fieldset>
+                <legend>🏢 පාසලේ විස්තර</legend>
+                <div class="form-grid" style="grid-template-columns: 1fr;">
+                    <input type="text" id="schoolNameInput" placeholder="පාසලේ නම මෙහි ඇතුළත් කරන්න" onkeyup="updateSchoolName()" style="font-weight: bold; text-align: center; color: #2b6cb0;">
                 </div>
-                <button class="btn-small" onclick="addMasterTeacher()">ගුරුවරයා එක් කරන්න</button>
-            </div>
-            <div class="input-row" style="margin-top: 10px;">
-                <input type="text" id="inSubject" placeholder="නව විෂයය">
-                <button class="btn-small" onclick="addMasterSubject()">එක් කරන්න</button>
-            </div>
+            </fieldset>
 
-            <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 15px 0;">
-
-            <h4>2. ඉගැන්වීම් නීතියක් සකසන්න</h4>
-            <div class="input-row">
-                <select id="rClass"></select>
-                <select id="rType" onchange="toggleRuleType()">
-                    <option value="core">සාමාන්‍ය විෂයය</option>
-                    <option value="basket">කාණ්ඩ විෂයය</option>
-                </select>
-            </div>
-
-            <div id="coreRuleDiv">
-                <div class="input-row"><select id="rSubjectCore"><option value="">-- විෂයය --</option></select></div>
-                <div class="input-row"><select id="rTeacherCore"><option value="">-- ගුරුවරයා --</option></select></div>
-                <div class="input-row"><input type="number" id="rPeriodsCore" placeholder="සතියකට පීරියඩ් ගණන" min="1" max="8"></div>
-                <button class="btn-add" onclick="addCoreRule()">+ නීතිය ඇතුළත් කරන්න</button>
-            </div>
+            <button class="btn-primary btn-auto" onclick="generateTimetable()">⚡ ස්වයංක්‍රීයව කාලසටහන සකසන්න</button>
+            <button class="btn-primary btn-print-menu" onclick="openPrintModal()">🖨️ මුද්‍රණය කිරීම (Print)</button>
             
-            <h4 style="margin-top: 15px;">ඇතුළත් කර ඇති නීති</h4>
-            <div class="rules-list" id="rulesList"></div>
+            <fieldset>
+                <legend>👨‍🏫 දත්ත ඇතුළත් කිරීම</legend>
+                <div class="form-grid">
+                    <label>ගුරුවරයා:</label>
+                    <input type="text" id="inTeacher" placeholder="උදා: නිමල් සර්">
+                    
+                    <label></label>
+                    <div style="display: flex; gap: 5px; align-items: center;">
+                        <input type="checkbox" id="isClassTeacher" onchange="toggleCTGrade()"> <label for="isClassTeacher" style="font-size:10px; padding:0;">පන්තිභාරද?</label>
+                        <select id="inTeacherClass" style="display:none; padding:2px; height:24px;"><option value="">පන්තිය</option></select>
+                    </div>
+                    
+                    <label></label>
+                    <button class="btn-small" onclick="addMasterTeacher()">+ ගුරුවරයා එක් කරන්න</button>
+                </div>
+                
+                <hr style="border: 0; border-top: 1px dashed #cbd5e0; margin: 10px 0;">
+                
+                <div class="form-grid">
+                    <label>විෂයය:</label>
+                    <input type="text" id="inSubject" placeholder="උදා: ගණිතය">
+                    <label></label>
+                    <button class="btn-small" onclick="addMasterSubject()">+ විෂයය එක් කරන්න</button>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>⚙️ ඉගැන්වීම් නීති සැකසීම</legend>
+                <div class="form-grid">
+                    <label>ශ්‍රේණිය:</label>
+                    <select id="rClass"></select>
+                    
+                    <label>වර්ගය:</label>
+                    <select id="rType" onchange="toggleRuleType()">
+                        <option value="core">සාමාන්‍ය විෂයය</option>
+                        <option value="basket">කාණ්ඩ විෂයය (Basket)</option>
+                    </select>
+                </div>
+
+                <!-- Core -->
+                <div id="coreRuleDiv">
+                    <div class="form-grid">
+                        <label>විෂයය:</label><select id="rSubjectCore"></select>
+                        <label>ගුරුවරයා:</label><select id="rTeacherCore"></select>
+                        <label>පීරියඩ් ගණන:</label><input type="number" id="rPeriodsCore" min="1" max="8">
+                        <label></label><button class="btn-small" style="background-color: #3182ce; border-color:#2b6cb0;" onclick="addCoreRule()">+ නීතිය එක් කරන්න</button>
+                    </div>
+                </div>
+
+                <!-- Basket -->
+                <div id="basketRuleDiv" style="display: none;">
+                    <div class="basket-box">
+                        <div class="form-grid" style="margin-bottom: 5px;">
+                            <label>විෂයය:</label><select id="rSubjectBasket"></select>
+                            <label>ගුරුවරයා:</label><select id="rTeacherBasket"></select>
+                            <label></label><button class="btn-small" style="background:#4a5568;" onclick="addToTempBasket()">+ කාණ්ඩයට එක් කරන්න</button>
+                        </div>
+                        <div id="tempBasketItems" class="basket-items"></div>
+                    </div>
+                    <div class="form-grid">
+                        <label>පීරියඩ් ගණන:</label><input type="number" id="rPeriodsBasket" min="1" max="8">
+                        <label></label><button class="btn-small" style="background-color: #3182ce; border-color:#2b6cb0;" onclick="addBasketRule()">+ කාණ්ඩ නීතිය එක් කරන්න</button>
+                    </div>
+                </div>
+            </fieldset>
+            
+            <fieldset style="padding: 5px; background: transparent; border: none;">
+                <legend style="background:transparent; border:none; padding:0;">සකසන ලද නීති ලැයිස්තුව</legend>
+                <div class="rules-list" id="rulesList"></div>
+            </fieldset>
         </div>
 
         <div class="panel right-panel">
@@ -181,16 +241,14 @@
 
             <div class="view-controls">
                 <div class="radio-group">
-                    <!-- පන්තිය අනුව Filter වීම ප්‍රධාන (Default) ලෙස සකසා ඇත -->
-                    <label><input type="radio" name="viewMode" value="class_wise" checked onchange="changeViewMode()"> 📚 පන්තිය අනුව (දින 5ම)</label>
-                    <label><input type="radio" name="viewMode" value="day_master" onchange="changeViewMode()"> 🏫 දවස අනුව (සියලුම පන්ති)</label>
+                    <label><input type="radio" name="viewMode" value="class_wise" checked onchange="changeViewMode()"> 📚 පන්තිය අනුව</label>
+                    <label><input type="radio" name="viewMode" value="day_master" onchange="changeViewMode()"> 🏫 දවස අනුව</label>
                     <label><input type="radio" name="viewMode" value="all_master" onchange="changeViewMode()"> 🌐 සම්පූර්ණ (Master)</label>
                 </div>
 
                 <div id="filterControls" style="display: flex; justify-content: center; gap: 10px;">
-                    <!-- Dropdowns -->
-                    <select id="classSelector" onchange="selectClass(this.value)" style="display: block; padding: 6px 15px; border-radius: 4px; font-weight: bold; border: 2px solid #3182ce;"></select>
-                    <select id="daySelector" onchange="selectDay(this.value)" style="display: none; padding: 6px 15px; border-radius: 4px; font-weight: bold; border: 2px solid #3182ce;"></select>
+                    <select id="classSelector" onchange="selectClass(this.value)" style="display: block; padding: 4px 10px; width: auto; font-weight: bold;"></select>
+                    <select id="daySelector" onchange="selectDay(this.value)" style="display: none; padding: 4px 10px; width: auto; font-weight: bold;"></select>
                 </div>
             </div>
 
@@ -201,7 +259,7 @@
                 </table>
             </div>
 
-            <div class="footer">Copyright &copy; 2026- Kelum Konara | SmartSoft</div>
+            <div class="footer">Copyright &copy; 2026- Kelum Konara | SmartSoft Timetable Version 1.0</div>
         </div>
     </div>
 
@@ -211,7 +269,7 @@
         const dayNames = { 'Monday':'සඳුදා', 'Tuesday':'අඟහරුවාදා', 'Wednesday':'බදාදා', 'Thursday':'බ්‍රහස්පතින්දා', 'Friday':'සිකුරාදා' };
         
         let currentDay = 'Monday';
-        let currentViewMode = 'class_wise'; // දැන් Default එක Class Wise වේ
+        let currentViewMode = 'class_wise'; 
         let currentSelectedClass = '6';
         
         let masterTeachers = ['නිමල් සර්', 'සුනිල් සර්', 'කමලා මිස්', 'අමල් සර්'];
@@ -235,11 +293,12 @@
         ];
         
         let generatedTimetable = {};
+        let tempBasketArr = [];
 
         window.onload = () => {
             initDropdowns();
             initEmptyTimetable();
-            changeViewMode(); // UI එක Load වීමේදීම Default View එකට මාරු කරයි
+            changeViewMode(); 
             renderRules();
         };
 
@@ -288,6 +347,12 @@
             document.getElementById('daySelector').innerHTML = dHtml;
         }
 
+        function toggleRuleType() {
+            let type = document.getElementById('rType').value;
+            document.getElementById('coreRuleDiv').style.display = type === 'core' ? 'block' : 'none';
+            document.getElementById('basketRuleDiv').style.display = type === 'basket' ? 'block' : 'none';
+        }
+
         function addCoreRule() {
             const rClass = document.getElementById('rClass').value;
             const rSubject = document.getElementById('rSubjectCore').value;
@@ -298,15 +363,34 @@
             document.getElementById('rPeriodsCore').value = ""; renderRules();
         }
 
+        function addToTempBasket() {
+            const s = document.getElementById('rSubjectBasket').value;
+            const t = document.getElementById('rTeacherBasket').value;
+            if(!s || !t) return;
+            tempBasketArr.push({ subject: s, teacher: t });
+            document.getElementById('tempBasketItems').innerHTML += `<div>✔️ ${s} (${t})</div>`;
+        }
+
+        function addBasketRule() {
+            if(tempBasketArr.length === 0) return alert("කරුණාකර විෂයයන් එක් කරන්න!");
+            const rClass = document.getElementById('rClass').value;
+            const rPeriods = parseInt(document.getElementById('rPeriodsBasket').value);
+            if(!rPeriods) return alert("පීරියඩ් ගණන ඇතුළත් කරන්න!");
+            let combinedSubject = tempBasketArr.map(i => i.subject).join(' / ') + " (කාණ්ඩ)";
+            let combinedTeacher = tempBasketArr.map(i => i.teacher).join(', ');
+            teachingRules.push({ id: Date.now(), grade: rClass, subject: combinedSubject, teacher: combinedTeacher, periods: rPeriods, type: 'basket' });
+            tempBasketArr = []; document.getElementById('tempBasketItems').innerHTML = ""; document.getElementById('rPeriodsBasket').value = ""; renderRules();
+        }
+
         function deleteRule(id) { teachingRules = teachingRules.filter(r => r.id !== id); renderRules(); }
 
         function renderRules() {
             let html = "";
             teachingRules.forEach(r => {
                 html += `<div class="rule-item">
-                            <div><b>${r.grade} ශ්‍රේණිය</b><br><span>${r.subject}</span><br>
+                            <div><b>${r.grade} ශ්‍රේණිය</b> | ${r.subject}<br>
                             <span style="color:gray">${r.teacher} (${r.periods} periods)</span></div>
-                            <button onclick="deleteRule(${r.id})">X</button>
+                            <button class="btn-delete" onclick="deleteRule(${r.id})">X</button>
                          </div>`;
             });
             document.getElementById('rulesList').innerHTML = html;
@@ -315,13 +399,10 @@
         function changeViewMode() {
             let mode = document.querySelector('input[name="viewMode"]:checked').value;
             currentViewMode = mode;
-            
             document.getElementById('daySelector').style.display = mode === 'day_master' ? 'block' : 'none';
             document.getElementById('classSelector').style.display = mode === 'class_wise' ? 'block' : 'none';
-            
             renderTable();
         }
-        
         function selectClass(cls) { currentSelectedClass = cls; renderTable(); }
         function selectDay(day) { currentDay = day; renderTable(); }
 
@@ -433,7 +514,7 @@
             document.getElementById('mainTitle').innerText = title;
         }
 
-        // --- Print Engine with Layout Selection ---
+        // --- Print Engine ---
         function triggerPrint(type) {
             let layoutSetting = parseInt(document.querySelector('input[name="printLayout"]:checked').value);
             closeModals();
@@ -476,7 +557,7 @@
                                     if(cell && cell.teacher.includes(t)) { assignedClass = c + " ශ්‍රේ."; assignedSubject = cell.subject; }
                                 });
                                 if(assignedClass !== "-") {
-                                    tbl += `<td><div class="card" style="background:#bbf7d0">${assignedSubject}<br><span>(${assignedClass})</span></div></td>`;
+                                    tbl += `<td><div class="card" style="background:#e2e8f0; border:1px solid #cbd5e0;">${assignedSubject}<br><span>(${assignedClass})</span></div></td>`;
                                 } else {
                                     tbl += `<td><span class="empty-slot">- හිස් -</span></td>`;
                                 }
@@ -500,6 +581,10 @@
 
             pArea.innerHTML = printHtml;
             window.print();
+        }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(err => console.log(err));
         }
     </script>
 </body>
