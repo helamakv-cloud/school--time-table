@@ -162,6 +162,29 @@
         </div>
     </div>
 
+    <!-- දත්ත සංස්කරණ කවුළුව (Data Management Modal) -->
+    <div id="dataModal" class="modal-overlay">
+        <div class="modal" style="max-width: 800px;">
+            <button class="close-btn" onclick="closeModals()">✖</button>
+            <h3 style="margin-top:0; color:#1e40af; border-bottom: 2px solid #e5e7eb; padding-bottom:8px;">⚙️ දත්ත කළමනාකරණය</h3>
+            
+            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px;">
+                    <h4 style="margin: 0 0 10px 0; color: #374151; border-bottom: 1px solid #d1d5db;">📚 ශ්‍රේණි / පන්ති</h4>
+                    <div id="modalClasses" style="max-height: 250px; overflow-y: auto;"></div>
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <h4 style="margin: 0 0 10px 0; color: #374151; border-bottom: 1px solid #d1d5db;">🧑‍🏫 ගුරුවරුන්</h4>
+                    <div id="modalTeachers" style="max-height: 250px; overflow-y: auto;"></div>
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <h4 style="margin: 0 0 10px 0; color: #374151; border-bottom: 1px solid #d1d5db;">📖 විෂයයන්</h4>
+                    <div id="modalSubjects" style="max-height: 250px; overflow-y: auto;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="printArea"></div>
 
     <div class="layout">
@@ -179,7 +202,7 @@
                 <legend>⚙️ ප්‍රධාන සැකසුම් (Settings)</legend>
                 <div class="form-grid">
                     <label>විවේක කාලය:</label>
-                    <select id="intervalSetting" style="font-weight: bold; color: #b91c1c;">
+                    <select id="intervalSetting" style="font-weight: bold; color: #b91c1c;" onchange="renderTable()">
                         <option value="4">පීරියඩ් 4 කට පසුව</option>
                         <option value="5">පීරියඩ් 5 කට පසුව</option>
                     </select>
@@ -188,9 +211,29 @@
 
             <button class="btn-primary btn-auto" onclick="generateTimetable()">⚡ ස්වයංක්‍රීයව කාලසටහන සකසන්න</button>
             <button class="btn-primary btn-print-menu" onclick="openPrintModal()">🖨️ මුද්‍රණය කිරීම (Print)</button>
+            <button class="btn-primary" style="background: linear-gradient(to bottom, #d97706, #b45309); border-color:#92400e;" onclick="openDataModal()">⚙️ ඇතුළත් කළ දත්ත සංස්කරණය / මකාදැමීම</button>
             
             <fieldset>
-                <legend>👨‍🏫 දත්ත ඇතුළත් කිරීම</legend>
+                <legend>👨‍🏫 1. මූලික දත්ත එක් කරන්න</legend>
+                
+                <div class="form-grid">
+                    <label>ශ්‍රේණිය:</label>
+                    <input type="text" id="inClass" placeholder="උදා: 6, 7-A">
+                    <label></label>
+                    <button class="btn-small" onclick="addMasterClassMain()">+ ශ්‍රේණිය එක් කරන්න</button>
+                </div>
+
+                <hr style="border: 0; border-top: 1px dashed #d1d5db; margin: 10px 0;">
+
+                <div class="form-grid">
+                    <label>විෂයය:</label>
+                    <input type="text" id="inSubject" placeholder="උදා: ගණිතය">
+                    <label></label>
+                    <button class="btn-small" onclick="addMasterSubject()">+ විෂයය එක් කරන්න</button>
+                </div>
+
+                <hr style="border: 0; border-top: 1px dashed #d1d5db; margin: 10px 0;">
+
                 <div class="form-grid">
                     <label>ගුරුවරයා:</label>
                     <input type="text" id="inTeacher" placeholder="උදා: නිමල් සර්">
@@ -204,19 +247,10 @@
                     <label></label>
                     <button class="btn-small" onclick="addMasterTeacher()">+ ගුරුවරයා එක් කරන්න</button>
                 </div>
-                
-                <hr style="border: 0; border-top: 1px dashed #d1d5db; margin: 10px 0;">
-                
-                <div class="form-grid">
-                    <label>විෂයය:</label>
-                    <input type="text" id="inSubject" placeholder="උදා: ගණිතය">
-                    <label></label>
-                    <button class="btn-small" onclick="addMasterSubject()">+ විෂයය එක් කරන්න</button>
-                </div>
             </fieldset>
 
             <fieldset>
-                <legend>⚙️ ඉගැන්වීම් නීති සැකසීම</legend>
+                <legend>⚙️ 2. ඉගැන්වීම් නීති සැකසීම</legend>
                 <div class="form-grid">
                     <label>ශ්‍රේණිය:</label>
                     <select id="rClass"></select>
@@ -271,8 +305,8 @@
                 </div>
 
                 <div id="filterControls" style="display: flex; justify-content: center; gap: 10px;">
-                    <select id="classSelector" onchange="selectClass(this.value)" style="display: block; padding: 6px 12px; width: auto; font-weight: bold; border: 2px solid #3b82f6; color: #1e40af;"></select>
-                    <select id="daySelector" onchange="selectDay(this.value)" style="display: none; padding: 6px 12px; width: auto; font-weight: bold; border: 2px solid #3b82f6; color: #1e40af;"></select>
+                    <select id="classSelector" onchange="selectClass(this.value)" style="display: block; padding: 4px 12px; width: auto; font-weight: bold; border: 2px solid #3b82f6; color: #1e40af;"></select>
+                    <select id="daySelector" onchange="selectDay(this.value)" style="display: none; padding: 4px 12px; width: auto; font-weight: bold; border: 2px solid #3b82f6; color: #1e40af;"></select>
                 </div>
             </div>
 
@@ -283,22 +317,24 @@
                 </table>
             </div>
 
-            <div class="footer">ASC Style Timetable System v1.0 | SmartSoft</div>
+            <div class="footer">ASC Style Timetable System v2.0 | SmartSoft</div>
         </div>
     </div>
 
     <script>
-        let classes = ['6', '7', '8', '9', '10', '11'];
+        // දත්ත සම්පූර්ණයෙන්ම හිස් කර ඇත (Blank Slate)
+        let classes = [];
+        let masterTeachers = [];
+        let classTeacherMap = {}; 
+        let masterSubjects = [];
+        let teachingRules = [];
+        
         const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
         const dayNames = { 'Monday':'සඳුදා', 'Tuesday':'අඟහරුවාදා', 'Wednesday':'බදාදා', 'Thursday':'බ්‍රහස්පතින්දා', 'Friday':'සිකුරාදා' };
         
         let currentDay = 'Monday';
         let currentViewMode = 'class_wise'; 
-        let currentSelectedClass = '6';
-        
-        let masterTeachers = ['නිමල් සර්', 'සුනිල් සර්', 'කමලා මිස්', 'අමල් සර්'];
-        let classTeacherMap = { '6': 'නිමල් සර්', '7': 'කමලා මිස්' }; 
-        let masterSubjects = ['ගණිතය', 'විද්‍යාව', 'සිංහල', 'ඉංග්‍රීසි', 'චිත්‍ර'];
+        let currentSelectedClass = '';
         
         // ASC Style bright colors
         const colors = ['#fca5a5', '#fcd34d', '#86efac', '#6ee7b7', '#93c5fd', '#a5b4fc', '#d8b4fe', '#f9a8d4', '#f87171', '#fbbf24'];
@@ -310,12 +346,6 @@
             }
             return subjectColorMap[baseSub];
         }
-
-        let teachingRules = [
-            { id: 1, grade: '6', subject: 'ගණිතය', teacher: 'නිමල් සර්', periods: 6, type: 'core' },
-            { id: 2, grade: '6', subject: 'විද්‍යාව', teacher: 'සුනිල් සර්', periods: 6, type: 'core' },
-            { id: 3, grade: '7', subject: 'සිංහල', teacher: 'කමලා මිස්', periods: 5, type: 'core' }
-        ];
         
         let generatedTimetable = {};
         let tempBasketArr = [];
@@ -332,11 +362,77 @@
             document.getElementById('displaySchoolName').innerText = name ? name : "ඔබේ පාසලේ නම";
         }
 
+        // --- Modals ---
         function openPrintModal() { document.getElementById('printModal').style.display = 'flex'; }
-        function closeModals() { document.getElementById('printModal').style.display = 'none'; }
+        function openDataModal() { document.getElementById('dataModal').style.display = 'flex'; renderDataModal(); }
+        function closeModals() { 
+            document.getElementById('printModal').style.display = 'none'; 
+            document.getElementById('dataModal').style.display = 'none';
+        }
 
+        // --- Data Editing ---
+        function renderDataModal() {
+            let cHtml = '';
+            classes.forEach(c => cHtml += `<div class="rule-item"><span>${c} ශ්‍රේණිය</span><div><button class="btn-small" style="background:#f59e0b;" onclick="editItem('class', '${c}')">✏️</button> <button class="btn-delete" onclick="deleteItem('class', '${c}')">❌</button></div></div>`);
+            document.getElementById('modalClasses').innerHTML = cHtml || "<span style='font-size:11px;color:gray;'>දත්ත නොමැත</span>";
+            
+            let tHtml = '';
+            masterTeachers.forEach(t => tHtml += `<div class="rule-item"><span>${t}</span><div><button class="btn-small" style="background:#f59e0b;" onclick="editItem('teacher', '${t}')">✏️</button> <button class="btn-delete" onclick="deleteItem('teacher', '${t}')">❌</button></div></div>`);
+            document.getElementById('modalTeachers').innerHTML = tHtml || "<span style='font-size:11px;color:gray;'>දත්ත නොමැත</span>";
+            
+            let sHtml = '';
+            masterSubjects.forEach(s => sHtml += `<div class="rule-item"><span>${s}</span><div><button class="btn-small" style="background:#f59e0b;" onclick="editItem('subject', '${s}')">✏️</button> <button class="btn-delete" onclick="deleteItem('subject', '${s}')">❌</button></div></div>`);
+            document.getElementById('modalSubjects').innerHTML = sHtml || "<span style='font-size:11px;color:gray;'>දත්ත නොමැත</span>";
+        }
+
+        function editItem(type, oldVal) {
+            let newVal = prompt(`"${oldVal}" වෙනුවට නව නාමය ඇතුළත් කරන්න:`, oldVal);
+            if(!newVal || newVal.trim() === "" || newVal === oldVal) return;
+            newVal = newVal.trim();
+
+            if (type === 'class') {
+                classes[classes.indexOf(oldVal)] = newVal;
+                teachingRules.forEach(r => { if(r.grade === oldVal) r.grade = newVal; });
+                if(classTeacherMap[oldVal]) { classTeacherMap[newVal] = classTeacherMap[oldVal]; delete classTeacherMap[oldVal]; }
+            } else if (type === 'teacher') {
+                masterTeachers[masterTeachers.indexOf(oldVal)] = newVal;
+                teachingRules.forEach(r => { if(r.teacher.includes(oldVal)) r.teacher = r.teacher.replace(new RegExp(oldVal, 'g'), newVal); });
+                for (let k in classTeacherMap) { if(classTeacherMap[k] === oldVal) classTeacherMap[k] = newVal; }
+            } else if (type === 'subject') {
+                masterSubjects[masterSubjects.indexOf(oldVal)] = newVal;
+                teachingRules.forEach(r => { if(r.subject.includes(oldVal)) r.subject = r.subject.replace(new RegExp(oldVal, 'g'), newVal); });
+            }
+            initDropdowns(); initEmptyTimetable(); renderTable(); renderDataModal(); renderRules();
+        }
+
+        function deleteItem(type, val) {
+            if(!confirm(`"${val}" සම්පූර්ණයෙන්ම මකා දැමීමට අවශ්‍ය බව විශ්වාසද?`)) return;
+            if (type === 'class') {
+                classes = classes.filter(c => c !== val);
+                teachingRules = teachingRules.filter(r => r.grade !== val);
+                delete classTeacherMap[val];
+            } else if (type === 'teacher') {
+                masterTeachers = masterTeachers.filter(t => t !== val);
+            } else if (type === 'subject') {
+                masterSubjects = masterSubjects.filter(s => s !== val);
+            }
+            initDropdowns(); initEmptyTimetable(); renderTable(); renderDataModal(); renderRules();
+        }
+
+        // --- Data Entry (Left Panel) ---
         function toggleCTGrade() {
             document.getElementById('inTeacherClass').style.display = document.getElementById('isClassTeacher').checked ? 'block' : 'none';
+        }
+
+        function addMasterClassMain() {
+            let c = document.getElementById('inClass').value.trim();
+            if(c && !classes.includes(c)) { 
+                classes.push(c); 
+                initDropdowns(); 
+                initEmptyTimetable();
+                renderTable();
+            }
+            document.getElementById('inClass').value = "";
         }
 
         function addMasterTeacher() {
@@ -351,6 +447,7 @@
             document.getElementById('inTeacher').value = "";
             document.getElementById('isClassTeacher').checked = false; toggleCTGrade();
         }
+
         function addMasterSubject() {
             let s = document.getElementById('inSubject').value.trim();
             if(s && !masterSubjects.includes(s)) { masterSubjects.push(s); initDropdowns(); }
@@ -363,13 +460,19 @@
             let cHtml = classes.map(c => `<option value="${c}">${c} ශ්‍රේණිය</option>`).join('');
             
             document.getElementById('rTeacherCore').innerHTML = tHtml; 
+            document.getElementById('rTeacherBasket').innerHTML = tHtml; 
             document.getElementById('rSubjectCore').innerHTML = sHtml; 
+            document.getElementById('rSubjectBasket').innerHTML = sHtml; 
             document.getElementById('rClass').innerHTML = cHtml;
             document.getElementById('classSelector').innerHTML = cHtml; 
             document.getElementById('inTeacherClass').innerHTML = '<option value="">-- පන්තිය --</option>' + cHtml;
             
             let dHtml = days.map(d => `<option value="${d}">${dayNames[d]}</option>`).join('');
             document.getElementById('daySelector').innerHTML = dHtml;
+
+            if(classes.length > 0 && !classes.includes(currentSelectedClass)) {
+                currentSelectedClass = classes[0];
+            }
         }
 
         function toggleRuleType() {
@@ -383,7 +486,7 @@
             const rSubject = document.getElementById('rSubjectCore').value;
             const rTeacher = document.getElementById('rTeacherCore').value;
             const rPeriods = parseInt(document.getElementById('rPeriodsCore').value);
-            if(!rSubject || !rTeacher || !rPeriods) return alert("කරුණාකර සියලුම දත්ත තෝරන්න!");
+            if(!rClass || !rSubject || !rTeacher || !rPeriods) return alert("කරුණාකර සියලුම දත්ත තෝරන්න!");
             teachingRules.push({ id: Date.now(), grade: rClass, subject: rSubject, teacher: rTeacher, periods: rPeriods, type: 'core' });
             document.getElementById('rPeriodsCore').value = ""; renderRules();
         }
@@ -393,14 +496,14 @@
             const t = document.getElementById('rTeacherBasket').value;
             if(!s || !t) return;
             tempBasketArr.push({ subject: s, teacher: t });
-            document.getElementById('tempBasketItems').innerHTML += `<div>✔️ ${s} (${t})</div>`;
+            document.getElementById('tempBasketItems').innerHTML += `<div style="padding:2px; border-bottom:1px solid #bfdbfe;">✔️ ${s} (${t})</div>`;
         }
 
         function addBasketRule() {
             if(tempBasketArr.length === 0) return alert("කරුණාකර විෂයයන් එක් කරන්න!");
             const rClass = document.getElementById('rClass').value;
             const rPeriods = parseInt(document.getElementById('rPeriodsBasket').value);
-            if(!rPeriods) return alert("පීරියඩ් ගණන ඇතුළත් කරන්න!");
+            if(!rClass || !rPeriods) return alert("කරුණාකර ශ්‍රේණිය සහ පීරියඩ් ගණන ඇතුළත් කරන්න!");
             let combinedSubject = tempBasketArr.map(i => i.subject).join(' / ') + " (කාණ්ඩ)";
             let combinedTeacher = tempBasketArr.map(i => i.teacher).join(', ');
             teachingRules.push({ id: Date.now(), grade: rClass, subject: combinedSubject, teacher: combinedTeacher, periods: rPeriods, type: 'basket' });
@@ -413,12 +516,12 @@
             let html = "";
             teachingRules.forEach(r => {
                 html += `<div class="rule-item">
-                            <div><b>${r.grade} ශ්‍රේණිය</b> | ${r.subject}<br>
-                            <span style="color:gray">${r.teacher} (${r.periods} periods)</span></div>
+                            <div><b style="color:#1e40af;">${r.grade} ශ්‍රේණිය</b> | ${r.subject}<br>
+                            <span style="color:#6b7280; font-size:10px;">${r.teacher} (${r.periods} periods)</span></div>
                             <button class="btn-delete" onclick="deleteRule(${r.id})">X</button>
                          </div>`;
             });
-            document.getElementById('rulesList').innerHTML = html;
+            document.getElementById('rulesList').innerHTML = html || "<span style='font-size:11px;color:gray;'>තවමත් නීති සකසා නොමැත.</span>";
         }
 
         function changeViewMode() {
@@ -447,7 +550,7 @@
             initEmptyTimetable();
             let unassigned = [];
             
-            // 1. Sort Rules: Class Teachers First, then by periods descending (hardest to fit first)
+            // 1. Sort Rules: Class Teachers First, then by periods descending
             let sortedRules = [...teachingRules].sort((a, b) => {
                 let aIsCT = (classTeacherMap[a.grade] && a.teacher.includes(classTeacherMap[a.grade])) ? 1 : 0;
                 let bIsCT = (classTeacherMap[b.grade] && b.teacher.includes(classTeacherMap[b.grade])) ? 1 : 0;
@@ -459,21 +562,17 @@
                 let periodsToAssign = rule.periods;
                 let isCT = (classTeacherMap[rule.grade] && rule.teacher.includes(classTeacherMap[rule.grade]));
                 
-                // Track assigned days to spread cards across the week
                 let daysAssigned = { 'Monday':0, 'Tuesday':0, 'Wednesday':0, 'Thursday':0, 'Friday':0 };
                 let maxAttempts = 150;
 
                 while (periodsToAssign > 0 && maxAttempts > 0) {
                     maxAttempts--;
                     let placed = false;
-                    
-                    // Shuffle days to ensure ASC style card distribution
                     let dayOrder = [...days].sort(() => Math.random() - 0.5);
 
                     for (let d of dayOrder) {
                         if (placed) break;
                         
-                        // Rule: Max 1 period per day, unless total > 5 (then max 2)
                         let maxPerDay = rule.periods > 5 ? 2 : 1;
                         if (daysAssigned[d] >= maxPerDay) continue;
 
@@ -482,7 +581,6 @@
 
                         for (let p of periodOrder) {
                             if (generatedTimetable[d][p][rule.grade] === null) {
-                                // Check teacher clash
                                 let isBusy = false;
                                 let ruleTeachers = rule.teacher.split(','); 
                                 for(let c of classes) {
@@ -503,7 +601,7 @@
                             }
                         }
                     }
-                    if (!placed) break; // If no slot found in entire week, break out to avoid infinite loop
+                    if (!placed) break; 
                 }
                 if(periodsToAssign > 0) unassigned.push(rule.subject + " (" + rule.grade + " ශ්‍රේ.)");
             });
@@ -526,8 +624,14 @@
             let b = "";
             let title = "";
             
-            // Get user selected interval position
             let intervalPos = parseInt(document.getElementById('intervalSetting').value) || 4;
+
+            if(classes.length === 0) {
+                document.getElementById('tableHeader').innerHTML = ""; 
+                document.getElementById('tableBody').innerHTML = "<tr><td style='padding:40px; color:#ef4444; font-size:14px; font-weight:bold; background:white;'>කරුණාකර වම්පස මෙනුවෙන් නව ශ්‍රේණි (පන්ති), විෂයයන් සහ ගුරුවරුන් පද්ධතියට එක් කරන්න.</td></tr>";
+                document.getElementById('mainTitle').innerText = "පද්ධතිය හිස්ව ඇත";
+                return;
+            }
 
             if (currentViewMode === 'all_master') {
                 title = "සම්පූර්ණ ප්‍රධාන කාලසටහන (දින 5ම)";
@@ -573,6 +677,8 @@
 
         // --- Print Engine ---
         function triggerPrint(type) {
+            if(classes.length === 0) return alert("මුද්‍රණය කිරීමට දත්ත නොමැත!");
+            
             let layoutSetting = parseInt(document.querySelector('input[name="printLayout"]:checked').value);
             let intervalPos = parseInt(document.getElementById('intervalSetting').value) || 4;
             closeModals();
