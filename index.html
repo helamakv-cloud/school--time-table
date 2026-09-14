@@ -23,7 +23,6 @@
         .btn-print-menu { background-color: #2c3e50; color: white; width: 100%; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
         .btn-add { background-color: #3182ce; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 5px;}
         .btn-small { background-color: #38a169; color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer; }
-        .btn-edit-data { background-color: #d69e2e; color: white; width: 100%; padding: 10px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-bottom: 15px;}
         
         .input-row { display: flex; gap: 5px; margin-bottom: 8px; align-items: center; }
         input, select { flex: 1; padding: 8px; border: 1px solid #cbd5e0; border-radius: 4px; font-size: 12px; }
@@ -68,14 +67,12 @@
             .print-page { page-break-after: always; width: 100%; box-sizing: border-box; }
             .timetable-box { break-inside: avoid; margin-bottom: 10mm; display: flex; flex-direction: column; }
             
-            /* Print 1x1 */
             .layout-1 .timetable-box { width: 100%; height: 100%; }
             .layout-1 h2.school-title { font-size: 24px; color: black; margin-bottom: 5px; text-align: center; }
             .layout-1 h3.main-title { font-size: 16px; color: black; margin-bottom: 15px; text-align: center; }
             .layout-1 table { border: 2px solid #000; border-collapse: collapse; min-width: 100%; }
             .layout-1 th, .layout-1 td { border: 1px solid #000 !important; color: black !important; padding: 5px !important; }
             
-            /* Print 2x1 (Grid 2) */
             .layout-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10mm; align-items: start; height: 100vh;}
             .layout-2 .timetable-box { width: 100%; }
             .layout-2 h2.school-title { font-size: 16px; margin-bottom: 2px; text-align: center; color: black;}
@@ -86,7 +83,6 @@
             .layout-2 .card span { font-size: 8px; }
             .layout-2 .interval { font-size: 10px !important; padding: 2px !important; }
             
-            /* Print 2x2 (Grid 4) */
             .layout-4 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8mm; height: 100vh;}
             .layout-4 .timetable-box { width: 100%; height: 100%;}
             .layout-4 h2.school-title { font-size: 13px; margin-bottom: 2px; text-align: center; color: black;}
@@ -98,7 +94,6 @@
             .layout-4 .card span { font-size: 6px; }
             .layout-4 .interval { font-size: 8px !important; padding: 1px !important; }
 
-            /* General Print Table overrides */
             th { background-color: #f0f0f0 !important; color: black !important; -webkit-print-color-adjust: exact; }
             .card { border: none; box-shadow: none; background: transparent !important; }
             .interval { background-color: #e0e0e0 !important; color: black !important; border: 1px solid #000 !important; -webkit-print-color-adjust: exact; }
@@ -109,14 +104,14 @@
 </head>
 <body>
 
-    <!-- මුද්‍රණ මෙනුව (Print Modal) -->
+    <!-- Print Modal -->
     <div id="printModal" class="modal-overlay">
         <div class="modal" style="max-width: 500px; text-align: center;">
             <button class="close-btn" onclick="closeModals()">✖</button>
             <h3 style="margin-top:0; color:#2c3e50;">🖨️ මුද්‍රණ මෙනුව</h3>
             
             <div style="background: #f7fafc; padding: 15px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #e2e8f0; text-align: left;">
-                <label style="font-weight: bold; font-size: 13px; color: #2d3748;">A4 පිටුවකට මුද්‍රණය වන ප්‍රමාණය (Layout):</label>
+                <label style="font-weight: bold; font-size: 13px; color: #2d3748;">A4 පිටුවකට මුද්‍රණය වන ප්‍රමාණය:</label>
                 <div class="radio-group" style="margin-top: 10px; background: transparent; box-shadow: none; padding: 0; justify-content: flex-start;">
                     <label><input type="radio" name="printLayout" value="1" checked> 1ක් පෙන්වන්න</label>
                     <label><input type="radio" name="printLayout" value="2"> 2ක් පෙන්වන්න</label>
@@ -132,7 +127,7 @@
         </div>
     </div>
 
-    <!-- Print Area (Only visible during printing) -->
+    <!-- Print Area -->
     <div id="printArea"></div>
 
     <div class="layout">
@@ -186,14 +181,16 @@
 
             <div class="view-controls">
                 <div class="radio-group">
-                    <label><input type="radio" name="viewMode" value="all_master" checked onchange="changeViewMode()"> 🌐 සම්පූර්ණ ප්‍රධාන කාලසටහන</label>
-                    <label><input type="radio" name="viewMode" value="day_master" onchange="changeViewMode()"> 🏫 එක් දවසක්</label>
-                    <label><input type="radio" name="viewMode" value="class_wise" onchange="changeViewMode()"> 📚 එක් පන්තියක්</label>
+                    <!-- පන්තිය අනුව Filter වීම ප්‍රධාන (Default) ලෙස සකසා ඇත -->
+                    <label><input type="radio" name="viewMode" value="class_wise" checked onchange="changeViewMode()"> 📚 පන්තිය අනුව (දින 5ම)</label>
+                    <label><input type="radio" name="viewMode" value="day_master" onchange="changeViewMode()"> 🏫 දවස අනුව (සියලුම පන්ති)</label>
+                    <label><input type="radio" name="viewMode" value="all_master" onchange="changeViewMode()"> 🌐 සම්පූර්ණ (Master)</label>
                 </div>
 
                 <div id="filterControls" style="display: flex; justify-content: center; gap: 10px;">
-                    <select id="daySelector" onchange="selectDay(this.value)" style="display: none; padding: 6px; border-radius: 4px; font-weight: bold;"></select>
-                    <select id="classSelector" onchange="selectClass(this.value)" style="display: none; padding: 6px; border-radius: 4px; font-weight: bold;"></select>
+                    <!-- Dropdowns -->
+                    <select id="classSelector" onchange="selectClass(this.value)" style="display: block; padding: 6px 15px; border-radius: 4px; font-weight: bold; border: 2px solid #3182ce;"></select>
+                    <select id="daySelector" onchange="selectDay(this.value)" style="display: none; padding: 6px 15px; border-radius: 4px; font-weight: bold; border: 2px solid #3182ce;"></select>
                 </div>
             </div>
 
@@ -214,7 +211,7 @@
         const dayNames = { 'Monday':'සඳුදා', 'Tuesday':'අඟහරුවාදා', 'Wednesday':'බදාදා', 'Thursday':'බ්‍රහස්පතින්දා', 'Friday':'සිකුරාදා' };
         
         let currentDay = 'Monday';
-        let currentViewMode = 'all_master'; 
+        let currentViewMode = 'class_wise'; // දැන් Default එක Class Wise වේ
         let currentSelectedClass = '6';
         
         let masterTeachers = ['නිමල් සර්', 'සුනිල් සර්', 'කමලා මිස්', 'අමල් සර්'];
@@ -242,7 +239,7 @@
         window.onload = () => {
             initDropdowns();
             initEmptyTimetable();
-            renderTable();
+            changeViewMode(); // UI එක Load වීමේදීම Default View එකට මාරු කරයි
             renderRules();
         };
 
@@ -318,10 +315,13 @@
         function changeViewMode() {
             let mode = document.querySelector('input[name="viewMode"]:checked').value;
             currentViewMode = mode;
+            
             document.getElementById('daySelector').style.display = mode === 'day_master' ? 'block' : 'none';
             document.getElementById('classSelector').style.display = mode === 'class_wise' ? 'block' : 'none';
+            
             renderTable();
         }
+        
         function selectClass(cls) { currentSelectedClass = cls; renderTable(); }
         function selectDay(day) { currentDay = day; renderTable(); }
 
@@ -444,7 +444,6 @@
             let generatedItems = [];
 
             if (type === 'all_master') {
-                // Master timetable is too big, always prints 1 per page
                 printHtml += `<div class="print-page layout-1"><div class="timetable-box"><h2 class="school-title">${schoolName}</h2><h3 class="main-title">සම්පූර්ණ ප්‍රධාන කාලසටහන</h3>`;
                 printHtml += document.getElementById('mainTable').outerHTML;
                 printHtml += `<div class="print-footer">Generated by SmartSoft Timetable System</div></div></div>`;
@@ -490,7 +489,6 @@
                     });
                 }
 
-                // Chunk the items based on the layout setting (1, 2, or 4 per page)
                 for (let i = 0; i < generatedItems.length; i += layoutSetting) {
                     printHtml += `<div class="print-page layout-${layoutSetting}">`;
                     for (let j = 0; j < layoutSetting; j++) {
