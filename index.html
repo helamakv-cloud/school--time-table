@@ -127,7 +127,10 @@
             .card { text-shadow: none; }
             .interval { background-color: #d1d5db !important; color: black !important; border: 1px solid #000 !important; -webkit-print-color-adjust: exact; letter-spacing: normal; text-transform: none;}
             .day-header { background-color: #ccc !important; color: black !important; -webkit-print-color-adjust: exact; }
+            
             .print-footer { text-align: center; font-size: 10px; font-weight:bold; color: black; margin-top: 5px; border-top: 1px solid #000; padding-top: 3px; }
+            .print-footer span { color: #10b981 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            
             .relief-card { background-color: #fef2f2 !important; border: 2px dashed #ef4444 !important; -webkit-print-color-adjust: exact; }
             .relief-text { color: #dc2626 !important; font-weight: bold; }
         }
@@ -177,7 +180,7 @@
         </div>
     </div>
 
-    <!-- Relief (සහන) Management Modal -->
+    <!-- Relief Management Modal -->
     <div id="reliefModal" class="modal-overlay">
         <div class="modal">
             <button class="close-btn" onclick="closeModals()">✖</button>
@@ -232,9 +235,9 @@
                 </div>
             </fieldset>
 
-            <button class="btn-primary btn-auto" onclick="generateTimetable()">⚡ 1. ස්වයංක්‍රීයව කාලසටහන සකසන්න</button>
-            <button class="btn-primary btn-relief" onclick="openReliefModal()">👨‍🏫 2. සහන කාලපරිච්ඡේද (Relief)</button>
-            <button class="btn-primary btn-print-menu" onclick="openPrintModal()">🖨️ 3. මුද්‍රණය කිරීම (Print)</button>
+            <button class="btn-primary btn-auto" onclick="generateTimetable()">⚡ ස්වයංක්‍රීයව කාලසටහන සකසන්න</button>
+            <button class="btn-primary btn-relief" onclick="openReliefModal()">👨‍🏫 සහන කාලපරිච්ඡේද (Relief)</button>
+            <button class="btn-primary btn-print-menu" onclick="openPrintModal()">🖨️ මුද්‍රණය කිරීම (Print)</button>
             <button class="btn-primary" style="background: linear-gradient(to bottom, #d97706, #b45309); border-color:#92400e;" onclick="openDataModal()">⚙️ ඇතුළත් කළ දත්ත සංස්කරණය / මකාදැමීම</button>
             
             <fieldset>
@@ -326,7 +329,7 @@
                 </table>
             </div>
 
-            <div class="footer">Copyright &copy; 2026 Kelum Konara | Smart<span style="color: #10b981;">Soft</span> | Time Table version 1.0</div>
+            <div class="footer">&copy; 2026 Kelum Konara | Smart<span style="color: #10b981;">Soft</span> | Time Table version 1.0</div>
         </div>
     </div>
 
@@ -336,7 +339,7 @@
         let classTeacherMap = {}; 
         let masterSubjects = [];
         let teachingRules = [];
-        let reliefAssignments = []; // සහන දත්ත ගබඩාව {day, period, grade, reliefTeacher}
+        let reliefAssignments = []; 
         
         const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
         const dayNames = { 'Monday':'සඳුදා', 'Tuesday':'අඟහරුවාදා', 'Wednesday':'බදාදා', 'Thursday':'බ්‍රහස්පතින්දා', 'Friday':'සිකුරාදා' };
@@ -385,7 +388,7 @@
             document.getElementById('reliefModal').style.display = 'none';
         }
 
-        // --- Relief Management (සහන) ---
+        // --- Relief Management ---
         function updateReliefUI() {
             let d = document.getElementById('relDay').value;
             let p = parseInt(document.getElementById('relPeriod').value);
@@ -410,7 +413,6 @@
                 statusDiv.style.color = "#b91c1c"; statusDiv.style.borderColor = "#ef4444";
                 teacherDiv.style.display = "grid";
 
-                // Find Available Teachers
                 let tHtml = "";
                 masterTeachers.forEach(t => {
                     let isBusy = false;
@@ -433,7 +435,6 @@
 
             if(!t) return alert("සහනයක් ලබාදීමට නිදහස් ගුරුවරයෙකු නොමැත!");
 
-            // Remove existing relief if any
             reliefAssignments = reliefAssignments.filter(r => !(r.day === d && r.period === p && r.grade === c));
             reliefAssignments.push({ day: d, period: p, grade: c, reliefTeacher: t });
             
@@ -460,8 +461,8 @@
             });
             document.getElementById('activeReliefsList').innerHTML = html || "<span style='font-size:11px;color:gray;'>දැනට සහන ලබා දී නොමැත.</span>";
         }
-        // ------------------------------------
 
+        // --- Data Management ---
         function renderDataModal() {
             let cHtml = '';
             classes.forEach(c => cHtml += `<div class="rule-item"><span>${c} ශ්‍රේණිය</span><div><button class="btn-small" style="background:#f59e0b;" onclick="editItem('class', '${c}')">✏️</button> <button class="btn-delete" onclick="deleteItem('class', '${c}')">❌</button></div></div>`);
@@ -559,7 +560,6 @@
             document.getElementById('inTeacherClass').innerHTML = '<option value="">-- පන්තිය --</option>' + cHtml;
             document.getElementById('daySelector').innerHTML = dHtml;
             
-            // Relief Selects
             document.getElementById('relClass').innerHTML = cHtml;
             document.getElementById('relDay').innerHTML = dHtml;
 
@@ -635,16 +635,14 @@
                     classes.forEach(c => generatedTimetable[day][p][c] = null);
                 }
             });
-            reliefAssignments = []; // Clear reliefs on re-generate
+            reliefAssignments = []; 
         }
 
-        // --- ASC Style Generator Engine ---
         function generateTimetable() {
             if(teachingRules.length === 0) return alert("කරුණාකර පළමුව නීති ඇතුළත් කරන්න!");
             initEmptyTimetable();
             let unassigned = [];
             
-            // 1. Sort Rules: Class Teachers First, then by periods descending
             let sortedRules = [...teachingRules].sort((a, b) => {
                 let aIsCT = (classTeacherMap[a.grade] && a.teacher.includes(classTeacherMap[a.grade])) ? 1 : 0;
                 let bIsCT = (classTeacherMap[b.grade] && b.teacher.includes(classTeacherMap[b.grade])) ? 1 : 0;
@@ -666,7 +664,6 @@
                     let placed = false;
                     let dayOrder = [...days].sort(() => Math.random() - 0.5);
 
-                    // DOUBLE PERIOD LOGIC for 3-period subjects
                     if (rule.periods === 3 && periodsToAssign >= 2 && !hasPlacedDouble && doubleAttempts < 50) {
                         doubleAttempts++;
                         for (let d of dayOrder) {
@@ -703,10 +700,9 @@
                         }
                     }
 
-                    // SINGLE PERIOD LOGIC
                     if (!placed && periodsToAssign > 0) {
                         for (let d of dayOrder) {
-                            if (daysAssigned[d] > 0 && rule.periods <= 5) continue; // Spread across week
+                            if (daysAssigned[d] > 0 && rule.periods <= 5) continue; 
                             if (daysAssigned[d] >= 2) continue;
 
                             let periodOrder = isCT ? [1, 2, 3, 4, 5, 6, 7, 8] : [1, 2, 3, 4, 5, 6, 7, 8].sort(()=>Math.random()-0.5);
@@ -832,7 +828,7 @@
             if (type === 'all_master') {
                 printHtml += `<div class="print-page layout-1"><div class="timetable-box"><h2 class="school-title">${schoolName}</h2><h3 class="main-title">සම්පූර්ණ ප්‍රධාන කාලසටහන</h3>`;
                 printHtml += document.getElementById('mainTable').outerHTML;
-                printHtml += `<div class="print-footer">2026 Kelum Konara | SmartSoft | Time Table version 1.0</div></div></div>`;
+                printHtml += `<div class="print-footer">&copy; 2026 Kelum Konara | Smart<span>Soft</span> | Time Table version 1.0</div></div></div>`;
             } 
             else {
                 if (type === 'classes') {
@@ -845,7 +841,7 @@
                             tbl += `</tr>`;
                             if(p === intervalPos) tbl += `<tr><td colspan="${days.length+1}" class="interval">විවේක කාලය</td></tr>`;
                         }
-                        tbl += `</tbody></table><div class="print-footer">2026 Kelum Konara | SmartSoft | Time Table version 1.0</div></div>`;
+                        tbl += `</tbody></table><div class="print-footer">&copy; 2026 Kelum Konara | Smart<span>Soft</span> | Time Table version 1.0</div></div>`;
                         generatedItems.push(tbl);
                     });
                 }
@@ -859,7 +855,6 @@
                                 let assignedClass = "-"; let assignedSubject = ""; let color = "#ffffff";
                                 let isRelief = false;
                                 
-                                // Check standard allocation
                                 classes.forEach(c => {
                                     let cell = generatedTimetable[d][p][c];
                                     if(cell && cell.teacher.includes(t)) { 
@@ -869,7 +864,6 @@
                                     }
                                 });
 
-                                // Check relief allocation
                                 let relief = reliefAssignments.find(r => r.day === d && r.period === p && r.reliefTeacher === t);
                                 if(relief) {
                                     assignedClass = relief.grade + " ශ්‍රේ.";
@@ -889,7 +883,7 @@
                             tbl += `</tr>`;
                             if(p === intervalPos) tbl += `<tr><td colspan="${days.length+1}" class="interval">විවේක කාලය</td></tr>`;
                         }
-                        tbl += `</tbody></table><div class="print-footer">2026 Kelum Konara | SmartSoft | Time Table version 1.0</div></div>`;
+                        tbl += `</tbody></table><div class="print-footer">&copy; 2026 Kelum Konara | Smart<span>Soft</span> | Time Table version 1.0</div></div>`;
                         generatedItems.push(tbl);
                     });
                 }
