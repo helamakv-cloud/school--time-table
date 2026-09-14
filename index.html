@@ -9,12 +9,16 @@
 
     <style>
         /* Professional Colors & Grid System */
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #d1d5db; margin: 0; padding: 10px; font-size: 13px; color: #1f2937; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #d1d5db; margin: 0; padding: 10px; font-size: 13px; color: #1f2937; height: 100vh; box-sizing: border-box;}
         
-        .layout { display: flex; gap: 10px; height: 97vh; }
-        .panel { background: white; padding: 15px; border-radius: 4px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); overflow-y: auto; box-sizing: border-box; }
-        .left-panel { flex: 1.2; min-width: 340px; max-width: 400px; background-color: #f3f4f6; border-right: 1px solid #e5e7eb; }
-        .right-panel { flex: 3; display: flex; flex-direction: column; min-width: 0; background-color: #ffffff; }
+        .layout { display: flex; gap: 10px; height: calc(100vh - 20px); }
+        .panel { background: white; padding: 15px; border-radius: 4px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); box-sizing: border-box; }
+        
+        /* වම්පස මෙනුව ස්ක්‍රෝල් වීමට ඉඩ හැරීම */
+        .left-panel { flex: 1.2; min-width: 340px; max-width: 400px; background-color: #f3f4f6; border-right: 1px solid #e5e7eb; overflow-y: auto; }
+        
+        /* දකුණුපස පැනලය සම්පූර්ණ උස ලබාගැනීම */
+        .right-panel { flex: 3; display: flex; flex-direction: column; min-width: 0; background-color: #ffffff; overflow: hidden; }
         
         h2.school-title { text-align: center; color: #111827; margin: 0 0 5px 0; font-size: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;}
         h3.main-title { text-align: center; color: #4b5563; margin: 0 0 15px 0; font-size: 14px; font-weight: 600; }
@@ -60,10 +64,12 @@
         .radio-group { display: flex; gap: 15px; font-weight: bold; font-size: 12px; justify-content: center; flex-wrap: wrap;}
         .radio-group label { cursor: pointer; display: flex; align-items: center; gap: 4px; color: #374151;}
         
-        /* Table View */
-        .table-container { width: 100%; overflow-x: auto; flex-grow: 1; border: 2px solid #9ca3af; background: #e5e7eb; padding: 2px;}
-        table { width: 100%; border-collapse: separate; border-spacing: 2px; table-layout: fixed; min-width: 700px; }
-        th, td { text-align: center; vertical-align: middle; padding: 2px; border-radius: 2px; overflow: hidden; }
+        /* Table View - Perfect Equal Balancing */
+        .table-container { flex: 1; min-height: 0; overflow: auto; border: 2px solid #9ca3af; background: #e5e7eb; padding: 2px;}
+        table { width: 100%; height: 100%; border-collapse: separate; border-spacing: 2px; table-layout: fixed; min-width: 700px; }
+        tbody tr { height: 1%; } /* Forces browsers to distribute row height equally */
+        
+        th, td { text-align: center; vertical-align: middle; padding: 2px; border-radius: 2px; overflow: hidden; height: 100%; }
         
         /* Fixed First Column - Normal Size */
         th:first-child, td:first-child { width: 50px !important; max-width: 50px !important; min-width: 50px !important; white-space: nowrap; }
@@ -72,15 +78,17 @@
         td:first-child { background: linear-gradient(to bottom, #d1d5db, #9ca3af); font-weight: bold; font-size: 11px; position: sticky; left: 0; z-index: 1; border: 1px solid #6b7280;}
         td.cell-empty { background-color: #ffffff; border: 1px solid #d1d5db; }
         
-        .attendance-row { background: linear-gradient(to right, #bfdbfe, #93c5fd) !important; color: #1e3a8a !important; font-weight: bold; padding: 2px !important; font-size: 10px; letter-spacing: 1px; border: 1px solid #60a5fa !important; text-transform: uppercase;}
-        .interval { background: linear-gradient(to right, #6b7280, #4b5563) !important; color: white !important; font-weight: bold; padding: 2px !important; font-size: 11px; letter-spacing: 2px; border: 1px solid #374151 !important; text-transform: uppercase;}
+        /* Header rows strict small heights */
+        tr.special-row { height: 25px !important; }
+        .attendance-row { background: linear-gradient(to right, #bfdbfe, #93c5fd) !important; color: #1e3a8a !important; font-weight: bold; padding: 4px !important; font-size: 10px; letter-spacing: 1px; border: 1px solid #60a5fa !important; text-transform: uppercase;}
+        .interval { background: linear-gradient(to right, #6b7280, #4b5563) !important; color: white !important; font-weight: bold; padding: 4px !important; font-size: 11px; letter-spacing: 2px; border: 1px solid #374151 !important; text-transform: uppercase;}
         .day-header { background: linear-gradient(to right, #4b5563, #374151) !important; color: white !important; font-weight: bold; padding: 4px; font-size: 12px; text-align: center; border: 1px solid #1f2937 !important;}
         
         /* Timetable Cards */
-        .card { padding: 4px; border-radius: 4px; font-size: 11px; font-weight: 700; width: 100%; min-height: 40px; display: flex; flex-direction: column; justify-content: center; margin: 0 auto; line-height: 1.1; border: 1px solid rgba(0,0,0,0.3); box-shadow: 1px 1px 3px rgba(0,0,0,0.2); color: #111827; box-sizing: border-box; position: relative; overflow: hidden;}
+        .card { padding: 4px; border-radius: 4px; font-size: 11px; font-weight: 700; width: 100%; height: 100%; min-height: 40px; display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0; line-height: 1.1; border: 1px solid rgba(0,0,0,0.3); box-shadow: 1px 1px 3px rgba(0,0,0,0.2); color: #111827; box-sizing: border-box; position: relative; overflow: hidden;}
         .card::before { content: ''; position: absolute; top:0; left:0; width:100%; height: 30%; background: linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,0)); pointer-events: none;}
-        .card-subj { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; display: block; z-index: 2;}
-        .card span { font-weight: 600; font-size: 9px; color: #1f2937; display: block; margin-top: 2px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; z-index: 2;}
+        .card-subj { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; display: block; z-index: 2; text-align: center;}
+        .card span { font-weight: 600; font-size: 9px; color: #1f2937; display: block; margin-top: 2px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; z-index: 2; text-align: center;}
         .empty-slot { color: #9ca3af; font-size: 10px; font-style: italic; }
 
         .footer { text-align: center; font-size: 12px; font-weight: bold; color: #4b5563; padding-top: 10px; margin-top: 10px; border-top: 1px solid #e5e7eb; }
@@ -94,9 +102,7 @@
         @media screen and (max-width: 768px) {
             .layout { flex-direction: column; height: auto; }
             .left-panel { min-width: 100%; max-width: 100%; }
-            .form-grid { grid-template-columns: 1fr; gap: 4px; margin-bottom: 12px; }
-            .form-grid label { text-align: left; }
-            .table-container { padding: 0; border: none; }
+            .table-container { padding: 0; border: none; overflow-x: auto; }
             table { border-spacing: 0; border-collapse: collapse; }
             th, td { border: 1px solid #d1d5db; border-radius: 0; }
         }
@@ -110,26 +116,29 @@
             .layout, .modal-overlay { display: none !important; }
             #printArea { display: block !important; width: 100%; }
             
-            .print-page { page-break-after: always; width: 100%; box-sizing: border-box; }
-            .timetable-box { break-inside: avoid; margin-bottom: 10mm; display: flex; flex-direction: column; }
+            .print-page { page-break-after: always; width: 100%; height: 100vh; box-sizing: border-box; display: flex; flex-direction: column;}
+            .timetable-box { break-inside: avoid; flex: 1; display: flex; flex-direction: column; margin-bottom: 5mm;}
             
             .layout-1 .timetable-box { width: 100%; height: 100%; }
             .layout-1 h2.school-title { font-size: 22px; color: black; margin-bottom: 5px; text-align: center; }
-            .layout-1 h3.main-title { font-size: 16px; color: black; margin-bottom: 15px; text-align: center; }
-            .layout-1 table { border: 2px solid #000; border-collapse: collapse; min-width: 100%; border-spacing: 0; table-layout: fixed; }
+            .layout-1 h3.main-title { font-size: 16px; color: black; margin-bottom: 10px; text-align: center; }
+            .layout-1 table { flex: 1; border: 2px solid #000; border-collapse: collapse; width: 100%; height: 100%; border-spacing: 0; table-layout: fixed; }
             .layout-1 th, .layout-1 td { border: 1px solid #000 !important; color: black !important; padding: 4px !important; border-radius: 0; }
             
             .layout-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10mm; align-items: start; height: 100vh;}
             .layout-2 h2.school-title { font-size: 16px; margin-bottom: 2px; text-align: center; color: black;}
-            .layout-2 h3.main-title { font-size: 13px; margin-bottom: 8px; text-align: center; color: black;}
-            .layout-2 table { border: 2px solid #000; border-collapse: collapse; min-width: 100%; border-spacing: 0; table-layout: fixed; }
+            .layout-2 h3.main-title { font-size: 13px; margin-bottom: 5px; text-align: center; color: black;}
+            .layout-2 table { flex: 1; border: 2px solid #000; border-collapse: collapse; width: 100%; height: 100%; border-spacing: 0; table-layout: fixed; }
             .layout-2 th, .layout-2 td { border: 1px solid #000 !important; color: black !important; padding: 2px !important; font-size: 10px !important; border-radius: 0;}
             
             .layout-4 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 6mm; height: 100vh;}
             .layout-4 h2.school-title { font-size: 12px; margin-bottom: 1px; text-align: center; color: black;}
             .layout-4 h3.main-title { font-size: 10px; margin-bottom: 3px; text-align: center; color: black;}
-            .layout-4 table { border: 1px solid #000; border-collapse: collapse; min-width: 100%; border-spacing: 0; table-layout: fixed;}
+            .layout-4 table { flex: 1; border: 1px solid #000; border-collapse: collapse; width: 100%; height: 100%; border-spacing: 0; table-layout: fixed;}
             .layout-4 th, .layout-4 td { border: 1px solid #000 !important; color: black !important; padding: 1px !important; font-size: 8px !important; border-radius: 0;}
+
+            tbody tr { height: 1%; }
+            tr.special-row { height: auto !important; }
 
             /* 2D Flat Card Overrides */
             .card { 
@@ -139,8 +148,12 @@
                 border: 1px solid #444 !important; 
                 color: #000 !important; 
                 background-image: none !important; 
+                height: 100% !important;
                 min-height: 0 !important;
-                display: block !important; 
+                display: flex !important; 
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
                 overflow: visible !important; 
                 white-space: normal !important; 
                 word-wrap: break-word !important; 
@@ -149,13 +162,13 @@
                 print-color-adjust: exact !important;
             }
             .card::before { display: none !important; } 
-            .card-subj { white-space: normal !important; overflow: visible !important; display: inline !important; font-weight: bold !important;}
-            .card span { color: #000 !important; border-top: 1px solid #999; margin-top: 1px; padding-top: 1px; white-space: normal !important; overflow: visible !important;}
+            .card-subj { white-space: normal !important; overflow: visible !important; display: block !important; font-weight: bold !important; text-align: center;}
+            .card span { color: #000 !important; border-top: 1px solid #999; margin-top: 1px; padding-top: 1px; white-space: normal !important; overflow: visible !important; text-align: center;}
             
             .layout-2 .card { font-size: 9px !important; line-height: 1.1 !important; }
             .layout-2 .card span { font-size: 8px !important; }
             .layout-4 .card { font-size: 7.5px !important; line-height: 1.0 !important; padding: 1px !important;}
-            .layout-4 .card span { font-size: 6.5px !important; border-top: none; }
+            .layout-4 .card span { font-size: 6px !important; border-top: none; }
 
             /* 2D Headers and Intervals */
             th { background: #e5e7eb !important; color: black !important; text-shadow: none !important; -webkit-print-color-adjust: exact; border: 1px solid #000 !important;}
@@ -425,7 +438,6 @@
     </div>
 
     <script>
-        // Data variables
         let classes = [];
         let masterTeachers = [];
         let absentTeachers = []; 
@@ -454,7 +466,6 @@
         let generatedTimetable = {};
         let tempBasketArr = [];
 
-        // --- Local Storage Management ---
         function saveData() {
             const data = {
                 classes, masterTeachers, absentTeachers, classTeacherMap, masterSubjects,
@@ -535,9 +546,7 @@
             reader.readAsText(file);
         }
 
-        window.onload = () => {
-            loadData();
-        };
+        window.onload = () => { loadData(); };
 
         function updateSchoolName() {
             let name = document.getElementById('schoolNameInput').value;
@@ -545,19 +554,11 @@
             saveData();
         }
         
-        function updateInterval() {
-            renderTable();
-            saveData();
-        }
+        function updateInterval() { renderTable(); saveData(); }
 
-        // --- Modals Management ---
         function openPrintModal() { document.getElementById('printModal').style.display = 'flex'; }
         function openDataModal() { document.getElementById('dataModal').style.display = 'flex'; renderDataModal(); }
-        
-        function openAttendanceModal() {
-            document.getElementById('attendanceModal').style.display = 'flex';
-            renderAttendanceList();
-        }
+        function openAttendanceModal() { document.getElementById('attendanceModal').style.display = 'flex'; renderAttendanceList(); }
 
         function openReliefModal() { 
             if(classes.length === 0) return alert("කරුණාකර පළමුව කාලසටහන සකස් කරන්න!");
@@ -570,17 +571,13 @@
 
         function openSummaryModal() {
             document.getElementById('summaryModal').style.display = 'flex';
-            
-            let teacherSum = {};
-            let classSum = {};
-            
+            let teacherSum = {}; let classSum = {};
             masterTeachers.forEach(t => teacherSum[t] = 0);
             classes.forEach(c => classSum[c] = 0);
             
             teachingRules.forEach(r => {
                 let p = parseInt(r.periods) || 0;
                 if(classSum[r.grade] !== undefined) classSum[r.grade] += p;
-                
                 let tList = r.teacher.split(',');
                 tList.forEach(t => {
                     let tName = t.trim();
@@ -589,15 +586,11 @@
             });
 
             let tHtml = "";
-            for(let t in teacherSum) {
-                tHtml += `<div class="rule-item"><span>${t}</span> <b>${teacherSum[t]} කාලච්ඡේද</b></div>`;
-            }
+            for(let t in teacherSum) { tHtml += `<div class="rule-item"><span>${t}</span> <b>${teacherSum[t]} කාලච්ඡේද</b></div>`; }
             document.getElementById('teacherSummary').innerHTML = tHtml || "<span style='font-size:11px;color:gray;'>දත්ත නොමැත</span>";
 
             let cHtml = "";
-            for(let c in classSum) {
-                cHtml += `<div class="rule-item"><span>${c} ශ්‍රේණිය</span> <b>${classSum[c]} කාලච්ඡේද</b></div>`;
-            }
+            for(let c in classSum) { cHtml += `<div class="rule-item"><span>${c} ශ්‍රේණිය</span> <b>${classSum[c]} කාලච්ඡේද</b></div>`; }
             document.getElementById('classSummary').innerHTML = cHtml || "<span style='font-size:11px;color:gray;'>දත්ත නොමැත</span>";
         }
         
@@ -609,7 +602,6 @@
             document.getElementById('summaryModal').style.display = 'none';
         }
 
-        // --- Teacher Attendance ---
         function renderAttendanceList() {
             let html = '';
             if(masterTeachers.length === 0) {
@@ -632,17 +624,11 @@
         }
 
         function toggleAttendance(t) {
-            if(absentTeachers.includes(t)) {
-                absentTeachers = absentTeachers.filter(x => x !== t);
-            } else {
-                absentTeachers.push(t);
-            }
-            renderAttendanceList();
-            saveData();
-            renderTable(); 
+            if(absentTeachers.includes(t)) { absentTeachers = absentTeachers.filter(x => x !== t); } 
+            else { absentTeachers.push(t); }
+            renderAttendanceList(); saveData(); renderTable(); 
         }
 
-        // --- Relief Management with WhatsApp ---
         function sendWhatsApp(tName, dStr, pNum, cName) {
             let msg = encodeURIComponent(`සුබ දවසක් ${tName} ගුරුතුමනි/තුමියනි. අද දින (${dStr}) ${pNum} වැනි කාලච්ඡේදය ${cName} ශ්‍රේණිය සඳහා ඔබට සහන (Relief) කාලච්ඡේදයක් යොදා ඇත. කරුණාකර අදාළ පන්තියට වාර්තා කරන්න.`);
             window.open(`https://wa.me/?text=${msg}`, '_blank');
@@ -700,17 +686,11 @@
                 teacherDiv.style.display = "none";
             } else {
                 let isTeacherAbsent = false;
-                cell.teacher.split(',').forEach(t => {
-                    if(absentTeachers.includes(t.trim())) isTeacherAbsent = true;
-                });
+                cell.teacher.split(',').forEach(t => { if(absentTeachers.includes(t.trim())) isTeacherAbsent = true; });
 
                 let txt = `පවතින විෂයය: <b>${cell.subject}</b> (${cell.teacher})`;
-                if(isTeacherAbsent) {
-                    txt += `<br><span style="color:#dc2626; font-size:13px;">⚠️ ගුරුවරයා අද දින නොපැමිණි බැවින් සහනයක් අනිවාර්ය වේ!</span>`;
-                }
-                if(activeRelief) {
-                    txt += `<br><span style="color:#7c3aed">දැනටමත් සහනයක් ලබාදී ඇත (සහන: ${activeRelief.reliefTeacher})</span>`;
-                }
+                if(isTeacherAbsent) { txt += `<br><span style="color:#dc2626; font-size:13px;">⚠️ ගුරුවරයා අද දින නොපැමිණි බැවින් සහනයක් අනිවාර්ය වේ!</span>`; }
+                if(activeRelief) { txt += `<br><span style="color:#7c3aed">දැනටමත් සහනයක් ලබාදී ඇත (සහන: ${activeRelief.reliefTeacher})</span>`; }
                 
                 statusDiv.innerHTML = txt;
                 statusDiv.style.color = isTeacherAbsent ? "#991b1b" : "#b91c1c"; 
@@ -720,14 +700,12 @@
                 let tHtml = "";
                 masterTeachers.forEach(t => {
                     if(absentTeachers.includes(t)) return;
-
                     let isBusy = false;
                     classes.forEach(cls => {
                         let chkCell = generatedTimetable[d][p][cls];
                         if(chkCell && chkCell.teacher.includes(t)) isBusy = true;
                     });
                     let isReliefBusy = reliefAssignments.find(r => r.day === d && r.period === p && r.reliefTeacher === t);
-                    
                     if(!isBusy && !isReliefBusy) tHtml += `<option value="${t}">${t} (නිදහස්)</option>`;
                 });
                 teacherSelect.innerHTML = tHtml || "<option value=''>සියලුම ගුරුවරු කාර්යබහුලයි</option>";
@@ -745,20 +723,12 @@
             reliefAssignments = reliefAssignments.filter(r => !(r.day === d && r.period === p && r.grade === c));
             reliefAssignments.push({ day: d, period: p, grade: c, reliefTeacher: t });
             
-            updateReliefUI();
-            updateAbsenteeReliefList();
-            renderReliefList();
-            renderTable();
-            saveData();
+            updateReliefUI(); updateAbsenteeReliefList(); renderReliefList(); renderTable(); saveData();
         }
 
         function deleteRelief(d, p, c) {
             reliefAssignments = reliefAssignments.filter(r => !(r.day === d && r.period === p && r.grade === c));
-            updateReliefUI();
-            updateAbsenteeReliefList();
-            renderReliefList();
-            renderTable();
-            saveData();
+            updateReliefUI(); updateAbsenteeReliefList(); renderReliefList(); renderTable(); saveData();
         }
 
         function renderReliefList() {
@@ -776,7 +746,6 @@
             document.getElementById('activeReliefsList').innerHTML = html || "<span style='font-size:11px;color:gray;'>දැනට සහන ලබා දී නොමැත.</span>";
         }
 
-        // --- Data Management Modal ---
         function renderDataModal() {
             let cHtml = '';
             classes.forEach(c => cHtml += `<div class="rule-item"><span>${c} ශ්‍රේණිය</span><div><button class="btn-small" style="background:#f59e0b;" onclick="editItem('class', '${c}')">✏️</button> <button class="btn-delete" onclick="deleteItem('class', '${c}')">❌</button></div></div>`);
@@ -827,16 +796,11 @@
             saveData(); initDropdowns(); initEmptyTimetable(); renderTable(); renderDataModal(); renderRules();
         }
 
-        function toggleCTGrade() {
-            document.getElementById('inTeacherClass').style.display = document.getElementById('isClassTeacher').checked ? 'block' : 'none';
-        }
+        function toggleCTGrade() { document.getElementById('inTeacherClass').style.display = document.getElementById('isClassTeacher').checked ? 'block' : 'none'; }
 
         function addMasterClassMain() {
             let c = document.getElementById('inClass').value.trim();
-            if(c && !classes.includes(c)) { 
-                classes.push(c); 
-                saveData(); initDropdowns(); initEmptyTimetable(); renderTable();
-            }
+            if(c && !classes.includes(c)) { classes.push(c); saveData(); initDropdowns(); initEmptyTimetable(); renderTable(); }
             document.getElementById('inClass').value = "";
         }
 
@@ -873,14 +837,11 @@
             document.getElementById('classSelector').innerHTML = cHtml; 
             document.getElementById('inTeacherClass').innerHTML = '<option value="">-- පන්තිය --</option>' + cHtml;
             document.getElementById('daySelector').innerHTML = dHtml;
-            
             document.getElementById('relClass').innerHTML = cHtml;
             document.getElementById('relDay').innerHTML = dHtml;
             document.getElementById('relFilterDay').innerHTML = dHtml;
 
-            if(classes.length > 0 && !classes.includes(currentSelectedClass)) {
-                currentSelectedClass = classes[0];
-            }
+            if(classes.length > 0 && !classes.includes(currentSelectedClass)) { currentSelectedClass = classes[0]; }
         }
 
         function toggleRuleType() {
@@ -1100,13 +1061,13 @@
                 let colSpan = classes.length + 1;
                 
                 days.forEach(d => {
-                    b += `<tr><td colspan="${colSpan}" class="day-header">${dayNames[d]}</td></tr>`;
+                    b += `<tr class="special-row"><td colspan="${colSpan}" class="day-header">${dayNames[d]}</td></tr>`;
                     for (let p = 1; p <= 8; p++) {
                         b += `<tr><td>කා: ${p}</td>`;
                         classes.forEach(c => { b += getCellHTML(generatedTimetable[d][p][c], d, p, c); });
                         b += `</tr>`;
-                        if(p === 1) b += `<tr><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම</td></tr>`;
-                        if(p === intervalPos) b += `<tr><td colspan="${colSpan}" class="interval">විවේක කාලය (Interval)</td></tr>`;
+                        if(p === 1) b += `<tr class="special-row"><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම</td></tr>`;
+                        if(p === intervalPos) b += `<tr class="special-row"><td colspan="${colSpan}" class="interval">විවේක කාලය (Interval)</td></tr>`;
                     }
                 });
 
@@ -1119,8 +1080,8 @@
                     b += `<tr><td>කා: ${p}</td>`;
                     classes.forEach(c => { b += getCellHTML(generatedTimetable[currentDay][p][c], currentDay, p, c); });
                     b += `</tr>`;
-                    if(p === 1) b += `<tr><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම</td></tr>`;
-                    if(p === intervalPos) b += `<tr><td colspan="${colSpan}" class="interval">විවේක කාලය (Interval)</td></tr>`;
+                    if(p === 1) b += `<tr class="special-row"><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම</td></tr>`;
+                    if(p === intervalPos) b += `<tr class="special-row"><td colspan="${colSpan}" class="interval">විවේක කාලය (Interval)</td></tr>`;
                 }
 
             } else {
@@ -1132,8 +1093,8 @@
                     b += `<tr><td>කා: ${p}</td>`;
                     days.forEach(d => { b += getCellHTML(generatedTimetable[d][p][currentSelectedClass], d, p, currentSelectedClass); });
                     b += `</tr>`;
-                    if(p === 1) b += `<tr><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම</td></tr>`;
-                    if(p === intervalPos) b += `<tr><td colspan="${colSpan}" class="interval">විවේක කාලය (Interval)</td></tr>`;
+                    if(p === 1) b += `<tr class="special-row"><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම</td></tr>`;
+                    if(p === intervalPos) b += `<tr class="special-row"><td colspan="${colSpan}" class="interval">විවේක කාලය (Interval)</td></tr>`;
                 }
             }
 
@@ -1170,8 +1131,8 @@
                             tbl += `<tr><td>කා: ${p}</td>`;
                             days.forEach(d => tbl += getCellHTML(generatedTimetable[d][p][c], d, p, c));
                             tbl += `</tr>`;
-                            if(p === 1) tbl += `<tr><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම</td></tr>`;
-                            if(p === intervalPos) tbl += `<tr><td colspan="${colSpan}" class="interval">විවේක කාලය</td></tr>`;
+                            if(p === 1) tbl += `<tr class="special-row"><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම</td></tr>`;
+                            if(p === intervalPos) tbl += `<tr class="special-row"><td colspan="${colSpan}" class="interval">විවේක කාලය</td></tr>`;
                         }
                         tbl += `</tbody></table><div class="print-footer">&copy; 2026 Kelum Konara | Smart<span>Soft</span> | Time Table version 1.0</div></div>`;
                         generatedItems.push(tbl);
@@ -1214,8 +1175,8 @@
                                 }
                             });
                             tbl += `</tr>`;
-                            if(p === 1) tbl += `<tr><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම</td></tr>`;
-                            if(p === intervalPos) tbl += `<tr><td colspan="${colSpan}" class="interval">විවේක කාලය</td></tr>`;
+                            if(p === 1) tbl += `<tr class="special-row"><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම</td></tr>`;
+                            if(p === intervalPos) tbl += `<tr class="special-row"><td colspan="${colSpan}" class="interval">විවේක කාලය</td></tr>`;
                         }
                         tbl += `</tbody></table><div class="print-footer">&copy; 2026 Kelum Konara | Smart<span>Soft</span> | Time Table version 1.0</div></div>`;
                         generatedItems.push(tbl);
