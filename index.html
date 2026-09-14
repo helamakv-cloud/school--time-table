@@ -31,9 +31,11 @@
         .basket-box { background: #ebf8ff; padding: 10px; border: 1px dashed #90cdf4; border-radius: 5px; margin-bottom: 10px; }
         .rules-list { max-height: 200px; overflow-y: auto; background: #f7fafc; border: 1px solid #e2e8f0; padding: 5px; border-radius: 4px; margin-bottom: 15px;}
         .rule-item { background: white; padding: 8px; border: 1px solid #edf2f7; margin-bottom: 5px; border-radius: 4px; font-size: 11px; display: flex; justify-content: space-between; align-items: center;}
+        .rule-item button { background: #e53e3e; color: white; border: none; padding: 2px 5px; border-radius: 3px; cursor: pointer; font-size: 10px; }
         
         .view-controls { background: #e2e8f0; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;}
         .radio-group { display: flex; gap: 15px; font-weight: bold; font-size: 13px; background: white; padding: 8px 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); flex-wrap: wrap; justify-content: center;}
+        .radio-group label { cursor: pointer; display: flex; align-items: center; gap: 5px;}
         
         .table-container { width: 100%; overflow-x: auto; flex-grow: 1; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; background: white; min-width: 700px; margin-bottom: 20px;}
@@ -49,29 +51,59 @@
 
         .footer { text-align: center; font-size: 11px; color: #a0aec0; padding-top: 15px; margin-top: 15px; }
 
-        /* Modals (Popups) */
+        /* Modals */
         .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items:center; justify-content:center; padding: 10px; box-sizing: border-box;}
         .modal { background: white; padding: 20px; border-radius: 8px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .close-btn { position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 20px; font-weight: bold; color: #e53e3e; background: none; border: none; }
         
-        /* Print Area (Hidden normally, shown in print) */
+        /* Print Layouts */
         #printArea { display: none; }
 
         @media print {
-            @page { margin: 10mm; size: landscape; } 
+            @page { margin: 8mm; size: landscape; } 
             body { background-color: white; padding: 0; font-size: 12px; margin: 0; }
             .layout, .modal-overlay { display: none !important; }
             #printArea { display: block !important; width: 100%; }
-            .print-page { page-break-after: always; padding: 10mm; }
-            h2.school-title { font-size: 24px; color: black; margin-bottom: 5px; text-align: center; }
-            h3.main-title { font-size: 16px; color: black; margin-bottom: 20px; font-weight: bold; text-align: center; }
-            table { border: 2px solid #000; margin-bottom: 20px; width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid #000 !important; color: black !important; padding: 5px !important; }
+            
+            .print-page { page-break-after: always; width: 100%; box-sizing: border-box; }
+            .timetable-box { break-inside: avoid; margin-bottom: 10mm; display: flex; flex-direction: column; }
+            
+            /* Print 1x1 */
+            .layout-1 .timetable-box { width: 100%; height: 100%; }
+            .layout-1 h2.school-title { font-size: 24px; color: black; margin-bottom: 5px; text-align: center; }
+            .layout-1 h3.main-title { font-size: 16px; color: black; margin-bottom: 15px; text-align: center; }
+            .layout-1 table { border: 2px solid #000; border-collapse: collapse; min-width: 100%; }
+            .layout-1 th, .layout-1 td { border: 1px solid #000 !important; color: black !important; padding: 5px !important; }
+            
+            /* Print 2x1 (Grid 2) */
+            .layout-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10mm; align-items: start; height: 100vh;}
+            .layout-2 .timetable-box { width: 100%; }
+            .layout-2 h2.school-title { font-size: 16px; margin-bottom: 2px; text-align: center; color: black;}
+            .layout-2 h3.main-title { font-size: 13px; margin-bottom: 8px; text-align: center; color: black;}
+            .layout-2 table { border: 2px solid #000; border-collapse: collapse; min-width: 100%; }
+            .layout-2 th, .layout-2 td { border: 1px solid #000 !important; color: black !important; padding: 2px !important; font-size: 10px !important;}
+            .layout-2 .card { padding: 2px; font-size: 9px; line-height: 1.1; margin: 1px auto;}
+            .layout-2 .card span { font-size: 8px; }
+            .layout-2 .interval { font-size: 10px !important; padding: 2px !important; }
+            
+            /* Print 2x2 (Grid 4) */
+            .layout-4 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8mm; height: 100vh;}
+            .layout-4 .timetable-box { width: 100%; height: 100%;}
+            .layout-4 h2.school-title { font-size: 13px; margin-bottom: 2px; text-align: center; color: black;}
+            .layout-4 h3.main-title { font-size: 11px; margin-bottom: 5px; text-align: center; color: black;}
+            .layout-4 table { border: 1px solid #000; border-collapse: collapse; min-width: 100%; }
+            .layout-4 th, .layout-4 td { border: 1px solid #000 !important; color: black !important; padding: 1px !important; font-size: 8px !important;}
+            .layout-4 th { padding: 2px !important; }
+            .layout-4 .card { padding: 1px; font-size: 7px; line-height: 1; margin: 1px auto;}
+            .layout-4 .card span { font-size: 6px; }
+            .layout-4 .interval { font-size: 8px !important; padding: 1px !important; }
+
+            /* General Print Table overrides */
             th { background-color: #f0f0f0 !important; color: black !important; -webkit-print-color-adjust: exact; }
-            .card { border: none; box-shadow: none; padding: 2px; background: transparent !important; }
+            .card { border: none; box-shadow: none; background: transparent !important; }
             .interval { background-color: #e0e0e0 !important; color: black !important; border: 1px solid #000 !important; -webkit-print-color-adjust: exact; }
             .day-header { background-color: #ccc !important; color: black !important; -webkit-print-color-adjust: exact; }
-            .print-footer { text-align: center; font-size: 10px; color: black; margin-top: 10px; border-top: 1px solid #000; padding-top: 5px; }
+            .print-footer { text-align: center; font-size: 9px; color: black; margin-top: 5px; border-top: 1px solid #000; padding-top: 3px; }
         }
     </style>
 </head>
@@ -79,24 +111,24 @@
 
     <!-- මුද්‍රණ මෙනුව (Print Modal) -->
     <div id="printModal" class="modal-overlay">
-        <div class="modal" style="max-width: 400px; text-align: center;">
+        <div class="modal" style="max-width: 500px; text-align: center;">
             <button class="close-btn" onclick="closeModals()">✖</button>
             <h3 style="margin-top:0; color:#2c3e50;">🖨️ මුද්‍රණ මෙනුව</h3>
-            <p style="font-size: 12px; color: gray; margin-bottom: 20px;">ඔබට මුද්‍රණය කිරීමට අවශ්‍ය කාලසටහන් වර්ගය තෝරන්න.</p>
+            
+            <div style="background: #f7fafc; padding: 15px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #e2e8f0; text-align: left;">
+                <label style="font-weight: bold; font-size: 13px; color: #2d3748;">A4 පිටුවකට මුද්‍රණය වන ප්‍රමාණය (Layout):</label>
+                <div class="radio-group" style="margin-top: 10px; background: transparent; box-shadow: none; padding: 0; justify-content: flex-start;">
+                    <label><input type="radio" name="printLayout" value="1" checked> 1ක් පෙන්වන්න</label>
+                    <label><input type="radio" name="printLayout" value="2"> 2ක් පෙන්වන්න</label>
+                    <label><input type="radio" name="printLayout" value="4"> 4ක් පෙන්වන්න</label>
+                </div>
+            </div>
+
+            <p style="font-size: 12px; color: gray; margin-bottom: 15px;">මුද්‍රණය කිරීමට අවශ්‍ය කාලසටහන් වර්ගය තෝරන්න.</p>
             
             <button class="btn-auto" style="background: #3182ce;" onclick="triggerPrint('all_master')">🏫 සම්පූර්ණ ප්‍රධාන කාලසටහන (All-in-One)</button>
             <button class="btn-auto" style="background: #38a169;" onclick="triggerPrint('classes')">📚 සියලුම පන්ති කාලසටහන් (වෙන වෙනම)</button>
             <button class="btn-auto" style="background: #d69e2e;" onclick="triggerPrint('teachers')">🧑‍🏫 සියලුම ගුරුවරුන්ගේ කාලසටහන් (වෙන වෙනම)</button>
-        </div>
-    </div>
-
-    <!-- දත්ත සංස්කරණ කවුළුව -->
-    <div id="dataModal" class="modal-overlay">
-        <div class="modal">
-            <button class="close-btn" onclick="closeModals()">✖</button>
-            <h3 style="margin-top:0; color:#2b6cb0;">⚙️ පද්ධති දත්ත සංස්කරණය</h3>
-            <!-- (මෙහි කලින් තිබූ Data edit කේතය අඩංගු කළ හැක, දැනට සරල බව සඳහා ප්‍රධාන UI එකේ දත්ත ඇතුළත් කිරීම තබා ඇත) -->
-            <p>දත්ත මකා දැමීම සහ සංස්කරණය ඉදිරියේදී මෙහි දිස්වනු ඇත.</p>
         </div>
     </div>
 
@@ -154,9 +186,9 @@
 
             <div class="view-controls">
                 <div class="radio-group">
-                    <label><input type="radio" name="viewMode" value="all_master" checked onchange="changeViewMode()"> 🌐 සම්පූර්ණ ප්‍රධාන කාලසටහන (දින 5ම)</label>
-                    <label><input type="radio" name="viewMode" value="day_master" onchange="changeViewMode()"> 🏫 එක් දවසක් පමණක්</label>
-                    <label><input type="radio" name="viewMode" value="class_wise" onchange="changeViewMode()"> 📚 එක් පන්තියක් පමණක්</label>
+                    <label><input type="radio" name="viewMode" value="all_master" checked onchange="changeViewMode()"> 🌐 සම්පූර්ණ ප්‍රධාන කාලසටහන</label>
+                    <label><input type="radio" name="viewMode" value="day_master" onchange="changeViewMode()"> 🏫 එක් දවසක්</label>
+                    <label><input type="radio" name="viewMode" value="class_wise" onchange="changeViewMode()"> 📚 එක් පන්තියක්</label>
                 </div>
 
                 <div id="filterControls" style="display: flex; justify-content: center; gap: 10px;">
@@ -177,7 +209,6 @@
     </div>
 
     <script>
-        // දත්ත ගබඩාව
         let classes = ['6', '7', '8', '9', '10', '11'];
         const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
         const dayNames = { 'Monday':'සඳුදා', 'Tuesday':'අඟහරුවාදා', 'Wednesday':'බදාදා', 'Thursday':'බ්‍රහස්පතින්දා', 'Friday':'සිකුරාදා' };
@@ -187,10 +218,9 @@
         let currentSelectedClass = '6';
         
         let masterTeachers = ['නිමල් සර්', 'සුනිල් සර්', 'කමලා මිස්', 'අමල් සර්'];
-        let classTeacherMap = { '6': 'නිමල් සර්', '7': 'කමලා මිස්' }; // පන්තිභාර ගුරුවරු
+        let classTeacherMap = { '6': 'නිමල් සර්', '7': 'කමලා මිස්' }; 
         let masterSubjects = ['ගණිතය', 'විද්‍යාව', 'සිංහල', 'ඉංග්‍රීසි', 'චිත්‍ර'];
         
-        // විෂයයන් සඳහා වර්ණ ලබාදීම (Subject Colors)
         const colors = ['#fef08a', '#bbf7d0', '#bfdbfe', '#fbcfe8', '#e9d5ff', '#fed7aa', '#99f6e4'];
         let subjectColorMap = {};
         function getSubjectColor(sub) {
@@ -222,10 +252,7 @@
         }
 
         function openPrintModal() { document.getElementById('printModal').style.display = 'flex'; }
-        function closeModals() { 
-            document.getElementById('printModal').style.display = 'none'; 
-            document.getElementById('dataModal').style.display = 'none';
-        }
+        function closeModals() { document.getElementById('printModal').style.display = 'none'; }
 
         function toggleCTGrade() {
             document.getElementById('inTeacherClass').style.display = document.getElementById('isClassTeacher').checked ? 'block' : 'none';
@@ -314,7 +341,6 @@
             let unassigned = [];
             let shuffledRules = [...teachingRules].sort(() => Math.random() - 0.5);
 
-            // පන්තිභාර ගුරුවරුන්ගේ නීති (Rules) මුලින්ම පරීක්ෂා කිරීමට Sort කිරීම (මුල් පීරියඩ් ලබාදීම සඳහා)
             shuffledRules.sort((a, b) => {
                 let aIsCT = (classTeacherMap[a.grade] && a.teacher.includes(classTeacherMap[a.grade])) ? 1 : 0;
                 let bIsCT = (classTeacherMap[b.grade] && b.teacher.includes(classTeacherMap[b.grade])) ? 1 : 0;
@@ -407,65 +433,75 @@
             document.getElementById('mainTitle').innerText = title;
         }
 
-        // --- Print Engine ---
+        // --- Print Engine with Layout Selection ---
         function triggerPrint(type) {
+            let layoutSetting = parseInt(document.querySelector('input[name="printLayout"]:checked').value);
             closeModals();
+            
             let pArea = document.getElementById('printArea');
             let schoolName = document.getElementById('schoolNameInput').value || "ඔබේ පාසලේ නම";
             let printHtml = "";
+            let generatedItems = [];
 
             if (type === 'all_master') {
-                printHtml += `<div class="print-page"><h2 class="school-title">${schoolName}</h2><h3 class="main-title">සම්පූර්ණ ප්‍රධාන කාලසටහන</h3>`;
+                // Master timetable is too big, always prints 1 per page
+                printHtml += `<div class="print-page layout-1"><div class="timetable-box"><h2 class="school-title">${schoolName}</h2><h3 class="main-title">සම්පූර්ණ ප්‍රධාන කාලසටහන</h3>`;
                 printHtml += document.getElementById('mainTable').outerHTML;
-                printHtml += `<div class="print-footer">Generated by SmartSoft Timetable System</div></div>`;
+                printHtml += `<div class="print-footer">Generated by SmartSoft Timetable System</div></div></div>`;
             } 
-            else if (type === 'classes') {
-                classes.forEach(c => {
-                    printHtml += `<div class="print-page"><h2 class="school-title">${schoolName}</h2><h3 class="main-title">${c} ශ්‍රේණියේ කාලසටහන</h3>`;
-                    let tbl = `<table><thead><tr><th>පීරියඩ්</th>` + days.map(d=>`<th>${dayNames[d]}</th>`).join('') + `</tr></thead><tbody>`;
-                    for(let p=1; p<=8; p++) {
-                        tbl += `<tr><td>P ${p}</td>`;
-                        days.forEach(d => tbl += getCellHTML(generatedTimetable[d][p][c]));
-                        tbl += `</tr>`;
-                        if(p===4) tbl += `<tr><td colspan="${days.length+1}" class="interval">විවේක කාලය</td></tr>`;
-                    }
-                    tbl += `</tbody></table><div class="print-footer">Generated by SmartSoft</div></div>`;
-                    printHtml += tbl;
-                });
-            }
-            else if (type === 'teachers') {
-                masterTeachers.forEach(t => {
-                    printHtml += `<div class="print-page"><h2 class="school-title">${schoolName}</h2><h3 class="main-title">${t} - ගුරු කාලසටහන</h3>`;
-                    let tbl = `<table><thead><tr><th>පීරියඩ්</th>` + days.map(d=>`<th>${dayNames[d]}</th>`).join('') + `</tr></thead><tbody>`;
-                    for(let p=1; p<=8; p++) {
-                        tbl += `<tr><td>P ${p}</td>`;
-                        days.forEach(d => {
-                            let assignedClass = "-";
-                            let assignedSubject = "";
-                            classes.forEach(c => {
-                                let cell = generatedTimetable[d][p][c];
-                                if(cell && cell.teacher.includes(t)) { assignedClass = c + " ශ්‍රේ."; assignedSubject = cell.subject; }
+            else {
+                if (type === 'classes') {
+                    classes.forEach(c => {
+                        let tbl = `<div class="timetable-box"><h2 class="school-title">${schoolName}</h2><h3 class="main-title">${c} ශ්‍රේණියේ කාලසටහන</h3>`;
+                        tbl += `<table><thead><tr><th>පීරියඩ්</th>` + days.map(d=>`<th>${dayNames[d]}</th>`).join('') + `</tr></thead><tbody>`;
+                        for(let p=1; p<=8; p++) {
+                            tbl += `<tr><td>P ${p}</td>`;
+                            days.forEach(d => tbl += getCellHTML(generatedTimetable[d][p][c]));
+                            tbl += `</tr>`;
+                            if(p===4) tbl += `<tr><td colspan="${days.length+1}" class="interval">විවේක කාලය</td></tr>`;
+                        }
+                        tbl += `</tbody></table><div class="print-footer">Generated by SmartSoft</div></div>`;
+                        generatedItems.push(tbl);
+                    });
+                }
+                else if (type === 'teachers') {
+                    masterTeachers.forEach(t => {
+                        let tbl = `<div class="timetable-box"><h2 class="school-title">${schoolName}</h2><h3 class="main-title">${t} - ගුරු කාලසටහන</h3>`;
+                        tbl += `<table><thead><tr><th>පීරියඩ්</th>` + days.map(d=>`<th>${dayNames[d]}</th>`).join('') + `</tr></thead><tbody>`;
+                        for(let p=1; p<=8; p++) {
+                            tbl += `<tr><td>P ${p}</td>`;
+                            days.forEach(d => {
+                                let assignedClass = "-"; let assignedSubject = "";
+                                classes.forEach(c => {
+                                    let cell = generatedTimetable[d][p][c];
+                                    if(cell && cell.teacher.includes(t)) { assignedClass = c + " ශ්‍රේ."; assignedSubject = cell.subject; }
+                                });
+                                if(assignedClass !== "-") {
+                                    tbl += `<td><div class="card" style="background:#bbf7d0">${assignedSubject}<br><span>(${assignedClass})</span></div></td>`;
+                                } else {
+                                    tbl += `<td><span class="empty-slot">- හිස් -</span></td>`;
+                                }
                             });
-                            if(assignedClass !== "-") {
-                                tbl += `<td><div class="card" style="background:#bbf7d0">${assignedSubject}<br><span>(${assignedClass})</span></div></td>`;
-                            } else {
-                                tbl += `<td><span class="empty-slot">- හිස් -</span></td>`;
-                            }
-                        });
-                        tbl += `</tr>`;
-                        if(p===4) tbl += `<tr><td colspan="${days.length+1}" class="interval">විවේක කාලය</td></tr>`;
+                            tbl += `</tr>`;
+                            if(p===4) tbl += `<tr><td colspan="${days.length+1}" class="interval">විවේක කාලය</td></tr>`;
+                        }
+                        tbl += `</tbody></table><div class="print-footer">Generated by SmartSoft</div></div>`;
+                        generatedItems.push(tbl);
+                    });
+                }
+
+                // Chunk the items based on the layout setting (1, 2, or 4 per page)
+                for (let i = 0; i < generatedItems.length; i += layoutSetting) {
+                    printHtml += `<div class="print-page layout-${layoutSetting}">`;
+                    for (let j = 0; j < layoutSetting; j++) {
+                        if (generatedItems[i + j]) printHtml += generatedItems[i + j];
                     }
-                    tbl += `</tbody></table><div class="print-footer">Generated by SmartSoft</div></div>`;
-                    printHtml += tbl;
-                });
+                    printHtml += `</div>`;
+                }
             }
 
             pArea.innerHTML = printHtml;
             window.print();
-        }
-
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(err => console.log(err));
         }
     </script>
 </body>
