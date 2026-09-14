@@ -60,18 +60,23 @@
         .radio-group { display: flex; gap: 15px; font-weight: bold; font-size: 12px; justify-content: center; flex-wrap: wrap;}
         .radio-group label { cursor: pointer; display: flex; align-items: center; gap: 4px; color: #374151;}
         
-        /* Table View - Perfect Balancing */
+        /* Table View */
         .table-container { width: 100%; overflow-x: auto; flex-grow: 1; border: 2px solid #9ca3af; background: #e5e7eb; padding: 2px;}
         table { width: 100%; border-collapse: separate; border-spacing: 2px; table-layout: fixed; min-width: 700px; height: 100%; }
-        th, td { text-align: center; vertical-align: middle; padding: 2px; border-radius: 2px; width: auto; overflow: hidden; height: 100%; }
+        th, td { text-align: center; vertical-align: middle; padding: 2px; border-radius: 2px; overflow: hidden; height: 100%; }
+        
+        /* Fixed First Column */
+        th:first-child, td:first-child { width: 75px !important; max-width: 75px !important; min-width: 75px !important; }
+        
         th { background: linear-gradient(to bottom, #e5e7eb, #d1d5db); color: #1f2937; padding: 8px; font-size: 12px; border: 1px solid #9ca3af;}
-        td:first-child { background: linear-gradient(to bottom, #d1d5db, #9ca3af); font-weight: bold; width: 60px; font-size: 11px; position: sticky; left: 0; z-index: 1; border: 1px solid #6b7280;}
+        td:first-child { background: linear-gradient(to bottom, #d1d5db, #9ca3af); font-weight: bold; font-size: 11px; position: sticky; left: 0; z-index: 1; border: 1px solid #6b7280;}
         td.cell-empty { background-color: #ffffff; border: 1px solid #d1d5db; }
         
+        .attendance-row { background: linear-gradient(to right, #bfdbfe, #93c5fd) !important; color: #1e3a8a !important; font-weight: bold; padding: 4px !important; font-size: 11px; letter-spacing: 1px; border: 1px solid #60a5fa !important; text-transform: uppercase; height: auto !important;}
         .interval { background: linear-gradient(to right, #6b7280, #4b5563) !important; color: white !important; font-weight: bold; padding: 4px !important; font-size: 12px; letter-spacing: 4px; border: 1px solid #374151 !important; text-transform: uppercase; height: auto !important;}
         .day-header { background: linear-gradient(to right, #4b5563, #374151) !important; color: white !important; font-weight: bold; padding: 6px; font-size: 13px; text-align: center; border: 1px solid #1f2937 !important; height: auto !important;}
         
-        /* Timetable Cards - Auto Balance & Overflow fix */
+        /* Timetable Cards */
         .card { padding: 4px; border-radius: 4px; font-size: 11px; font-weight: 700; width: 100%; height: 100%; min-height: 48px; display: flex; flex-direction: column; justify-content: center; margin: 0 auto; line-height: 1.1; border: 1px solid rgba(0,0,0,0.3); box-shadow: 1px 1px 3px rgba(0,0,0,0.2); color: #111827; box-sizing: border-box; position: relative; overflow: hidden;}
         .card::before { content: ''; position: absolute; top:0; left:0; width:100%; height: 30%; background: linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,0)); pointer-events: none;}
         .card-subj { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; display: block; z-index: 2;}
@@ -89,8 +94,6 @@
         @media screen and (max-width: 768px) {
             .layout { flex-direction: column; height: auto; }
             .left-panel { min-width: 100%; max-width: 100%; }
-            .form-grid { grid-template-columns: 1fr; gap: 4px; margin-bottom: 12px; }
-            .form-grid label { text-align: left; }
             .table-container { padding: 0; border: none; }
             table { border-spacing: 0; border-collapse: collapse; }
             th, td { border: 1px solid #d1d5db; border-radius: 0; }
@@ -98,7 +101,7 @@
         
         #printArea { display: none; }
 
-        /* Print Settings */
+        /* Print Settings - 2D Flat View */
         @media print {
             @page { margin: 8mm; size: landscape; } 
             body { background-color: white; padding: 0; font-size: 12px; margin: 0; }
@@ -126,22 +129,26 @@
             .layout-4 table { border: 1px solid #000; border-collapse: collapse; min-width: 100%; border-spacing: 0; table-layout: fixed;}
             .layout-4 th, .layout-4 td { border: 1px solid #000 !important; color: black !important; padding: 1px !important; font-size: 8px !important; border-radius: 0;}
 
+            /* 2D Flat Card Overrides */
             .card { 
                 padding: 2px !important; 
                 margin: 0 !important; 
                 box-shadow: none !important; 
                 border: 1px solid #444 !important; 
                 color: #000 !important; 
+                background-image: none !important; /* Remove 3D gradients */
                 height: 100% !important;
                 min-height: 0 !important;
                 display: block !important; 
                 overflow: visible !important; 
                 white-space: normal !important; 
                 word-wrap: break-word !important; 
+                border-radius: 0 !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
-            .card-subj { white-space: normal !important; overflow: visible !important; display: inline !important;}
+            .card::before { display: none !important; } /* Remove glass effect */
+            .card-subj { white-space: normal !important; overflow: visible !important; display: inline !important; font-weight: bold !important;}
             .card span { color: #000 !important; border-top: 1px solid #999; margin-top: 1px; padding-top: 1px; white-space: normal !important; overflow: visible !important;}
             
             .layout-2 .card { font-size: 9px !important; line-height: 1.1 !important; }
@@ -149,16 +156,21 @@
             .layout-4 .card { font-size: 7.5px !important; line-height: 1.0 !important; padding: 1px !important;}
             .layout-4 .card span { font-size: 6.5px !important; border-top: none; }
 
-            th { background-color: #e5e7eb !important; color: black !important; -webkit-print-color-adjust: exact; }
+            /* 2D Headers and Intervals */
+            th { background: #e5e7eb !important; color: black !important; text-shadow: none !important; -webkit-print-color-adjust: exact; border: 1px solid #000 !important;}
+            td:first-child { background: #e5e7eb !important; color: black !important; border: 1px solid #000 !important;}
             td.cell-empty { background-color: white !important; }
-            .interval { background-color: #d1d5db !important; color: black !important; border: 1px solid #000 !important; -webkit-print-color-adjust: exact; letter-spacing: normal; text-transform: none;}
-            .day-header { background-color: #ccc !important; color: black !important; -webkit-print-color-adjust: exact; }
+            
+            .interval { background: #d1d5db !important; color: black !important; border: 1px solid #000 !important; -webkit-print-color-adjust: exact; letter-spacing: normal; text-transform: none; text-shadow: none !important; box-shadow: none !important;}
+            .attendance-row { background: #e2e8f0 !important; color: black !important; border: 1px solid #000 !important; text-shadow: none !important; box-shadow: none !important; -webkit-print-color-adjust: exact;}
+            .day-header { background: #cbd5e0 !important; color: black !important; border: 1px solid #000 !important; -webkit-print-color-adjust: exact; text-shadow: none !important;}
             
             .print-footer { text-align: center; font-size: 10px; font-weight:bold; color: black; margin-top: 5px; border-top: 1px solid #000; padding-top: 3px; }
             .print-footer span { color: #10b981 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             
-            .relief-card { background-color: #fef2f2 !important; border: 2px dashed #ef4444 !important; -webkit-print-color-adjust: exact; }
-            .relief-text { color: #dc2626 !important; font-weight: bold; }
+            .relief-card { background-color: #fef2f2 !important; border: 1px solid #000 !important; -webkit-print-color-adjust: exact; }
+            .relief-text { color: #000 !important; font-weight: bold; }
+            .btn-wa { display: none !important; }
         }
     </style>
 </head>
@@ -256,7 +268,7 @@
         </div>
     </div>
 
-    <!-- Data Management Modal -->
+    <!-- Data Management Modal with Backup/Restore -->
     <div id="dataModal" class="modal-overlay">
         <div class="modal" style="max-width: 800px;">
             <button class="close-btn" onclick="closeModals()">✖</button>
@@ -277,7 +289,14 @@
             </div>
             
             <hr style="border:0; border-top:1px dashed #d1d5db; margin:20px 0;">
-            <button class="btn-primary btn-clear" onclick="clearAllData()">⚠️ සියලුම දත්ත සම්පූර්ණයෙන්ම මකා දමන්න</button>
+            
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn-primary" style="background: #2563eb; flex:1; margin:0;" onclick="exportData()">💾 දත්ත Save කරන්න (Backup)</button>
+                <button class="btn-primary" style="background: #10b981; flex:1; margin:0;" onclick="document.getElementById('importFile').click()">📂 දත්ත Restore කරන්න</button>
+                <button class="btn-primary btn-clear" style="flex:1; margin:0;" onclick="clearAllData()">⚠️ සියලුම දත්ත මකා දමන්න</button>
+                <!-- Hidden file input for restore -->
+                <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+            </div>
         </div>
     </div>
 
@@ -309,7 +328,7 @@
             <button class="btn-primary btn-relief" onclick="openReliefModal()">👨‍🏫 සහන කාලච්ඡේද (Relief)</button>
             <button class="btn-primary btn-summary" onclick="openSummaryModal()">📊 කාලච්ඡේද සාරාංශය (Workload)</button>
             <button class="btn-primary btn-print-menu" onclick="openPrintModal()">🖨️ මුද්‍රණය කිරීම (Print)</button>
-            <button class="btn-primary btn-data" onclick="openDataModal()">⚙️ ඇතුළත් කළ දත්ත සංස්කරණය</button>
+            <button class="btn-primary btn-data" onclick="openDataModal()">⚙️ ඇතුළත් කළ දත්ත / Backup</button>
             
             <fieldset>
                 <legend>👨‍🏫 මූලික දත්ත එක් කරන්න</legend>
@@ -480,6 +499,40 @@
                 localStorage.removeItem('smartSoftTimetableData');
                 location.reload();
             }
+        }
+
+        function exportData() {
+            saveData(); 
+            let dataStr = localStorage.getItem('smartSoftTimetableData');
+            if(!dataStr) return alert("සුරැකීමට දත්ත නොමැත!");
+            let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            let exportFileDefaultName = 'SmartSoft_Timetable_Backup.json';
+            let linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+
+        function importData(event) {
+            let file = event.target.files[0];
+            if(!file) return;
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    let contents = e.target.result;
+                    let json = JSON.parse(contents);
+                    if(json && json.classes !== undefined) {
+                        localStorage.setItem('smartSoftTimetableData', contents);
+                        alert("දත්ත සාර්ථකව Restore කරන ලදී!");
+                        location.reload();
+                    } else {
+                        alert("මෙය නිවැරදි Backup ගොනුවක් නොවේ!");
+                    }
+                } catch(err) {
+                    alert("ගොනුව කියවීමේදී දෝෂයක් මතු විය!");
+                }
+            };
+            reader.readAsText(file);
         }
 
         window.onload = () => {
@@ -874,7 +927,7 @@
             teachingRules.forEach(r => {
                 html += `<div class="rule-item">
                             <div><b style="color:#1e40af;">${r.grade} ශ්‍රේණිය</b> | ${r.subject}<br>
-                            <span style="color:#6b7280; font-size:10px;">${r.teacher} (කාලච්ඡේද ${r.periods})</span></div>
+                            <span style="color:#6b7280; font-size:10px;">${r.teacher} (කා: ${r.periods})</span></div>
                             <button class="btn-delete" onclick="deleteRule(${r.id})">X</button>
                          </div>`;
             });
@@ -1044,37 +1097,43 @@
             if (currentViewMode === 'all_master') {
                 title = "සම්පූර්ණ ප්‍රධාන කාලසටහන (දින 5ම)";
                 classes.forEach(c => h += `<th>${c} ශ්‍රේණිය</th>`);
+                let colSpan = classes.length + 1;
                 
                 days.forEach(d => {
-                    b += `<tr><td colspan="${classes.length + 1}" class="day-header">${dayNames[d]}</td></tr>`;
+                    b += `<tr><td colspan="${colSpan}" class="day-header">${dayNames[d]}</td></tr>`;
                     for (let p = 1; p <= 8; p++) {
                         b += `<tr><td>කා: ${p}</td>`;
                         classes.forEach(c => { b += getCellHTML(generatedTimetable[d][p][c], d, p, c); });
                         b += `</tr>`;
-                        if(p === intervalPos) b += `<tr><td colspan="${classes.length + 1}" class="interval">විවේක කාලය (Interval)</td></tr>`;
+                        if(p === 1) b += `<tr><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම සඳහා කාලය</td></tr>`;
+                        if(p === intervalPos) b += `<tr><td colspan="${colSpan}" class="interval">විවේක කාලය (Interval)</td></tr>`;
                     }
                 });
 
             } else if (currentViewMode === 'day_master') {
                 title = `${dayNames[currentDay]} - ප්‍රධාන කාලසටහන`;
                 classes.forEach(c => h += `<th>${c} ශ්‍රේණිය</th>`);
+                let colSpan = classes.length + 1;
                 
                 for (let p = 1; p <= 8; p++) {
                     b += `<tr><td>කා: ${p}</td>`;
                     classes.forEach(c => { b += getCellHTML(generatedTimetable[currentDay][p][c], currentDay, p, c); });
                     b += `</tr>`;
-                    if(p === intervalPos) b += `<tr><td colspan="${classes.length + 1}" class="interval">විවේක කාලය (Interval)</td></tr>`;
+                    if(p === 1) b += `<tr><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම සඳහා කාලය</td></tr>`;
+                    if(p === intervalPos) b += `<tr><td colspan="${colSpan}" class="interval">විවේක කාලය (Interval)</td></tr>`;
                 }
 
             } else {
                 title = `${currentSelectedClass} ශ්‍රේණියේ කාලසටහන (දින 5 සඳහා)`;
                 days.forEach(d => h += `<th>${dayNames[d]}</th>`);
+                let colSpan = days.length + 1;
                 
                 for (let p = 1; p <= 8; p++) {
                     b += `<tr><td>කා: ${p}</td>`;
                     days.forEach(d => { b += getCellHTML(generatedTimetable[d][p][currentSelectedClass], d, p, currentSelectedClass); });
                     b += `</tr>`;
-                    if(p === intervalPos) b += `<tr><td colspan="${days.length + 1}" class="interval">විවේක කාලය (Interval)</td></tr>`;
+                    if(p === 1) b += `<tr><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම සඳහා කාලය</td></tr>`;
+                    if(p === intervalPos) b += `<tr><td colspan="${colSpan}" class="interval">විවේක කාලය (Interval)</td></tr>`;
                 }
             }
 
@@ -1103,6 +1162,7 @@
             } 
             else {
                 if (type === 'classes') {
+                    let colSpan = days.length + 1;
                     classes.forEach(c => {
                         let tbl = `<div class="timetable-box"><h2 class="school-title">${schoolName}</h2><h3 class="main-title">${c} ශ්‍රේණියේ කාලසටහන</h3>`;
                         tbl += `<table><thead><tr><th>කාලච්ඡේද</th>` + days.map(d=>`<th>${dayNames[d]}</th>`).join('') + `</tr></thead><tbody>`;
@@ -1110,13 +1170,15 @@
                             tbl += `<tr><td>කා: ${p}</td>`;
                             days.forEach(d => tbl += getCellHTML(generatedTimetable[d][p][c], d, p, c));
                             tbl += `</tr>`;
-                            if(p === intervalPos) tbl += `<tr><td colspan="${days.length+1}" class="interval">විවේක කාලය</td></tr>`;
+                            if(p === 1) tbl += `<tr><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම</td></tr>`;
+                            if(p === intervalPos) tbl += `<tr><td colspan="${colSpan}" class="interval">විවේක කාලය</td></tr>`;
                         }
                         tbl += `</tbody></table><div class="print-footer">&copy; 2026 Kelum Konara | Smart<span>Soft</span> | Time Table version 1.0</div></div>`;
                         generatedItems.push(tbl);
                     });
                 }
                 else if (type === 'teachers') {
+                    let colSpan = days.length + 1;
                     masterTeachers.forEach(t => {
                         let tbl = `<div class="timetable-box"><h2 class="school-title">${schoolName}</h2><h3 class="main-title">${t} - ගුරු කාලසටහන</h3>`;
                         tbl += `<table><thead><tr><th>කාලච්ඡේද</th>` + days.map(d=>`<th>${dayNames[d]}</th>`).join('') + `</tr></thead><tbody>`;
@@ -1152,7 +1214,8 @@
                                 }
                             });
                             tbl += `</tr>`;
-                            if(p === intervalPos) tbl += `<tr><td colspan="${days.length+1}" class="interval">විවේක කාලය</td></tr>`;
+                            if(p === 1) tbl += `<tr><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම</td></tr>`;
+                            if(p === intervalPos) tbl += `<tr><td colspan="${colSpan}" class="interval">විවේක කාලය</td></tr>`;
                         }
                         tbl += `</tbody></table><div class="print-footer">&copy; 2026 Kelum Konara | Smart<span>Soft</span> | Time Table version 1.0</div></div>`;
                         generatedItems.push(tbl);
