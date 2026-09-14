@@ -62,22 +62,22 @@
         
         /* Table View */
         .table-container { width: 100%; overflow-x: auto; flex-grow: 1; border: 2px solid #9ca3af; background: #e5e7eb; padding: 2px;}
-        table { width: 100%; border-collapse: separate; border-spacing: 2px; table-layout: fixed; min-width: 700px; height: 100%; }
-        th, td { text-align: center; vertical-align: middle; padding: 2px; border-radius: 2px; overflow: hidden; height: 100%; }
+        table { width: 100%; border-collapse: separate; border-spacing: 2px; table-layout: fixed; min-width: 700px; }
+        th, td { text-align: center; vertical-align: middle; padding: 2px; border-radius: 2px; overflow: hidden; }
         
-        /* Fixed First Column */
-        th:first-child, td:first-child { width: 75px !important; max-width: 75px !important; min-width: 75px !important; }
+        /* Fixed First Column - Normal Size */
+        th:first-child, td:first-child { width: 50px !important; max-width: 50px !important; min-width: 50px !important; white-space: nowrap; }
         
-        th { background: linear-gradient(to bottom, #e5e7eb, #d1d5db); color: #1f2937; padding: 8px; font-size: 12px; border: 1px solid #9ca3af;}
+        th { background: linear-gradient(to bottom, #e5e7eb, #d1d5db); color: #1f2937; padding: 6px; font-size: 12px; border: 1px solid #9ca3af;}
         td:first-child { background: linear-gradient(to bottom, #d1d5db, #9ca3af); font-weight: bold; font-size: 11px; position: sticky; left: 0; z-index: 1; border: 1px solid #6b7280;}
         td.cell-empty { background-color: #ffffff; border: 1px solid #d1d5db; }
         
-        .attendance-row { background: linear-gradient(to right, #bfdbfe, #93c5fd) !important; color: #1e3a8a !important; font-weight: bold; padding: 4px !important; font-size: 11px; letter-spacing: 1px; border: 1px solid #60a5fa !important; text-transform: uppercase; height: auto !important;}
-        .interval { background: linear-gradient(to right, #6b7280, #4b5563) !important; color: white !important; font-weight: bold; padding: 4px !important; font-size: 12px; letter-spacing: 4px; border: 1px solid #374151 !important; text-transform: uppercase; height: auto !important;}
-        .day-header { background: linear-gradient(to right, #4b5563, #374151) !important; color: white !important; font-weight: bold; padding: 6px; font-size: 13px; text-align: center; border: 1px solid #1f2937 !important; height: auto !important;}
+        .attendance-row { background: linear-gradient(to right, #bfdbfe, #93c5fd) !important; color: #1e3a8a !important; font-weight: bold; padding: 2px !important; font-size: 10px; letter-spacing: 1px; border: 1px solid #60a5fa !important; text-transform: uppercase;}
+        .interval { background: linear-gradient(to right, #6b7280, #4b5563) !important; color: white !important; font-weight: bold; padding: 2px !important; font-size: 11px; letter-spacing: 2px; border: 1px solid #374151 !important; text-transform: uppercase;}
+        .day-header { background: linear-gradient(to right, #4b5563, #374151) !important; color: white !important; font-weight: bold; padding: 4px; font-size: 12px; text-align: center; border: 1px solid #1f2937 !important;}
         
         /* Timetable Cards */
-        .card { padding: 4px; border-radius: 4px; font-size: 11px; font-weight: 700; width: 100%; height: 100%; min-height: 48px; display: flex; flex-direction: column; justify-content: center; margin: 0 auto; line-height: 1.1; border: 1px solid rgba(0,0,0,0.3); box-shadow: 1px 1px 3px rgba(0,0,0,0.2); color: #111827; box-sizing: border-box; position: relative; overflow: hidden;}
+        .card { padding: 4px; border-radius: 4px; font-size: 11px; font-weight: 700; width: 100%; min-height: 40px; display: flex; flex-direction: column; justify-content: center; margin: 0 auto; line-height: 1.1; border: 1px solid rgba(0,0,0,0.3); box-shadow: 1px 1px 3px rgba(0,0,0,0.2); color: #111827; box-sizing: border-box; position: relative; overflow: hidden;}
         .card::before { content: ''; position: absolute; top:0; left:0; width:100%; height: 30%; background: linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,0)); pointer-events: none;}
         .card-subj { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; display: block; z-index: 2;}
         .card span { font-weight: 600; font-size: 9px; color: #1f2937; display: block; margin-top: 2px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; z-index: 2;}
@@ -94,6 +94,8 @@
         @media screen and (max-width: 768px) {
             .layout { flex-direction: column; height: auto; }
             .left-panel { min-width: 100%; max-width: 100%; }
+            .form-grid { grid-template-columns: 1fr; gap: 4px; margin-bottom: 12px; }
+            .form-grid label { text-align: left; }
             .table-container { padding: 0; border: none; }
             table { border-spacing: 0; border-collapse: collapse; }
             th, td { border: 1px solid #d1d5db; border-radius: 0; }
@@ -136,8 +138,7 @@
                 box-shadow: none !important; 
                 border: 1px solid #444 !important; 
                 color: #000 !important; 
-                background-image: none !important; /* Remove 3D gradients */
-                height: 100% !important;
+                background-image: none !important; 
                 min-height: 0 !important;
                 display: block !important; 
                 overflow: visible !important; 
@@ -147,7 +148,7 @@
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
-            .card::before { display: none !important; } /* Remove glass effect */
+            .card::before { display: none !important; } 
             .card-subj { white-space: normal !important; overflow: visible !important; display: inline !important; font-weight: bold !important;}
             .card span { color: #000 !important; border-top: 1px solid #999; margin-top: 1px; padding-top: 1px; white-space: normal !important; overflow: visible !important;}
             
@@ -158,12 +159,12 @@
 
             /* 2D Headers and Intervals */
             th { background: #e5e7eb !important; color: black !important; text-shadow: none !important; -webkit-print-color-adjust: exact; border: 1px solid #000 !important;}
-            td:first-child { background: #e5e7eb !important; color: black !important; border: 1px solid #000 !important;}
+            td:first-child { background: #e5e7eb !important; color: black !important; border: 1px solid #000 !important; width: 40px !important; min-width: 40px !important;}
             td.cell-empty { background-color: white !important; }
             
             .interval { background: #d1d5db !important; color: black !important; border: 1px solid #000 !important; -webkit-print-color-adjust: exact; letter-spacing: normal; text-transform: none; text-shadow: none !important; box-shadow: none !important;}
-            .attendance-row { background: #e2e8f0 !important; color: black !important; border: 1px solid #000 !important; text-shadow: none !important; box-shadow: none !important; -webkit-print-color-adjust: exact;}
-            .day-header { background: #cbd5e0 !important; color: black !important; border: 1px solid #000 !important; -webkit-print-color-adjust: exact; text-shadow: none !important;}
+            .attendance-row { background: #e2e8f0 !important; color: black !important; border: 1px solid #000 !important; text-shadow: none !important; box-shadow: none !important; -webkit-print-color-adjust: exact; padding: 1px !important;}
+            .day-header { background: #ccc !important; color: black !important; border: 1px solid #000 !important; -webkit-print-color-adjust: exact; text-shadow: none !important;}
             
             .print-footer { text-align: center; font-size: 10px; font-weight:bold; color: black; margin-top: 5px; border-top: 1px solid #000; padding-top: 3px; }
             .print-footer span { color: #10b981 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -294,7 +295,6 @@
                 <button class="btn-primary" style="background: #2563eb; flex:1; margin:0;" onclick="exportData()">💾 දත්ත Save කරන්න (Backup)</button>
                 <button class="btn-primary" style="background: #10b981; flex:1; margin:0;" onclick="document.getElementById('importFile').click()">📂 දත්ත Restore කරන්න</button>
                 <button class="btn-primary btn-clear" style="flex:1; margin:0;" onclick="clearAllData()">⚠️ සියලුම දත්ත මකා දමන්න</button>
-                <!-- Hidden file input for restore -->
                 <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
             </div>
         </div>
@@ -1105,7 +1105,7 @@
                         b += `<tr><td>කා: ${p}</td>`;
                         classes.forEach(c => { b += getCellHTML(generatedTimetable[d][p][c], d, p, c); });
                         b += `</tr>`;
-                        if(p === 1) b += `<tr><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම සඳහා කාලය</td></tr>`;
+                        if(p === 1) b += `<tr><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම</td></tr>`;
                         if(p === intervalPos) b += `<tr><td colspan="${colSpan}" class="interval">විවේක කාලය (Interval)</td></tr>`;
                     }
                 });
@@ -1119,7 +1119,7 @@
                     b += `<tr><td>කා: ${p}</td>`;
                     classes.forEach(c => { b += getCellHTML(generatedTimetable[currentDay][p][c], currentDay, p, c); });
                     b += `</tr>`;
-                    if(p === 1) b += `<tr><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම සඳහා කාලය</td></tr>`;
+                    if(p === 1) b += `<tr><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම</td></tr>`;
                     if(p === intervalPos) b += `<tr><td colspan="${colSpan}" class="interval">විවේක කාලය (Interval)</td></tr>`;
                 }
 
@@ -1132,7 +1132,7 @@
                     b += `<tr><td>කා: ${p}</td>`;
                     days.forEach(d => { b += getCellHTML(generatedTimetable[d][p][currentSelectedClass], d, p, currentSelectedClass); });
                     b += `</tr>`;
-                    if(p === 1) b += `<tr><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම සඳහා කාලය</td></tr>`;
+                    if(p === 1) b += `<tr><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම</td></tr>`;
                     if(p === intervalPos) b += `<tr><td colspan="${colSpan}" class="interval">විවේක කාලය (Interval)</td></tr>`;
                 }
             }
