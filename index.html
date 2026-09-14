@@ -64,12 +64,15 @@
         .radio-group { display: flex; gap: 15px; font-weight: bold; font-size: 12px; justify-content: center; flex-wrap: wrap;}
         .radio-group label { cursor: pointer; display: flex; align-items: center; gap: 4px; color: #374151;}
         
-        /* Table View - Perfect Equal Balancing */
+        /* Table View - Perfect Equal Balancing FIX */
         .table-container { flex: 1; min-height: 0; overflow: auto; border: 2px solid #9ca3af; background: #e5e7eb; padding: 2px;}
         table { width: 100%; height: 100%; border-collapse: separate; border-spacing: 2px; table-layout: fixed; min-width: 700px; }
-        tbody tr { height: 1%; } /* Forces browsers to distribute row height equally */
         
-        th, td { text-align: center; vertical-align: middle; padding: 2px; border-radius: 2px; overflow: hidden; height: 100%; }
+        /* අනිවාර්යයෙන්ම කාලච්ඡේද පේළි සමාන ප්‍රමාණයක් ගැනීම */
+        tr.period-row { height: 11%; } 
+        tr.special-row { height: 25px !important; }
+        
+        th, td { text-align: center; vertical-align: middle; padding: 2px; border-radius: 2px; overflow: hidden; }
         
         /* Fixed First Column - Normal Size */
         th:first-child, td:first-child { width: 50px !important; max-width: 50px !important; min-width: 50px !important; white-space: nowrap; }
@@ -78,14 +81,12 @@
         td:first-child { background: linear-gradient(to bottom, #d1d5db, #9ca3af); font-weight: bold; font-size: 11px; position: sticky; left: 0; z-index: 1; border: 1px solid #6b7280;}
         td.cell-empty { background-color: #ffffff; border: 1px solid #d1d5db; }
         
-        /* Header rows strict small heights */
-        tr.special-row { height: 25px !important; }
         .attendance-row { background: linear-gradient(to right, #bfdbfe, #93c5fd) !important; color: #1e3a8a !important; font-weight: bold; padding: 4px !important; font-size: 10px; letter-spacing: 1px; border: 1px solid #60a5fa !important; text-transform: uppercase;}
         .interval { background: linear-gradient(to right, #6b7280, #4b5563) !important; color: white !important; font-weight: bold; padding: 4px !important; font-size: 11px; letter-spacing: 2px; border: 1px solid #374151 !important; text-transform: uppercase;}
         .day-header { background: linear-gradient(to right, #4b5563, #374151) !important; color: white !important; font-weight: bold; padding: 4px; font-size: 12px; text-align: center; border: 1px solid #1f2937 !important;}
         
         /* Timetable Cards */
-        .card { padding: 4px; border-radius: 4px; font-size: 11px; font-weight: 700; width: 100%; height: 100%; min-height: 40px; display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0; line-height: 1.1; border: 1px solid rgba(0,0,0,0.3); box-shadow: 1px 1px 3px rgba(0,0,0,0.2); color: #111827; box-sizing: border-box; position: relative; overflow: hidden;}
+        .card { padding: 4px; border-radius: 4px; font-size: 11px; font-weight: 700; width: 100%; height: 100%; min-height: 38px; display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0; line-height: 1.1; border: 1px solid rgba(0,0,0,0.3); box-shadow: 1px 1px 3px rgba(0,0,0,0.2); color: #111827; box-sizing: border-box; position: relative; overflow: hidden;}
         .card::before { content: ''; position: absolute; top:0; left:0; width:100%; height: 30%; background: linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,0)); pointer-events: none;}
         .card-subj { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; display: block; z-index: 2; text-align: center;}
         .card span { font-weight: 600; font-size: 9px; color: #1f2937; display: block; margin-top: 2px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; z-index: 2; text-align: center;}
@@ -137,7 +138,8 @@
             .layout-4 table { flex: 1; border: 1px solid #000; border-collapse: collapse; width: 100%; height: 100%; border-spacing: 0; table-layout: fixed;}
             .layout-4 th, .layout-4 td { border: 1px solid #000 !important; color: black !important; padding: 1px !important; font-size: 8px !important; border-radius: 0;}
 
-            tbody tr { height: 1%; }
+            /* Table Row heights for Print */
+            tr.period-row { height: 11% !important; }
             tr.special-row { height: auto !important; }
 
             /* 2D Flat Card Overrides */
@@ -1063,7 +1065,7 @@
                 days.forEach(d => {
                     b += `<tr class="special-row"><td colspan="${colSpan}" class="day-header">${dayNames[d]}</td></tr>`;
                     for (let p = 1; p <= 8; p++) {
-                        b += `<tr><td>කා: ${p}</td>`;
+                        b += `<tr class="period-row"><td>කා: ${p}</td>`;
                         classes.forEach(c => { b += getCellHTML(generatedTimetable[d][p][c], d, p, c); });
                         b += `</tr>`;
                         if(p === 1) b += `<tr class="special-row"><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම</td></tr>`;
@@ -1077,7 +1079,7 @@
                 let colSpan = classes.length + 1;
                 
                 for (let p = 1; p <= 8; p++) {
-                    b += `<tr><td>කා: ${p}</td>`;
+                    b += `<tr class="period-row"><td>කා: ${p}</td>`;
                     classes.forEach(c => { b += getCellHTML(generatedTimetable[currentDay][p][c], currentDay, p, c); });
                     b += `</tr>`;
                     if(p === 1) b += `<tr class="special-row"><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම</td></tr>`;
@@ -1090,7 +1092,7 @@
                 let colSpan = days.length + 1;
                 
                 for (let p = 1; p <= 8; p++) {
-                    b += `<tr><td>කා: ${p}</td>`;
+                    b += `<tr class="period-row"><td>කා: ${p}</td>`;
                     days.forEach(d => { b += getCellHTML(generatedTimetable[d][p][currentSelectedClass], d, p, currentSelectedClass); });
                     b += `</tr>`;
                     if(p === 1) b += `<tr class="special-row"><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම</td></tr>`;
@@ -1128,7 +1130,7 @@
                         let tbl = `<div class="timetable-box"><h2 class="school-title">${schoolName}</h2><h3 class="main-title">${c} ශ්‍රේණියේ කාලසටහන</h3>`;
                         tbl += `<table><thead><tr><th>කාලච්ඡේද</th>` + days.map(d=>`<th>${dayNames[d]}</th>`).join('') + `</tr></thead><tbody>`;
                         for(let p=1; p<=8; p++) {
-                            tbl += `<tr><td>කා: ${p}</td>`;
+                            tbl += `<tr class="period-row"><td>කා: ${p}</td>`;
                             days.forEach(d => tbl += getCellHTML(generatedTimetable[d][p][c], d, p, c));
                             tbl += `</tr>`;
                             if(p === 1) tbl += `<tr class="special-row"><td colspan="${colSpan}" class="attendance-row">නාමලේඛන ලකුණු කිරීම</td></tr>`;
@@ -1144,7 +1146,7 @@
                         let tbl = `<div class="timetable-box"><h2 class="school-title">${schoolName}</h2><h3 class="main-title">${t} - ගුරු කාලසටහන</h3>`;
                         tbl += `<table><thead><tr><th>කාලච්ඡේද</th>` + days.map(d=>`<th>${dayNames[d]}</th>`).join('') + `</tr></thead><tbody>`;
                         for(let p=1; p<=8; p++) {
-                            tbl += `<tr><td>කා: ${p}</td>`;
+                            tbl += `<tr class="period-row"><td>කා: ${p}</td>`;
                             days.forEach(d => {
                                 let assignedClass = "-"; let assignedSubject = ""; let color = "#ffffff";
                                 let isRelief = false;
