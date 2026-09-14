@@ -8,7 +8,7 @@
     <link rel="manifest" href="manifest.json">
 
     <style>
-        /* Theme - Professional Colors & Grid */
+        /* ASC Theme - Professional Colors & Grid */
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #d1d5db; margin: 0; padding: 10px; font-size: 13px; color: #1f2937; }
         
         .layout { display: flex; gap: 10px; height: 97vh; }
@@ -19,20 +19,24 @@
         h2.school-title { text-align: center; color: #111827; margin: 0 0 5px 0; font-size: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;}
         h3.main-title { text-align: center; color: #4b5563; margin: 0 0 15px 0; font-size: 14px; font-weight: 600; }
         
-        /* Buttons */
-        .btn-primary { background: linear-gradient(to bottom, #3b82f6, #2563eb); color: white; width: 100%; padding: 10px; border: 1px solid #1d4ed8; border-radius: 4px; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 8px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.2); }
-        .btn-primary:hover { background: linear-gradient(to bottom, #2563eb, #1d4ed8); }
+        /* ASC Buttons */
+        .btn-primary { color: white; width: 100%; padding: 10px; border-radius: 4px; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 8px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.2); border: 1px solid transparent;}
         .btn-auto { background: linear-gradient(to bottom, #10b981, #059669); border-color: #047857; font-size: 14px; margin-top: 5px; }
         .btn-auto:hover { background: linear-gradient(to bottom, #059669, #047857); }
-        .btn-print-menu { background: linear-gradient(to bottom, #6b7280, #4b5563); border-color: #374151; }
-        .btn-print-menu:hover { background: linear-gradient(to bottom, #4b5563, #374151); }
+        .btn-attendance { background: linear-gradient(to bottom, #14b8a6, #0d9488); border-color: #0f766e; }
+        .btn-attendance:hover { background: linear-gradient(to bottom, #0d9488, #0f766e); }
         .btn-relief { background: linear-gradient(to bottom, #8b5cf6, #7c3aed); border-color: #6d28d9; }
         .btn-relief:hover { background: linear-gradient(to bottom, #7c3aed, #6d28d9); }
+        .btn-print-menu { background: linear-gradient(to bottom, #6b7280, #4b5563); border-color: #374151; }
+        .btn-print-menu:hover { background: linear-gradient(to bottom, #4b5563, #374151); }
+        .btn-data { background: linear-gradient(to bottom, #f59e0b, #d97706); border-color: #b45309; }
+        .btn-data:hover { background: linear-gradient(to bottom, #d97706, #b45309); }
+        
         .btn-small { background-color: #3b82f6; color: white; border: 1px solid #2563eb; padding: 6px 10px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: bold; width: 100%; }
         .btn-small:hover { background-color: #2563eb; }
         .btn-delete { background: #ef4444; color: white; border: 1px solid #dc2626; padding: 3px 6px; border-radius: 3px; cursor: pointer; font-size: 10px; }
 
-        /* Fieldsets */
+        /* ASC Fieldsets */
         fieldset { border: 1px solid #d1d5db; border-radius: 4px; padding: 12px 10px; margin-bottom: 12px; background: #ffffff; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         legend { font-size: 12px; font-weight: bold; color: #1e40af; background: #ffffff; padding: 2px 8px; border-radius: 3px; border: 1px solid #d1d5db; }
 
@@ -51,21 +55,22 @@
         .radio-group { display: flex; gap: 15px; font-weight: bold; font-size: 12px; justify-content: center; flex-wrap: wrap;}
         .radio-group label { cursor: pointer; display: flex; align-items: center; gap: 4px; color: #374151;}
         
-        /* Table View */
+        /* ASC Table View - Perfect Balancing */
         .table-container { width: 100%; overflow-x: auto; flex-grow: 1; border: 2px solid #9ca3af; background: #e5e7eb; padding: 2px;}
-        table { width: 100%; border-collapse: separate; border-spacing: 2px; table-layout: fixed; min-width: 700px; }
-        th, td { text-align: center; vertical-align: middle; padding: 2px; border-radius: 2px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 2px; table-layout: fixed; min-width: 700px; height: 100%; }
+        th, td { text-align: center; vertical-align: middle; padding: 2px; border-radius: 2px; width: auto; overflow: hidden; }
         th { background: linear-gradient(to bottom, #e5e7eb, #d1d5db); color: #1f2937; padding: 8px; font-size: 12px; border: 1px solid #9ca3af;}
-        td:first-child { background: linear-gradient(to bottom, #d1d5db, #9ca3af); font-weight: bold; width: 50px; font-size: 11px; position: sticky; left: 0; z-index: 1; border: 1px solid #6b7280;}
+        td:first-child { background: linear-gradient(to bottom, #d1d5db, #9ca3af); font-weight: bold; width: 60px; font-size: 11px; position: sticky; left: 0; z-index: 1; border: 1px solid #6b7280;}
         td.cell-empty { background-color: #ffffff; border: 1px solid #d1d5db; }
         
-        .interval { background: linear-gradient(to right, #6b7280, #4b5563) !important; color: white !important; font-weight: bold; padding: 4px !important; font-size: 12px; letter-spacing: 4px; border: 1px solid #374151 !important; text-transform: uppercase;}
-        .day-header { background: linear-gradient(to right, #4b5563, #374151) !important; color: white !important; font-weight: bold; padding: 6px; font-size: 13px; border: 1px solid #1f2937 !important;}
+        .interval { background: linear-gradient(to right, #6b7280, #4b5563) !important; color: white !important; font-weight: bold; padding: 4px !important; font-size: 12px; letter-spacing: 4px; border: 1px solid #374151 !important; text-transform: uppercase; height: auto !important;}
+        .day-header { background: linear-gradient(to right, #4b5563, #374151) !important; color: white !important; font-weight: bold; padding: 6px; font-size: 13px; text-align: center; border: 1px solid #1f2937 !important; height: auto !important;}
         
-        /* Cards */
-        .card { padding: 5px; border-radius: 4px; font-size: 12px; font-weight: 700; width: 98%; margin: 0 auto; line-height: 1.2; border: 1px solid rgba(0,0,0,0.3); box-shadow: 1px 1px 3px rgba(0,0,0,0.2); color: #111827; box-sizing: border-box; position: relative; overflow: hidden; white-space: normal; overflow-wrap: break-word;}
+        /* ASC Cards - Auto Balance & Overflow fix */
+        .card { padding: 4px; border-radius: 4px; font-size: 11px; font-weight: 700; width: 100%; height: 100%; min-height: 48px; display: flex; flex-direction: column; justify-content: center; margin: 0 auto; line-height: 1.1; border: 1px solid rgba(0,0,0,0.3); box-shadow: 1px 1px 3px rgba(0,0,0,0.2); color: #111827; box-sizing: border-box; position: relative; overflow: hidden;}
         .card::before { content: ''; position: absolute; top:0; left:0; width:100%; height: 30%; background: linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,0)); pointer-events: none;}
-        .card span { font-weight: 600; font-size: 10px; color: #1f2937; display: block; margin-top: 3px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 2px;}
+        .card-subj { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; display: block; z-index: 2;}
+        .card span { font-weight: 600; font-size: 9px; color: #1f2937; display: block; margin-top: 2px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; z-index: 2;}
         .empty-slot { color: #9ca3af; font-size: 10px; font-style: italic; }
 
         .footer { text-align: center; font-size: 12px; font-weight: bold; color: #4b5563; padding-top: 10px; margin-top: 10px; border-top: 1px solid #e5e7eb; }
@@ -79,8 +84,6 @@
         @media screen and (max-width: 768px) {
             .layout { flex-direction: column; height: auto; }
             .left-panel { min-width: 100%; max-width: 100%; }
-            .form-grid { grid-template-columns: 1fr; gap: 4px; margin-bottom: 12px; }
-            .form-grid label { text-align: left; }
             .table-container { padding: 0; border: none; }
             table { border-spacing: 0; border-collapse: collapse; }
             th, td { border: 1px solid #d1d5db; border-radius: 0; }
@@ -88,7 +91,7 @@
         
         #printArea { display: none; }
 
-        /* Print Settings Fixed for Text Cut-off */
+        /* Print Settings Fixed for Text Cut-off & Balancing */
         @media print {
             @page { margin: 8mm; size: landscape; } 
             body { background-color: white; padding: 0; font-size: 12px; margin: 0; }
@@ -101,46 +104,45 @@
             .layout-1 .timetable-box { width: 100%; height: 100%; }
             .layout-1 h2.school-title { font-size: 22px; color: black; margin-bottom: 5px; text-align: center; }
             .layout-1 h3.main-title { font-size: 16px; color: black; margin-bottom: 15px; text-align: center; }
-            .layout-1 table { border: 2px solid #000; border-collapse: collapse; min-width: 100%; border-spacing: 0; }
+            .layout-1 table { border: 2px solid #000; border-collapse: collapse; min-width: 100%; border-spacing: 0; table-layout: fixed; }
             .layout-1 th, .layout-1 td { border: 1px solid #000 !important; color: black !important; padding: 4px !important; border-radius: 0; }
             
             .layout-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10mm; align-items: start; height: 100vh;}
             .layout-2 h2.school-title { font-size: 16px; margin-bottom: 2px; text-align: center; color: black;}
             .layout-2 h3.main-title { font-size: 13px; margin-bottom: 8px; text-align: center; color: black;}
-            .layout-2 table { border: 2px solid #000; border-collapse: collapse; min-width: 100%; border-spacing: 0;}
+            .layout-2 table { border: 2px solid #000; border-collapse: collapse; min-width: 100%; border-spacing: 0; table-layout: fixed; }
             .layout-2 th, .layout-2 td { border: 1px solid #000 !important; color: black !important; padding: 2px !important; font-size: 10px !important; border-radius: 0;}
-            .layout-2 .interval { font-size: 10px !important; padding: 2px !important; }
             
-            .layout-4 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8mm; height: 100vh;}
-            .layout-4 h2.school-title { font-size: 13px; margin-bottom: 2px; text-align: center; color: black;}
-            .layout-4 h3.main-title { font-size: 11px; margin-bottom: 5px; text-align: center; color: black;}
-            .layout-4 table { border: 1px solid #000; border-collapse: collapse; min-width: 100%; border-spacing: 0;}
-            .layout-4 th, .layout-4 td { border: 1px solid #000 !important; color: black !important; padding: 1px !important; font-size: 9px !important; border-radius: 0;}
-            .layout-4 th { padding: 2px !important; }
-            .layout-4 .interval { font-size: 8px !important; padding: 1px !important; }
+            /* Layout 4 Strict Wrapping */
+            .layout-4 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 6mm; height: 100vh;}
+            .layout-4 h2.school-title { font-size: 12px; margin-bottom: 1px; text-align: center; color: black;}
+            .layout-4 h3.main-title { font-size: 10px; margin-bottom: 3px; text-align: center; color: black;}
+            .layout-4 table { border: 1px solid #000; border-collapse: collapse; min-width: 100%; border-spacing: 0; table-layout: fixed;}
+            .layout-4 th, .layout-4 td { border: 1px solid #000 !important; color: black !important; padding: 1px !important; font-size: 8px !important; border-radius: 0;}
 
-            /* Universal Card Print Fix */
+            /* Print Card Overrides to prevent text cutoff */
             .card { 
-                padding: 3px !important; 
-                margin: 1px auto !important; 
+                padding: 2px !important; 
+                margin: 0 !important; 
                 box-shadow: none !important; 
-                border: 1px solid #333 !important; 
-                color: #000 !important; /* Force black text */
-                text-shadow: none !important;
-                overflow: visible !important; /* Prevents text clipping */
+                border: 1px solid #444 !important; 
+                color: #000 !important; 
+                height: 100% !important;
+                min-height: 0 !important;
+                display: block !important; /* Block instead of flex for text wrap */
+                overflow: visible !important; 
                 white-space: normal !important; 
                 word-wrap: break-word !important; 
-                page-break-inside: avoid !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
-            .card span { color: #000 !important; border-top: 1px solid #999; margin-top: 2px; padding-top: 1px;}
+            .card-subj { white-space: normal !important; overflow: visible !important; display: inline !important;}
+            .card span { color: #000 !important; border-top: 1px solid #999; margin-top: 1px; padding-top: 1px; white-space: normal !important; overflow: visible !important;}
             
-            /* Sizing overrides for specific layouts */
-            .layout-2 .card { font-size: 10px !important; line-height: 1.2 !important; }
-            .layout-2 .card span { font-size: 9px !important; }
-            .layout-4 .card { font-size: 8px !important; line-height: 1.1 !important; padding: 2px !important; }
-            .layout-4 .card span { font-size: 7px !important; }
+            .layout-2 .card { font-size: 9px !important; line-height: 1.1 !important; }
+            .layout-2 .card span { font-size: 8px !important; }
+            .layout-4 .card { font-size: 7.5px !important; line-height: 1.0 !important; padding: 1px !important;}
+            .layout-4 .card span { font-size: 6.5px !important; border-top: none; }
 
             th { background-color: #e5e7eb !important; color: black !important; -webkit-print-color-adjust: exact; }
             td.cell-empty { background-color: white !important; }
@@ -156,6 +158,48 @@
     </style>
 </head>
 <body>
+
+    <!-- Attendance Modal (ගුරු පැමිණීම) -->
+    <div id="attendanceModal" class="modal-overlay">
+        <div class="modal" style="max-width: 400px;">
+            <button class="close-btn" onclick="closeModals()">✖</button>
+            <h3 style="margin-top:0; color:#0d9488; border-bottom: 2px solid #e5e7eb; padding-bottom:8px;">📅 ගුරු පැමිණීම</h3>
+            <p style="font-size: 11px; color: gray;">අද දින නොපැමිණි ගුරුවරුන් ලකුණු කරන්න. මෙය සහන (Relief) ලබාදීමේදී ප්‍රයෝජනවත් වේ.</p>
+            <div id="attendanceList" style="max-height: 300px; overflow-y: auto; padding-right: 5px; margin-top: 15px;"></div>
+        </div>
+    </div>
+
+    <!-- Relief Management Modal -->
+    <div id="reliefModal" class="modal-overlay">
+        <div class="modal">
+            <button class="close-btn" onclick="closeModals()">✖</button>
+            <h3 style="margin-top:0; color:#7c3aed; border-bottom: 2px solid #e5e7eb; padding-bottom:8px;">👨‍🏫 සහන කාලපරිච්ඡේද (Relief)</h3>
+            <p style="font-size: 11px; color: gray;">නොපැමිණි ගුරුවරුන්ගේ කාලපරිච්ඡේද සඳහා නිදහස් ගුරුවරුන්ගෙන් සහනයක් යොදන්න.</p>
+            
+            <div class="form-grid">
+                <label>දවස:</label><select id="relDay" onchange="updateReliefUI()"></select>
+                <label>පීරියඩ් එක:</label><select id="relPeriod" onchange="updateReliefUI()">
+                    <option value="1">1 වැනි පීරියඩ්</option><option value="2">2 වැනි පීරියඩ්</option>
+                    <option value="3">3 වැනි පීරියඩ්</option><option value="4">4 වැනි පීරියඩ්</option>
+                    <option value="5">5 වැනි පීරියඩ්</option><option value="6">6 වැනි පීරියඩ්</option>
+                    <option value="7">7 වැනි පීරියඩ්</option><option value="8">8 වැනි පීරියඩ්</option>
+                </select>
+                <label>පන්තිය:</label><select id="relClass" onchange="updateReliefUI()"></select>
+            </div>
+            
+            <div id="relStatus" style="margin: 10px 0; padding: 10px; background: #fef2f2; border: 1px dashed #ef4444; border-radius: 4px; font-weight: bold; color: #b91c1c; font-size: 12px; text-align: center;">
+                දත්ත පරීක්ෂා කරමින්...
+            </div>
+
+            <div class="form-grid" id="relTeacherDiv" style="display:none;">
+                <label>සහන ගුරුවරයා:</label><select id="relAvailTeacher"></select>
+                <label></label><button class="btn-small" style="background: #8b5cf6; border-color:#7c3aed;" onclick="addRelief()">+ සහනය එක් කරන්න</button>
+            </div>
+
+            <h4 style="margin-top: 15px; border-bottom: 1px solid #d1d5db;">ලබා දී ඇති සහන ලැයිස්තුව</h4>
+            <div class="rules-list" id="activeReliefsList"></div>
+        </div>
+    </div>
 
     <!-- Print Modal -->
     <div id="printModal" class="modal-overlay">
@@ -199,38 +243,6 @@
         </div>
     </div>
 
-    <!-- Relief Management Modal -->
-    <div id="reliefModal" class="modal-overlay">
-        <div class="modal">
-            <button class="close-btn" onclick="closeModals()">✖</button>
-            <h3 style="margin-top:0; color:#7c3aed; border-bottom: 2px solid #e5e7eb; padding-bottom:8px;">👨‍🏫 සහන කාලපරිච්ඡේද (Relief)</h3>
-            <p style="font-size: 11px; color: gray;">ගුරුවරයෙකු නොපැමිණි විට, එම හිස්වන පන්තිය සඳහා වෙනත් ගුරුවරයෙකුට සහනයක් ලබා දෙන්න.</p>
-            
-            <div class="form-grid">
-                <label>දවස:</label><select id="relDay" onchange="updateReliefUI()"></select>
-                <label>පීරියඩ් එක:</label><select id="relPeriod" onchange="updateReliefUI()">
-                    <option value="1">1 වැනි පීරියඩ්</option><option value="2">2 වැනි පීරියඩ්</option>
-                    <option value="3">3 වැනි පීරියඩ්</option><option value="4">4 වැනි පීරියඩ්</option>
-                    <option value="5">5 වැනි පීරියඩ්</option><option value="6">6 වැනි පීරියඩ්</option>
-                    <option value="7">7 වැනි පීරියඩ්</option><option value="8">8 වැනි පීරියඩ්</option>
-                </select>
-                <label>පන්තිය:</label><select id="relClass" onchange="updateReliefUI()"></select>
-            </div>
-            
-            <div id="relStatus" style="margin: 10px 0; padding: 10px; background: #fef2f2; border: 1px dashed #ef4444; border-radius: 4px; font-weight: bold; color: #b91c1c; font-size: 11px; text-align: center;">
-                දත්ත පරීක්ෂා කරමින්...
-            </div>
-
-            <div class="form-grid" id="relTeacherDiv" style="display:none;">
-                <label>සහන ගුරුවරයා:</label><select id="relAvailTeacher"></select>
-                <label></label><button class="btn-small" style="background: #8b5cf6; border-color:#7c3aed;" onclick="addRelief()">+ සහනය එක් කරන්න</button>
-            </div>
-
-            <h4 style="margin-top: 15px; border-bottom: 1px solid #d1d5db;">ලබා දී ඇති සහන ලැයිස්තුව</h4>
-            <div class="rules-list" id="activeReliefsList"></div>
-        </div>
-    </div>
-
     <div id="printArea"></div>
 
     <div class="layout">
@@ -255,9 +267,10 @@
             </fieldset>
 
             <button class="btn-primary btn-auto" onclick="generateTimetable()">⚡ ස්වයංක්‍රීයව කාලසටහන සකසන්න</button>
+            <button class="btn-primary btn-attendance" onclick="openAttendanceModal()">📅 ගුරු පැමිණීම (Attendance)</button>
             <button class="btn-primary btn-relief" onclick="openReliefModal()">👨‍🏫 සහන කාලපරිච්ඡේද (Relief)</button>
             <button class="btn-primary btn-print-menu" onclick="openPrintModal()">🖨️ මුද්‍රණය කිරීම (Print)</button>
-            <button class="btn-primary" style="background: linear-gradient(to bottom, #d97706, #b45309); border-color:#92400e;" onclick="openDataModal()">⚙️ ඇතුළත් කළ දත්ත සංස්කරණය / මකාදැමීම</button>
+            <button class="btn-primary btn-data" onclick="openDataModal()">⚙️ ඇතුළත් කළ දත්ත සංස්කරණය</button>
             
             <fieldset>
                 <legend>👨‍🏫 මූලික දත්ත එක් කරන්න</legend>
@@ -355,6 +368,7 @@
     <script>
         let classes = [];
         let masterTeachers = [];
+        let absentTeachers = []; // අද දින නොපැමිණි ගුරුවරු
         let classTeacherMap = {}; 
         let masterSubjects = [];
         let teachingRules = [];
@@ -392,8 +406,15 @@
             document.getElementById('displaySchoolName').innerText = name ? name : "ඔබේ පාසලේ නම";
         }
 
+        // --- Modals Management ---
         function openPrintModal() { document.getElementById('printModal').style.display = 'flex'; }
         function openDataModal() { document.getElementById('dataModal').style.display = 'flex'; renderDataModal(); }
+        
+        function openAttendanceModal() {
+            document.getElementById('attendanceModal').style.display = 'flex';
+            renderAttendanceList();
+        }
+
         function openReliefModal() { 
             if(classes.length === 0) return alert("කරුණාකර පළමුව කාලසටහන සකස් කරන්න!");
             document.getElementById('reliefModal').style.display = 'flex'; 
@@ -401,13 +422,46 @@
             updateReliefUI();
             renderReliefList();
         }
+        
         function closeModals() { 
             document.getElementById('printModal').style.display = 'none'; 
             document.getElementById('dataModal').style.display = 'none';
             document.getElementById('reliefModal').style.display = 'none';
+            document.getElementById('attendanceModal').style.display = 'none';
         }
 
-        // --- Relief Management ---
+        // --- Teacher Attendance (ගුරු පැමිණීම) ---
+        function renderAttendanceList() {
+            let html = '';
+            if(masterTeachers.length === 0) {
+                html = "<p style='font-size:11px; color:gray;'>පද්ධතියට ගුරුවරුන් ඇතුළත් කර නොමැත.</p>";
+            } else {
+                masterTeachers.forEach(t => {
+                    let isAbsent = absentTeachers.includes(t);
+                    let bg = isAbsent ? '#fef2f2' : '#f0fdf4';
+                    let border = isAbsent ? '#f87171' : '#86efac';
+                    let txtColor = isAbsent ? '#dc2626' : '#166534';
+                    let icon = isAbsent ? '❌ නොපැමිණි' : '✔️ පැමිණි';
+                    
+                    html += `<div class="rule-item" style="cursor:pointer; background:${bg}; border-color:${border};" onclick="toggleAttendance('${t}')">
+                                <span style="color:${txtColor}; font-weight:bold;">${t}</span>
+                                <span style="font-weight:bold; font-size:10px;">${icon}</span>
+                             </div>`;
+                });
+            }
+            document.getElementById('attendanceList').innerHTML = html;
+        }
+
+        function toggleAttendance(t) {
+            if(absentTeachers.includes(t)) {
+                absentTeachers = absentTeachers.filter(x => x !== t);
+            } else {
+                absentTeachers.push(t);
+            }
+            renderAttendanceList();
+        }
+
+        // --- Relief Management (සහන) ---
         function updateReliefUI() {
             let d = document.getElementById('relDay').value;
             let p = parseInt(document.getElementById('relPeriod').value);
@@ -426,20 +480,36 @@
                 statusDiv.style.color = "gray"; statusDiv.style.borderColor = "gray";
                 teacherDiv.style.display = "none";
             } else {
+                let isTeacherAbsent = false;
+                cell.teacher.split(',').forEach(t => {
+                    if(absentTeachers.includes(t.trim())) isTeacherAbsent = true;
+                });
+
                 let txt = `පවතින විෂයය: <b>${cell.subject}</b> (${cell.teacher})`;
-                if(activeRelief) txt += `<br><span style="color:#7c3aed">දැනටමත් සහනයක් ලබාදී ඇත (සහන: ${activeRelief.reliefTeacher})</span>`;
+                if(isTeacherAbsent) {
+                    txt += `<br><span style="color:#dc2626; font-size:13px;">⚠️ ගුරුවරයා අද දින නොපැමිණි බැවින් සහනයක් අනිවාර්ය වේ!</span>`;
+                }
+                if(activeRelief) {
+                    txt += `<br><span style="color:#7c3aed">දැනටමත් සහනයක් ලබාදී ඇත (සහන: ${activeRelief.reliefTeacher})</span>`;
+                }
+                
                 statusDiv.innerHTML = txt;
-                statusDiv.style.color = "#b91c1c"; statusDiv.style.borderColor = "#ef4444";
+                statusDiv.style.color = isTeacherAbsent ? "#991b1b" : "#b91c1c"; 
+                statusDiv.style.borderColor = isTeacherAbsent ? "#dc2626" : "#ef4444";
                 teacherDiv.style.display = "grid";
 
                 let tHtml = "";
                 masterTeachers.forEach(t => {
+                    // ගුරුවරයා අද දිනට absent නම් සහන දිය නොහැක
+                    if(absentTeachers.includes(t)) return;
+
                     let isBusy = false;
                     classes.forEach(cls => {
                         let chkCell = generatedTimetable[d][p][cls];
                         if(chkCell && chkCell.teacher.includes(t)) isBusy = true;
                     });
                     let isReliefBusy = reliefAssignments.find(r => r.day === d && r.period === p && r.reliefTeacher === t);
+                    
                     if(!isBusy && !isReliefBusy) tHtml += `<option value="${t}">${t} (නිදහස්)</option>`;
                 });
                 teacherSelect.innerHTML = tHtml || "<option value=''>සියලුම ගුරුවරු කාර්යබහුලයි</option>";
@@ -481,7 +551,7 @@
             document.getElementById('activeReliefsList').innerHTML = html || "<span style='font-size:11px;color:gray;'>දැනට සහන ලබා දී නොමැත.</span>";
         }
 
-        // --- Data Management ---
+        // --- Data Management Modal ---
         function renderDataModal() {
             let cHtml = '';
             classes.forEach(c => cHtml += `<div class="rule-item"><span>${c} ශ්‍රේණිය</span><div><button class="btn-small" style="background:#f59e0b;" onclick="editItem('class', '${c}')">✏️</button> <button class="btn-delete" onclick="deleteItem('class', '${c}')">❌</button></div></div>`);
@@ -509,6 +579,7 @@
                 masterTeachers[masterTeachers.indexOf(oldVal)] = newVal;
                 teachingRules.forEach(r => { if(r.teacher.includes(oldVal)) r.teacher = r.teacher.replace(new RegExp(oldVal, 'g'), newVal); });
                 for (let k in classTeacherMap) { if(classTeacherMap[k] === oldVal) classTeacherMap[k] = newVal; }
+                if(absentTeachers.includes(oldVal)) { absentTeachers[absentTeachers.indexOf(oldVal)] = newVal; }
             } else if (type === 'subject') {
                 masterSubjects[masterSubjects.indexOf(oldVal)] = newVal;
                 teachingRules.forEach(r => { if(r.subject.includes(oldVal)) r.subject = r.subject.replace(new RegExp(oldVal, 'g'), newVal); });
@@ -524,12 +595,14 @@
                 delete classTeacherMap[val];
             } else if (type === 'teacher') {
                 masterTeachers = masterTeachers.filter(t => t !== val);
+                absentTeachers = absentTeachers.filter(t => t !== val);
             } else if (type === 'subject') {
                 masterSubjects = masterSubjects.filter(s => s !== val);
             }
             initDropdowns(); initEmptyTimetable(); renderTable(); renderDataModal(); renderRules();
         }
 
+        // --- Initial Data Entry ---
         function toggleCTGrade() {
             document.getElementById('inTeacherClass').style.display = document.getElementById('isClassTeacher').checked ? 'block' : 'none';
         }
@@ -657,6 +730,7 @@
             reliefAssignments = []; 
         }
 
+        // --- ASC Timetable Core Engine (Double Periods included) ---
         function generateTimetable() {
             if(teachingRules.length === 0) return alert("කරුණාකර පළමුව නීති ඇතුළත් කරන්න!");
             initEmptyTimetable();
@@ -683,6 +757,7 @@
                     let placed = false;
                     let dayOrder = [...days].sort(() => Math.random() - 0.5);
 
+                    // DOUBLE PERIODS logic (if periods=3, forces 1 double and 1 single)
                     if (rule.periods === 3 && periodsToAssign >= 2 && !hasPlacedDouble && doubleAttempts < 50) {
                         doubleAttempts++;
                         for (let d of dayOrder) {
@@ -719,6 +794,7 @@
                         }
                     }
 
+                    // SINGLE PERIODS logic
                     if (!placed && periodsToAssign > 0) {
                         for (let d of dayOrder) {
                             if (daysAssigned[d] > 0 && rule.periods <= 5) continue; 
@@ -757,19 +833,20 @@
             renderTable();
         }
 
+        // --- Table Rendering (with strict alignment) ---
         function getCellHTML(cellData, d, p, c) {
             let relief = reliefAssignments.find(r => r.day === d && r.period === p && r.grade === c);
 
             if (cellData) {
                 if (relief) {
-                    return `<td><div class="card relief-card"><span style="font-size:12px; font-weight:bold;">${cellData.subject}</span><span class="relief-text">(සහන: ${relief.reliefTeacher})</span></div></td>`;
+                    return `<td><div class="card relief-card"><span class="card-subj">${cellData.subject}</span><span class="relief-text">(සහන: ${relief.reliefTeacher})</span></div></td>`;
                 } else {
                     let color = getSubjectColor(cellData.subject);
-                    return `<td><div class="card" style="background-color: ${color};">${cellData.subject} <span>(${cellData.teacher})</span></div></td>`;
+                    return `<td><div class="card" style="background-color: ${color};"><span class="card-subj">${cellData.subject}</span><span>(${cellData.teacher})</span></div></td>`;
                 }
             } else {
                 if (relief) {
-                    return `<td><div class="card relief-card"><span style="font-size:12px; font-weight:bold; color:gray;">හිස් කාලච්ඡේදය</span><span class="relief-text">(සහන: ${relief.reliefTeacher})</span></div></td>`;
+                    return `<td><div class="card relief-card"><span class="card-subj" style="color:gray;">හිස් කාලච්ඡේදය</span><span class="relief-text">(සහන: ${relief.reliefTeacher})</span></div></td>`;
                 }
                 return `<td class="cell-empty"><span class="empty-slot">- හිස් -</span></td>`;
             }
@@ -784,7 +861,7 @@
 
             if(classes.length === 0) {
                 document.getElementById('tableHeader').innerHTML = ""; 
-                document.getElementById('tableBody').innerHTML = "<tr><td style='padding:40px; color:#ef4444; font-size:14px; font-weight:bold; background:white;'>කරුණාකර වම්පස මෙනුවෙන් නව ශ්‍රේණි (පන්ති), විෂයයන් සහ ගුරුවරුන් පද්ධතියට එක් කරන්න.</td></tr>";
+                document.getElementById('tableBody').innerHTML = "<tr><td style='padding:40px; color:#ef4444; font-size:14px; font-weight:bold; background:white; text-align:center;'>කරුණාකර වම්පස මෙනුවෙන් නව ශ්‍රේණි (පන්ති), විෂයයන් සහ ගුරුවරුන් පද්ධතියට එක් කරන්න.</td></tr>";
                 document.getElementById('mainTitle').innerText = "පද්ධතිය හිස්ව ඇත";
                 return;
             }
@@ -892,9 +969,9 @@
                                 }
 
                                 if(isRelief) {
-                                    tbl += `<td><div class="card relief-card"><b>${assignedSubject}</b><br><span class="relief-text">(සහන: ${assignedClass})</span></div></td>`;
+                                    tbl += `<td><div class="card relief-card"><span class="card-subj">${assignedSubject}</span><span class="relief-text">(සහන: ${assignedClass})</span></div></td>`;
                                 } else if(assignedClass !== "-") {
-                                    tbl += `<td><div class="card" style="background:${color};"><b>${assignedSubject}</b><br><span>(${assignedClass})</span></div></td>`;
+                                    tbl += `<td><div class="card" style="background:${color};"><span class="card-subj">${assignedSubject}</span><span>(${assignedClass})</span></div></td>`;
                                 } else {
                                     tbl += `<td class="cell-empty"><span class="empty-slot">- හිස් -</span></td>`;
                                 }
