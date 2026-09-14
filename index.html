@@ -109,22 +109,41 @@
             .layout-2 h3.main-title { font-size: 13px; margin-bottom: 8px; text-align: center; color: black;}
             .layout-2 table { border: 2px solid #000; border-collapse: collapse; min-width: 100%; border-spacing: 0;}
             .layout-2 th, .layout-2 td { border: 1px solid #000 !important; color: black !important; padding: 2px !important; font-size: 10px !important; border-radius: 0;}
-            .layout-2 .card { padding: 2px; font-size: 9px; line-height: 1.2; margin: 0 auto; box-shadow: none; border: 1px solid #666;}
-            .layout-2 .card span { font-size: 8px; border-top: 1px solid #999; margin-top: 1px;}
+            .layout-2 .interval { font-size: 10px !important; padding: 2px !important; }
             
-            /* Fixed Layout 4 for No Text Cut-off */
             .layout-4 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8mm; height: 100vh;}
             .layout-4 h2.school-title { font-size: 13px; margin-bottom: 2px; text-align: center; color: black;}
             .layout-4 h3.main-title { font-size: 11px; margin-bottom: 5px; text-align: center; color: black;}
             .layout-4 table { border: 1px solid #000; border-collapse: collapse; min-width: 100%; border-spacing: 0;}
             .layout-4 th, .layout-4 td { border: 1px solid #000 !important; color: black !important; padding: 1px !important; font-size: 9px !important; border-radius: 0;}
-            .layout-4 .card { padding: 2px; font-size: 8px; line-height: 1.2; margin: 0 auto; box-shadow: none; border: 1px solid #666; white-space: normal; overflow-wrap: break-word; word-wrap: break-word;}
-            .layout-4 .card span { font-size: 7px; border-top: 1px solid #999; margin-top: 1px;}
+            .layout-4 th { padding: 2px !important; }
             .layout-4 .interval { font-size: 8px !important; padding: 1px !important; }
+
+            /* Universal Card Print Fix */
+            .card { 
+                padding: 3px !important; 
+                margin: 1px auto !important; 
+                box-shadow: none !important; 
+                border: 1px solid #333 !important; 
+                color: #000 !important; /* Force black text */
+                text-shadow: none !important;
+                overflow: visible !important; /* Prevents text clipping */
+                white-space: normal !important; 
+                word-wrap: break-word !important; 
+                page-break-inside: avoid !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .card span { color: #000 !important; border-top: 1px solid #999; margin-top: 2px; padding-top: 1px;}
+            
+            /* Sizing overrides for specific layouts */
+            .layout-2 .card { font-size: 10px !important; line-height: 1.2 !important; }
+            .layout-2 .card span { font-size: 9px !important; }
+            .layout-4 .card { font-size: 8px !important; line-height: 1.1 !important; padding: 2px !important; }
+            .layout-4 .card span { font-size: 7px !important; }
 
             th { background-color: #e5e7eb !important; color: black !important; -webkit-print-color-adjust: exact; }
             td.cell-empty { background-color: white !important; }
-            .card { text-shadow: none; }
             .interval { background-color: #d1d5db !important; color: black !important; border: 1px solid #000 !important; -webkit-print-color-adjust: exact; letter-spacing: normal; text-transform: none;}
             .day-header { background-color: #ccc !important; color: black !important; -webkit-print-color-adjust: exact; }
             
@@ -407,7 +426,7 @@
                 statusDiv.style.color = "gray"; statusDiv.style.borderColor = "gray";
                 teacherDiv.style.display = "none";
             } else {
-                let txt = `පවතින විෂයය: ${cell.subject} (${cell.teacher})`;
+                let txt = `පවතින විෂයය: <b>${cell.subject}</b> (${cell.teacher})`;
                 if(activeRelief) txt += `<br><span style="color:#7c3aed">දැනටමත් සහනයක් ලබාදී ඇත (සහන: ${activeRelief.reliefTeacher})</span>`;
                 statusDiv.innerHTML = txt;
                 statusDiv.style.color = "#b91c1c"; statusDiv.style.borderColor = "#ef4444";
@@ -873,9 +892,9 @@
                                 }
 
                                 if(isRelief) {
-                                    tbl += `<td><div class="card relief-card">${assignedSubject}<br><span class="relief-text">(සහන: ${assignedClass})</span></div></td>`;
+                                    tbl += `<td><div class="card relief-card"><b>${assignedSubject}</b><br><span class="relief-text">(සහන: ${assignedClass})</span></div></td>`;
                                 } else if(assignedClass !== "-") {
-                                    tbl += `<td><div class="card" style="background:${color};">${assignedSubject}<br><span>(${assignedClass})</span></div></td>`;
+                                    tbl += `<td><div class="card" style="background:${color};"><b>${assignedSubject}</b><br><span>(${assignedClass})</span></div></td>`;
                                 } else {
                                     tbl += `<td class="cell-empty"><span class="empty-slot">- හිස් -</span></td>`;
                                 }
