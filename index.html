@@ -12,7 +12,7 @@
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #d1d5db; margin: 0; padding: 10px; font-size: 13px; color: #1f2937; }
         
         .layout { display: flex; gap: 10px; height: 97vh; }
-        .panel { background: white; padding: 15px; border-radius: 4px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); overflow-y: auto; box-sizing: border-box; }
+        .panel { background: white; padding: 15px; border-radius: 4px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); overflow-y: auto; box-sizing: border-box; }
         .left-panel { flex: 1.2; min-width: 340px; max-width: 400px; background-color: #f3f4f6; border-right: 1px solid #e5e7eb; }
         .right-panel { flex: 3; display: flex; flex-direction: column; min-width: 0; background-color: #ffffff; }
         
@@ -20,12 +20,14 @@
         h3.main-title { text-align: center; color: #4b5563; margin: 0 0 15px 0; font-size: 14px; font-weight: 600; }
         
         /* ASC Buttons */
-        .btn-primary { background: linear-gradient(to bottom, #3b82f6, #2563eb); color: white; width: 100%; padding: 10px; border: 1px solid #1d4ed8; border-radius: 4px; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 8px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.2); text-shadow: 0 1px 1px rgba(0,0,0,0.2); }
+        .btn-primary { background: linear-gradient(to bottom, #3b82f6, #2563eb); color: white; width: 100%; padding: 10px; border: 1px solid #1d4ed8; border-radius: 4px; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 8px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.2); }
         .btn-primary:hover { background: linear-gradient(to bottom, #2563eb, #1d4ed8); }
         .btn-auto { background: linear-gradient(to bottom, #10b981, #059669); border-color: #047857; font-size: 14px; margin-top: 5px; }
         .btn-auto:hover { background: linear-gradient(to bottom, #059669, #047857); }
         .btn-print-menu { background: linear-gradient(to bottom, #6b7280, #4b5563); border-color: #374151; }
         .btn-print-menu:hover { background: linear-gradient(to bottom, #4b5563, #374151); }
+        .btn-relief { background: linear-gradient(to bottom, #8b5cf6, #7c3aed); border-color: #6d28d9; }
+        .btn-relief:hover { background: linear-gradient(to bottom, #7c3aed, #6d28d9); }
         .btn-small { background-color: #3b82f6; color: white; border: 1px solid #2563eb; padding: 6px 10px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: bold; width: 100%; }
         .btn-small:hover { background-color: #2563eb; }
         .btn-delete { background: #ef4444; color: white; border: 1px solid #dc2626; padding: 3px 6px; border-radius: 3px; cursor: pointer; font-size: 10px; }
@@ -37,18 +39,15 @@
         /* Form Grid */
         .form-grid { display: grid; grid-template-columns: 85px 1fr; gap: 8px; align-items: center; margin-bottom: 8px; }
         .form-grid label { font-size: 11px; font-weight: bold; color: #374151; text-align: right; padding-right: 5px; }
-        
-        input[type="text"], input[type="number"], select { width: 100%; padding: 6px 8px; border: 1px solid #9ca3af; border-radius: 3px; font-size: 12px; box-sizing: border-box; outline: none; background: #f9fafb; }
-        input[type="text"]:focus, select:focus { border-color: #2563eb; background: #ffffff; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
-        
-        .basket-box { background: #eff6ff; padding: 8px; border: 1px dashed #93c5fd; border-radius: 3px; margin-bottom: 8px; }
-        .basket-items { font-size: 11px; color: #1e3a8a; margin-bottom: 5px; line-height: 1.6; background: white; padding: 4px; border-radius: 2px; min-height: 20px; border: 1px solid #bfdbfe;}
+        input[type="text"], input[type="number"], select { width: 100%; padding: 6px 8px; border: 1px solid #9ca3af; border-radius: 3px; font-size: 12px; box-sizing: border-box; background: #f9fafb; outline: none; }
+        input[type="text"]:focus, select:focus { border-color: #2563eb; background: #ffffff; }
 
+        .basket-box { background: #eff6ff; padding: 8px; border: 1px dashed #93c5fd; border-radius: 3px; margin-bottom: 8px; }
         .rules-list { max-height: 180px; overflow-y: auto; background: #fff; border: 1px solid #d1d5db; padding: 4px; border-radius: 3px;}
         .rule-item { background: #f3f4f6; padding: 6px; border: 1px solid #e5e7eb; margin-bottom: 4px; border-radius: 3px; font-size: 11px; display: flex; justify-content: space-between; align-items: center;}
         
         /* Ribbon & Filters */
-        .view-controls { background: #f3f4f6; padding: 10px; border-radius: 4px; margin-bottom: 12px; border: 1px solid #d1d5db; display: flex; flex-direction: column; gap: 10px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);}
+        .view-controls { background: #f3f4f6; padding: 10px; border-radius: 4px; margin-bottom: 12px; border: 1px solid #d1d5db; display: flex; flex-direction: column; gap: 10px;}
         .radio-group { display: flex; gap: 15px; font-weight: bold; font-size: 12px; justify-content: center; flex-wrap: wrap;}
         .radio-group label { cursor: pointer; display: flex; align-items: center; gap: 4px; color: #374151;}
         
@@ -56,21 +55,20 @@
         .table-container { width: 100%; overflow-x: auto; flex-grow: 1; border: 2px solid #9ca3af; background: #e5e7eb; padding: 2px;}
         table { width: 100%; border-collapse: separate; border-spacing: 2px; table-layout: fixed; min-width: 700px; }
         th, td { text-align: center; vertical-align: middle; padding: 2px; border-radius: 2px; }
-        th { background: linear-gradient(to bottom, #e5e7eb, #d1d5db); color: #1f2937; padding: 8px; font-size: 12px; border: 1px solid #9ca3af; text-shadow: 0 1px 0 #fff;}
-        td:first-child { background: linear-gradient(to bottom, #d1d5db, #9ca3af); font-weight: bold; width: 50px; font-size: 11px; position: sticky; left: 0; z-index: 1; border: 1px solid #6b7280; color: #111827;}
-        
+        th { background: linear-gradient(to bottom, #e5e7eb, #d1d5db); color: #1f2937; padding: 8px; font-size: 12px; border: 1px solid #9ca3af;}
+        td:first-child { background: linear-gradient(to bottom, #d1d5db, #9ca3af); font-weight: bold; width: 50px; font-size: 11px; position: sticky; left: 0; z-index: 1; border: 1px solid #6b7280;}
         td.cell-empty { background-color: #ffffff; border: 1px solid #d1d5db; }
         
         .interval { background: linear-gradient(to right, #6b7280, #4b5563) !important; color: white !important; font-weight: bold; padding: 4px !important; font-size: 12px; letter-spacing: 4px; border: 1px solid #374151 !important; text-transform: uppercase;}
-        .day-header { background: linear-gradient(to right, #4b5563, #374151) !important; color: white !important; font-weight: bold; padding: 6px; font-size: 13px; text-align: center; border: 1px solid #1f2937 !important;}
+        .day-header { background: linear-gradient(to right, #4b5563, #374151) !important; color: white !important; font-weight: bold; padding: 6px; font-size: 13px; border: 1px solid #1f2937 !important;}
         
         /* ASC Cards */
-        .card { padding: 5px; border-radius: 4px; font-size: 12px; font-weight: 700; width: 98%; margin: 0 auto; line-height: 1.2; border: 1px solid rgba(0,0,0,0.3); box-shadow: 1px 1px 3px rgba(0,0,0,0.2); color: #111827; box-sizing: border-box; text-shadow: 0 1px 0 rgba(255,255,255,0.4); position: relative; overflow: hidden;}
+        .card { padding: 5px; border-radius: 4px; font-size: 12px; font-weight: 700; width: 98%; margin: 0 auto; line-height: 1.2; border: 1px solid rgba(0,0,0,0.3); box-shadow: 1px 1px 3px rgba(0,0,0,0.2); color: #111827; box-sizing: border-box; position: relative; overflow: hidden; white-space: normal; overflow-wrap: break-word;}
         .card::before { content: ''; position: absolute; top:0; left:0; width:100%; height: 30%; background: linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,0)); pointer-events: none;}
         .card span { font-weight: 600; font-size: 10px; color: #1f2937; display: block; margin-top: 3px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 2px;}
         .empty-slot { color: #9ca3af; font-size: 10px; font-style: italic; }
 
-        .footer { text-align: center; font-size: 10px; color: #6b7280; padding-top: 10px; margin-top: 10px; border-top: 1px solid #e5e7eb; }
+        .footer { text-align: center; font-size: 12px; font-weight: bold; color: #4b5563; padding-top: 10px; margin-top: 10px; border-top: 1px solid #e5e7eb; }
 
         /* Modals */
         .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items:center; justify-content:center; padding: 10px; box-sizing: border-box;}
@@ -78,7 +76,6 @@
         .close-btn { position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 18px; font-weight: bold; color: #6b7280; background: none; border: none; }
         .close-btn:hover { color: #ef4444; }
 
-        /* Mobile Responsive */
         @media screen and (max-width: 768px) {
             .layout { flex-direction: column; height: auto; }
             .left-panel { min-width: 100%; max-width: 100%; }
@@ -91,7 +88,7 @@
         
         #printArea { display: none; }
 
-        /* Print Settings */
+        /* Print Settings Fixed for Text Cut-off */
         @media print {
             @page { margin: 8mm; size: landscape; } 
             body { background-color: white; padding: 0; font-size: 12px; margin: 0; }
@@ -108,24 +105,21 @@
             .layout-1 th, .layout-1 td { border: 1px solid #000 !important; color: black !important; padding: 4px !important; border-radius: 0; }
             
             .layout-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10mm; align-items: start; height: 100vh;}
-            .layout-2 .timetable-box { width: 100%; }
             .layout-2 h2.school-title { font-size: 16px; margin-bottom: 2px; text-align: center; color: black;}
             .layout-2 h3.main-title { font-size: 13px; margin-bottom: 8px; text-align: center; color: black;}
             .layout-2 table { border: 2px solid #000; border-collapse: collapse; min-width: 100%; border-spacing: 0;}
             .layout-2 th, .layout-2 td { border: 1px solid #000 !important; color: black !important; padding: 2px !important; font-size: 10px !important; border-radius: 0;}
-            .layout-2 .card { padding: 2px; font-size: 9px; line-height: 1.1; margin: 0 auto; box-shadow: none; border: 1px solid #666;}
+            .layout-2 .card { padding: 2px; font-size: 9px; line-height: 1.2; margin: 0 auto; box-shadow: none; border: 1px solid #666;}
             .layout-2 .card span { font-size: 8px; border-top: 1px solid #999; margin-top: 1px;}
-            .layout-2 .interval { font-size: 10px !important; padding: 2px !important; }
             
+            /* Fixed Layout 4 for No Text Cut-off */
             .layout-4 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8mm; height: 100vh;}
-            .layout-4 .timetable-box { width: 100%; height: 100%;}
             .layout-4 h2.school-title { font-size: 13px; margin-bottom: 2px; text-align: center; color: black;}
             .layout-4 h3.main-title { font-size: 11px; margin-bottom: 5px; text-align: center; color: black;}
             .layout-4 table { border: 1px solid #000; border-collapse: collapse; min-width: 100%; border-spacing: 0;}
-            .layout-4 th, .layout-4 td { border: 1px solid #000 !important; color: black !important; padding: 1px !important; font-size: 8px !important; border-radius: 0;}
-            .layout-4 th { padding: 2px !important; }
-            .layout-4 .card { padding: 1px; font-size: 7px; line-height: 1; margin: 0 auto; box-shadow: none; border: 1px solid #666;}
-            .layout-4 .card span { font-size: 6px; border-top: 1px solid #999; margin-top: 1px;}
+            .layout-4 th, .layout-4 td { border: 1px solid #000 !important; color: black !important; padding: 1px !important; font-size: 9px !important; border-radius: 0;}
+            .layout-4 .card { padding: 2px; font-size: 8px; line-height: 1.2; margin: 0 auto; box-shadow: none; border: 1px solid #666; white-space: normal; overflow-wrap: break-word; word-wrap: break-word;}
+            .layout-4 .card span { font-size: 7px; border-top: 1px solid #999; margin-top: 1px;}
             .layout-4 .interval { font-size: 8px !important; padding: 1px !important; }
 
             th { background-color: #e5e7eb !important; color: black !important; -webkit-print-color-adjust: exact; }
@@ -133,7 +127,9 @@
             .card { text-shadow: none; }
             .interval { background-color: #d1d5db !important; color: black !important; border: 1px solid #000 !important; -webkit-print-color-adjust: exact; letter-spacing: normal; text-transform: none;}
             .day-header { background-color: #ccc !important; color: black !important; -webkit-print-color-adjust: exact; }
-            .print-footer { text-align: center; font-size: 9px; color: black; margin-top: 5px; border-top: 1px solid #000; padding-top: 3px; }
+            .print-footer { text-align: center; font-size: 10px; font-weight:bold; color: black; margin-top: 5px; border-top: 1px solid #000; padding-top: 3px; }
+            .relief-card { background-color: #fef2f2 !important; border: 2px dashed #ef4444 !important; -webkit-print-color-adjust: exact; }
+            .relief-text { color: #dc2626 !important; font-weight: bold; }
         }
     </style>
 </head>
@@ -144,7 +140,6 @@
         <div class="modal">
             <button class="close-btn" onclick="closeModals()">✖</button>
             <h3 style="margin-top:0; color:#1e40af; border-bottom: 2px solid #e5e7eb; padding-bottom:8px;">🖨️ මුද්‍රණ මෙනුව</h3>
-            
             <fieldset style="background:#f9fafb;">
                 <legend>පිටු සැකසුම (Print Layout)</legend>
                 <div class="radio-group" style="justify-content: flex-start;">
@@ -153,21 +148,18 @@
                     <label><input type="radio" name="printLayout" value="4"> 4ක් පෙන්වන්න</label>
                 </div>
             </fieldset>
-
             <p style="font-size: 11px; color: #4b5563; margin-bottom: 10px;">මුද්‍රණය කිරීමට අවශ්‍ය කාලසටහන් වර්ගය තෝරන්න:</p>
-            
             <button class="btn-primary" onclick="triggerPrint('all_master')">🏫 සම්පූර්ණ ප්‍රධාන කාලසටහන (Master View)</button>
             <button class="btn-primary" style="background: linear-gradient(to bottom, #10b981, #059669); border-color:#047857;" onclick="triggerPrint('classes')">📚 සියලුම පන්ති කාලසටහන්</button>
             <button class="btn-primary" style="background: linear-gradient(to bottom, #f59e0b, #d97706); border-color:#b45309;" onclick="triggerPrint('teachers')">🧑‍🏫 සියලුම ගුරුවරුන්ගේ කාලසටහන්</button>
         </div>
     </div>
 
-    <!-- දත්ත සංස්කරණ කවුළුව (Data Management Modal) -->
+    <!-- Data Management Modal -->
     <div id="dataModal" class="modal-overlay">
         <div class="modal" style="max-width: 800px;">
             <button class="close-btn" onclick="closeModals()">✖</button>
             <h3 style="margin-top:0; color:#1e40af; border-bottom: 2px solid #e5e7eb; padding-bottom:8px;">⚙️ දත්ත කළමනාකරණය</h3>
-            
             <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                 <div style="flex: 1; min-width: 200px;">
                     <h4 style="margin: 0 0 10px 0; color: #374151; border-bottom: 1px solid #d1d5db;">📚 ශ්‍රේණි / පන්ති</h4>
@@ -185,12 +177,43 @@
         </div>
     </div>
 
+    <!-- Relief (සහන) Management Modal -->
+    <div id="reliefModal" class="modal-overlay">
+        <div class="modal">
+            <button class="close-btn" onclick="closeModals()">✖</button>
+            <h3 style="margin-top:0; color:#7c3aed; border-bottom: 2px solid #e5e7eb; padding-bottom:8px;">👨‍🏫 සහන කාලපරිච්ඡේද (Relief)</h3>
+            <p style="font-size: 11px; color: gray;">ගුරුවරයෙකු නොපැමිණි විට, එම හිස්වන පන්තිය සඳහා වෙනත් ගුරුවරයෙකුට සහනයක් ලබා දෙන්න.</p>
+            
+            <div class="form-grid">
+                <label>දවස:</label><select id="relDay" onchange="updateReliefUI()"></select>
+                <label>පීරියඩ් එක:</label><select id="relPeriod" onchange="updateReliefUI()">
+                    <option value="1">1 වැනි පීරියඩ්</option><option value="2">2 වැනි පීරියඩ්</option>
+                    <option value="3">3 වැනි පීරියඩ්</option><option value="4">4 වැනි පීරියඩ්</option>
+                    <option value="5">5 වැනි පීරියඩ්</option><option value="6">6 වැනි පීරියඩ්</option>
+                    <option value="7">7 වැනි පීරියඩ්</option><option value="8">8 වැනි පීරියඩ්</option>
+                </select>
+                <label>පන්තිය:</label><select id="relClass" onchange="updateReliefUI()"></select>
+            </div>
+            
+            <div id="relStatus" style="margin: 10px 0; padding: 10px; background: #fef2f2; border: 1px dashed #ef4444; border-radius: 4px; font-weight: bold; color: #b91c1c; font-size: 11px; text-align: center;">
+                දත්ත පරීක්ෂා කරමින්...
+            </div>
+
+            <div class="form-grid" id="relTeacherDiv" style="display:none;">
+                <label>සහන ගුරුවරයා:</label><select id="relAvailTeacher"></select>
+                <label></label><button class="btn-small" style="background: #8b5cf6; border-color:#7c3aed;" onclick="addRelief()">+ සහනය එක් කරන්න</button>
+            </div>
+
+            <h4 style="margin-top: 15px; border-bottom: 1px solid #d1d5db;">ලබා දී ඇති සහන ලැයිස්තුව</h4>
+            <div class="rules-list" id="activeReliefsList"></div>
+        </div>
+    </div>
+
     <div id="printArea"></div>
 
     <div class="layout">
-        <!-- වම් පස මෙනුව (Data Entry View) -->
+        <!-- වම් පස මෙනුව -->
         <div class="panel left-panel">
-            
             <fieldset>
                 <legend>🏢 පාසලේ විස්තර</legend>
                 <div class="form-grid" style="grid-template-columns: 1fr;">
@@ -209,52 +232,38 @@
                 </div>
             </fieldset>
 
-            <button class="btn-primary btn-auto" onclick="generateTimetable()">⚡ ස්වයංක්‍රීයව කාලසටහන සකසන්න</button>
-            <button class="btn-primary btn-print-menu" onclick="openPrintModal()">🖨️ මුද්‍රණය කිරීම (Print)</button>
+            <button class="btn-primary btn-auto" onclick="generateTimetable()">⚡ 1. ස්වයංක්‍රීයව කාලසටහන සකසන්න</button>
+            <button class="btn-primary btn-relief" onclick="openReliefModal()">👨‍🏫 2. සහන කාලපරිච්ඡේද (Relief)</button>
+            <button class="btn-primary btn-print-menu" onclick="openPrintModal()">🖨️ 3. මුද්‍රණය කිරීම (Print)</button>
             <button class="btn-primary" style="background: linear-gradient(to bottom, #d97706, #b45309); border-color:#92400e;" onclick="openDataModal()">⚙️ ඇතුළත් කළ දත්ත සංස්කරණය / මකාදැමීම</button>
             
             <fieldset>
-                <legend>👨‍🏫 1. මූලික දත්ත එක් කරන්න</legend>
-                
+                <legend>👨‍🏫 මූලික දත්ත එක් කරන්න</legend>
                 <div class="form-grid">
-                    <label>ශ්‍රේණිය:</label>
-                    <input type="text" id="inClass" placeholder="උදා: 6, 7-A">
-                    <label></label>
-                    <button class="btn-small" onclick="addMasterClassMain()">+ ශ්‍රේණිය එක් කරන්න</button>
+                    <label>ශ්‍රේණිය:</label><input type="text" id="inClass" placeholder="උදා: 6, 7-A">
+                    <label></label><button class="btn-small" onclick="addMasterClassMain()">+ ශ්‍රේණිය එක් කරන්න</button>
                 </div>
-
                 <hr style="border: 0; border-top: 1px dashed #d1d5db; margin: 10px 0;">
-
                 <div class="form-grid">
-                    <label>විෂයය:</label>
-                    <input type="text" id="inSubject" placeholder="උදා: ගණිතය">
-                    <label></label>
-                    <button class="btn-small" onclick="addMasterSubject()">+ විෂයය එක් කරන්න</button>
+                    <label>විෂයය:</label><input type="text" id="inSubject" placeholder="උදා: ගණිතය">
+                    <label></label><button class="btn-small" onclick="addMasterSubject()">+ විෂයය එක් කරන්න</button>
                 </div>
-
                 <hr style="border: 0; border-top: 1px dashed #d1d5db; margin: 10px 0;">
-
                 <div class="form-grid">
-                    <label>ගුරුවරයා:</label>
-                    <input type="text" id="inTeacher" placeholder="උදා: නිමල් සර්">
-                    
+                    <label>ගුරුවරයා:</label><input type="text" id="inTeacher" placeholder="උදා: නිමල් සර්">
                     <label></label>
                     <div style="display: flex; gap: 5px; align-items: center; width: 100%;">
                         <input type="checkbox" id="isClassTeacher" onchange="toggleCTGrade()"> <label for="isClassTeacher" style="font-size:10px; padding:0; text-align: left;">පන්තිභාරද?</label>
                         <select id="inTeacherClass" style="display:none; padding:4px;"><option value="">පන්තිය</option></select>
                     </div>
-                    
-                    <label></label>
-                    <button class="btn-small" onclick="addMasterTeacher()">+ ගුරුවරයා එක් කරන්න</button>
+                    <label></label><button class="btn-small" onclick="addMasterTeacher()">+ ගුරුවරයා එක් කරන්න</button>
                 </div>
             </fieldset>
 
             <fieldset>
-                <legend>⚙️ 2. ඉගැන්වීම් නීති සැකසීම</legend>
+                <legend>⚙️ ඉගැන්වීම් නීති සැකසීම</legend>
                 <div class="form-grid">
-                    <label>ශ්‍රේණිය:</label>
-                    <select id="rClass"></select>
-                    
+                    <label>ශ්‍රේණිය:</label><select id="rClass"></select>
                     <label>වර්ගය:</label>
                     <select id="rType" onchange="toggleRuleType()">
                         <option value="core">සාමාන්‍ය විෂයය</option>
@@ -317,17 +326,17 @@
                 </table>
             </div>
 
-            <div class="footer">ASC Style Timetable System v2.0 | SmartSoft</div>
+            <div class="footer">Copyright &copy; 2026 Kelum Konara | Smart<span style="color: #10b981;">Soft</span> | Time Table version 1.0</div>
         </div>
     </div>
 
     <script>
-        // දත්ත සම්පූර්ණයෙන්ම හිස් කර ඇත (Blank Slate)
         let classes = [];
         let masterTeachers = [];
         let classTeacherMap = {}; 
         let masterSubjects = [];
         let teachingRules = [];
+        let reliefAssignments = []; // සහන දත්ත ගබඩාව {day, period, grade, reliefTeacher}
         
         const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
         const dayNames = { 'Monday':'සඳුදා', 'Tuesday':'අඟහරුවාදා', 'Wednesday':'බදාදා', 'Thursday':'බ්‍රහස්පතින්දා', 'Friday':'සිකුරාදා' };
@@ -336,7 +345,6 @@
         let currentViewMode = 'class_wise'; 
         let currentSelectedClass = '';
         
-        // ASC Style bright colors
         const colors = ['#fca5a5', '#fcd34d', '#86efac', '#6ee7b7', '#93c5fd', '#a5b4fc', '#d8b4fe', '#f9a8d4', '#f87171', '#fbbf24'];
         let subjectColorMap = {};
         function getSubjectColor(sub) {
@@ -362,15 +370,98 @@
             document.getElementById('displaySchoolName').innerText = name ? name : "ඔබේ පාසලේ නම";
         }
 
-        // --- Modals ---
         function openPrintModal() { document.getElementById('printModal').style.display = 'flex'; }
         function openDataModal() { document.getElementById('dataModal').style.display = 'flex'; renderDataModal(); }
+        function openReliefModal() { 
+            if(classes.length === 0) return alert("කරුණාකර පළමුව කාලසටහන සකස් කරන්න!");
+            document.getElementById('reliefModal').style.display = 'flex'; 
+            initDropdowns();
+            updateReliefUI();
+            renderReliefList();
+        }
         function closeModals() { 
             document.getElementById('printModal').style.display = 'none'; 
             document.getElementById('dataModal').style.display = 'none';
+            document.getElementById('reliefModal').style.display = 'none';
         }
 
-        // --- Data Editing ---
+        // --- Relief Management (සහන) ---
+        function updateReliefUI() {
+            let d = document.getElementById('relDay').value;
+            let p = parseInt(document.getElementById('relPeriod').value);
+            let c = document.getElementById('relClass').value;
+            let statusDiv = document.getElementById('relStatus');
+            let teacherDiv = document.getElementById('relTeacherDiv');
+            let teacherSelect = document.getElementById('relAvailTeacher');
+            
+            if(!d || !p || !c) return;
+
+            let cell = generatedTimetable[d] && generatedTimetable[d][p] ? generatedTimetable[d][p][c] : null;
+            let activeRelief = reliefAssignments.find(r => r.day === d && r.period === p && r.grade === c);
+
+            if(!cell) {
+                statusDiv.innerHTML = "මෙම වේලාවට අදාළ පන්තියේ කිසිදු විෂයයක් නොමැත.";
+                statusDiv.style.color = "gray"; statusDiv.style.borderColor = "gray";
+                teacherDiv.style.display = "none";
+            } else {
+                let txt = `පවතින විෂයය: ${cell.subject} (${cell.teacher})`;
+                if(activeRelief) txt += `<br><span style="color:#7c3aed">දැනටමත් සහනයක් ලබාදී ඇත (සහන: ${activeRelief.reliefTeacher})</span>`;
+                statusDiv.innerHTML = txt;
+                statusDiv.style.color = "#b91c1c"; statusDiv.style.borderColor = "#ef4444";
+                teacherDiv.style.display = "grid";
+
+                // Find Available Teachers
+                let tHtml = "";
+                masterTeachers.forEach(t => {
+                    let isBusy = false;
+                    classes.forEach(cls => {
+                        let chkCell = generatedTimetable[d][p][cls];
+                        if(chkCell && chkCell.teacher.includes(t)) isBusy = true;
+                    });
+                    let isReliefBusy = reliefAssignments.find(r => r.day === d && r.period === p && r.reliefTeacher === t);
+                    if(!isBusy && !isReliefBusy) tHtml += `<option value="${t}">${t} (නිදහස්)</option>`;
+                });
+                teacherSelect.innerHTML = tHtml || "<option value=''>සියලුම ගුරුවරු කාර්යබහුලයි</option>";
+            }
+        }
+
+        function addRelief() {
+            let d = document.getElementById('relDay').value;
+            let p = parseInt(document.getElementById('relPeriod').value);
+            let c = document.getElementById('relClass').value;
+            let t = document.getElementById('relAvailTeacher').value;
+
+            if(!t) return alert("සහනයක් ලබාදීමට නිදහස් ගුරුවරයෙකු නොමැත!");
+
+            // Remove existing relief if any
+            reliefAssignments = reliefAssignments.filter(r => !(r.day === d && r.period === p && r.grade === c));
+            reliefAssignments.push({ day: d, period: p, grade: c, reliefTeacher: t });
+            
+            updateReliefUI();
+            renderReliefList();
+            renderTable();
+        }
+
+        function deleteRelief(d, p, c) {
+            reliefAssignments = reliefAssignments.filter(r => !(r.day === d && r.period === p && r.grade === c));
+            updateReliefUI();
+            renderReliefList();
+            renderTable();
+        }
+
+        function renderReliefList() {
+            let html = "";
+            reliefAssignments.forEach(r => {
+                html += `<div class="rule-item" style="background:#f5f3ff; border-color:#ddd6fe;">
+                            <div><b>${dayNames[r.day]} | P ${r.period} | ${r.grade} ශ්‍රේණිය</b><br>
+                            <span style="color:#7c3aed; font-weight:bold;">සහනය: ${r.reliefTeacher}</span></div>
+                            <button class="btn-delete" onclick="deleteRelief('${r.day}', ${r.period}, '${r.grade}')">X</button>
+                         </div>`;
+            });
+            document.getElementById('activeReliefsList').innerHTML = html || "<span style='font-size:11px;color:gray;'>දැනට සහන ලබා දී නොමැත.</span>";
+        }
+        // ------------------------------------
+
         function renderDataModal() {
             let cHtml = '';
             classes.forEach(c => cHtml += `<div class="rule-item"><span>${c} ශ්‍රේණිය</span><div><button class="btn-small" style="background:#f59e0b;" onclick="editItem('class', '${c}')">✏️</button> <button class="btn-delete" onclick="deleteItem('class', '${c}')">❌</button></div></div>`);
@@ -419,7 +510,6 @@
             initDropdowns(); initEmptyTimetable(); renderTable(); renderDataModal(); renderRules();
         }
 
-        // --- Data Entry (Left Panel) ---
         function toggleCTGrade() {
             document.getElementById('inTeacherClass').style.display = document.getElementById('isClassTeacher').checked ? 'block' : 'none';
         }
@@ -458,6 +548,7 @@
             let tHtml = '<option value="">-- ගුරුවරයා --</option>' + masterTeachers.map(t => `<option value="${t}">${t}</option>`).join('');
             let sHtml = '<option value="">-- විෂයය --</option>' + masterSubjects.map(s => `<option value="${s}">${s}</option>`).join('');
             let cHtml = classes.map(c => `<option value="${c}">${c} ශ්‍රේණිය</option>`).join('');
+            let dHtml = days.map(d => `<option value="${d}">${dayNames[d]}</option>`).join('');
             
             document.getElementById('rTeacherCore').innerHTML = tHtml; 
             document.getElementById('rTeacherBasket').innerHTML = tHtml; 
@@ -466,9 +557,11 @@
             document.getElementById('rClass').innerHTML = cHtml;
             document.getElementById('classSelector').innerHTML = cHtml; 
             document.getElementById('inTeacherClass').innerHTML = '<option value="">-- පන්තිය --</option>' + cHtml;
-            
-            let dHtml = days.map(d => `<option value="${d}">${dayNames[d]}</option>`).join('');
             document.getElementById('daySelector').innerHTML = dHtml;
+            
+            // Relief Selects
+            document.getElementById('relClass').innerHTML = cHtml;
+            document.getElementById('relDay').innerHTML = dHtml;
 
             if(classes.length > 0 && !classes.includes(currentSelectedClass)) {
                 currentSelectedClass = classes[0];
@@ -542,6 +635,7 @@
                     classes.forEach(c => generatedTimetable[day][p][c] = null);
                 }
             });
+            reliefAssignments = []; // Clear reliefs on re-generate
         }
 
         // --- ASC Style Generator Engine ---
@@ -564,44 +658,82 @@
                 
                 let daysAssigned = { 'Monday':0, 'Tuesday':0, 'Wednesday':0, 'Thursday':0, 'Friday':0 };
                 let maxAttempts = 150;
+                let doubleAttempts = 0;
+                let hasPlacedDouble = false;
 
                 while (periodsToAssign > 0 && maxAttempts > 0) {
                     maxAttempts--;
                     let placed = false;
                     let dayOrder = [...days].sort(() => Math.random() - 0.5);
 
-                    for (let d of dayOrder) {
-                        if (placed) break;
-                        
-                        let maxPerDay = rule.periods > 5 ? 2 : 1;
-                        if (daysAssigned[d] >= maxPerDay) continue;
+                    // DOUBLE PERIOD LOGIC for 3-period subjects
+                    if (rule.periods === 3 && periodsToAssign >= 2 && !hasPlacedDouble && doubleAttempts < 50) {
+                        doubleAttempts++;
+                        for (let d of dayOrder) {
+                            if (daysAssigned[d] >= 1) continue; 
+                            let periodOrder = isCT ? [1, 2, 3, 4, 5, 6, 7] : [1, 2, 3, 4, 5, 6, 7].sort(()=>Math.random()-0.5);
+                            for (let p of periodOrder) {
+                                let p1 = p, p2 = p + 1;
+                                let intervalPos = parseInt(document.getElementById('intervalSetting').value) || 4;
+                                if (p1 === intervalPos) continue; 
 
-                        // Class teachers prioritize P1 and P2, others are random
-                        let periodOrder = isCT ? [1, 2, 3, 4, 5, 6, 7, 8] : [1, 2, 3, 4, 5, 6, 7, 8].sort(()=>Math.random()-0.5);
-
-                        for (let p of periodOrder) {
-                            if (generatedTimetable[d][p][rule.grade] === null) {
-                                let isBusy = false;
-                                let ruleTeachers = rule.teacher.split(','); 
-                                for(let c of classes) {
-                                    let cell = generatedTimetable[d][p][c];
-                                    if (cell) {
-                                        for(let t of ruleTeachers) {
-                                            if(cell.teacher.includes(t.trim())) { isBusy = true; break; }
+                                if (generatedTimetable[d][p1][rule.grade] === null && generatedTimetable[d][p2][rule.grade] === null) {
+                                    let busy = false;
+                                    let rTeachers = rule.teacher.split(',');
+                                    for(let c of classes) {
+                                        let c1 = generatedTimetable[d][p1][c];
+                                        let c2 = generatedTimetable[d][p2][c];
+                                        for(let t of rTeachers) {
+                                            if(c1 && c1.teacher.includes(t.trim())) busy = true;
+                                            if(c2 && c2.teacher.includes(t.trim())) busy = true;
                                         }
                                     }
-                                }
-                                if (!isBusy) {
-                                    generatedTimetable[d][p][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
-                                    daysAssigned[d]++;
-                                    periodsToAssign--;
-                                    placed = true;
-                                    break;
+                                    if (!busy) {
+                                        generatedTimetable[d][p1][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
+                                        generatedTimetable[d][p2][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
+                                        daysAssigned[d] += 2;
+                                        periodsToAssign -= 2;
+                                        hasPlacedDouble = true;
+                                        placed = true;
+                                        break;
+                                    }
                                 }
                             }
+                            if(placed) break;
                         }
                     }
-                    if (!placed) break; 
+
+                    // SINGLE PERIOD LOGIC
+                    if (!placed && periodsToAssign > 0) {
+                        for (let d of dayOrder) {
+                            if (daysAssigned[d] > 0 && rule.periods <= 5) continue; // Spread across week
+                            if (daysAssigned[d] >= 2) continue;
+
+                            let periodOrder = isCT ? [1, 2, 3, 4, 5, 6, 7, 8] : [1, 2, 3, 4, 5, 6, 7, 8].sort(()=>Math.random()-0.5);
+                            for (let p of periodOrder) {
+                                if (generatedTimetable[d][p][rule.grade] === null) {
+                                    let busy = false;
+                                    let rTeachers = rule.teacher.split(',');
+                                    for(let c of classes) {
+                                        let cell = generatedTimetable[d][p][c];
+                                        if (cell) {
+                                            for(let t of rTeachers) {
+                                                if(cell.teacher.includes(t.trim())) { busy = true; break; }
+                                            }
+                                        }
+                                    }
+                                    if (!busy) {
+                                        generatedTimetable[d][p][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
+                                        daysAssigned[d]++;
+                                        periodsToAssign--;
+                                        placed = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if(placed) break;
+                        }
+                    }
                 }
                 if(periodsToAssign > 0) unassigned.push(rule.subject + " (" + rule.grade + " ශ්‍රේ.)");
             });
@@ -610,11 +742,20 @@
             renderTable();
         }
 
-        function getCellHTML(cellData) {
+        function getCellHTML(cellData, d, p, c) {
+            let relief = reliefAssignments.find(r => r.day === d && r.period === p && r.grade === c);
+
             if (cellData) {
-                let color = getSubjectColor(cellData.subject);
-                return `<td><div class="card" style="background-color: ${color};">${cellData.subject} <span>(${cellData.teacher})</span></div></td>`;
+                if (relief) {
+                    return `<td><div class="card relief-card"><span style="font-size:12px; font-weight:bold;">${cellData.subject}</span><span class="relief-text">(සහන: ${relief.reliefTeacher})</span></div></td>`;
+                } else {
+                    let color = getSubjectColor(cellData.subject);
+                    return `<td><div class="card" style="background-color: ${color};">${cellData.subject} <span>(${cellData.teacher})</span></div></td>`;
+                }
             } else {
+                if (relief) {
+                    return `<td><div class="card relief-card"><span style="font-size:12px; font-weight:bold; color:gray;">හිස් කාලච්ඡේදය</span><span class="relief-text">(සහන: ${relief.reliefTeacher})</span></div></td>`;
+                }
                 return `<td class="cell-empty"><span class="empty-slot">- හිස් -</span></td>`;
             }
         }
@@ -641,7 +782,7 @@
                     b += `<tr><td colspan="${classes.length + 1}" class="day-header">${dayNames[d]}</td></tr>`;
                     for (let p = 1; p <= 8; p++) {
                         b += `<tr><td>P ${p}</td>`;
-                        classes.forEach(c => { b += getCellHTML(generatedTimetable[d][p][c]); });
+                        classes.forEach(c => { b += getCellHTML(generatedTimetable[d][p][c], d, p, c); });
                         b += `</tr>`;
                         if(p === intervalPos) b += `<tr><td colspan="${classes.length + 1}" class="interval">විවේක කාලය (Interval)</td></tr>`;
                     }
@@ -653,7 +794,7 @@
                 
                 for (let p = 1; p <= 8; p++) {
                     b += `<tr><td>P ${p}</td>`;
-                    classes.forEach(c => { b += getCellHTML(generatedTimetable[currentDay][p][c]); });
+                    classes.forEach(c => { b += getCellHTML(generatedTimetable[currentDay][p][c], currentDay, p, c); });
                     b += `</tr>`;
                     if(p === intervalPos) b += `<tr><td colspan="${classes.length + 1}" class="interval">විවේක කාලය (Interval)</td></tr>`;
                 }
@@ -664,7 +805,7 @@
                 
                 for (let p = 1; p <= 8; p++) {
                     b += `<tr><td>P ${p}</td>`;
-                    days.forEach(d => { b += getCellHTML(generatedTimetable[d][p][currentSelectedClass]); });
+                    days.forEach(d => { b += getCellHTML(generatedTimetable[d][p][currentSelectedClass], d, p, currentSelectedClass); });
                     b += `</tr>`;
                     if(p === intervalPos) b += `<tr><td colspan="${days.length + 1}" class="interval">විවේක කාලය (Interval)</td></tr>`;
                 }
@@ -691,7 +832,7 @@
             if (type === 'all_master') {
                 printHtml += `<div class="print-page layout-1"><div class="timetable-box"><h2 class="school-title">${schoolName}</h2><h3 class="main-title">සම්පූර්ණ ප්‍රධාන කාලසටහන</h3>`;
                 printHtml += document.getElementById('mainTable').outerHTML;
-                printHtml += `<div class="print-footer">Generated by SmartSoft Timetable System</div></div></div>`;
+                printHtml += `<div class="print-footer">2026 Kelum Konara | SmartSoft | Time Table version 1.0</div></div></div>`;
             } 
             else {
                 if (type === 'classes') {
@@ -700,11 +841,11 @@
                         tbl += `<table><thead><tr><th>පීරියඩ්</th>` + days.map(d=>`<th>${dayNames[d]}</th>`).join('') + `</tr></thead><tbody>`;
                         for(let p=1; p<=8; p++) {
                             tbl += `<tr><td>P ${p}</td>`;
-                            days.forEach(d => tbl += getCellHTML(generatedTimetable[d][p][c]));
+                            days.forEach(d => tbl += getCellHTML(generatedTimetable[d][p][c], d, p, c));
                             tbl += `</tr>`;
                             if(p === intervalPos) tbl += `<tr><td colspan="${days.length+1}" class="interval">විවේක කාලය</td></tr>`;
                         }
-                        tbl += `</tbody></table><div class="print-footer">Generated by SmartSoft</div></div>`;
+                        tbl += `</tbody></table><div class="print-footer">2026 Kelum Konara | SmartSoft | Time Table version 1.0</div></div>`;
                         generatedItems.push(tbl);
                     });
                 }
@@ -716,6 +857,9 @@
                             tbl += `<tr><td>P ${p}</td>`;
                             days.forEach(d => {
                                 let assignedClass = "-"; let assignedSubject = ""; let color = "#ffffff";
+                                let isRelief = false;
+                                
+                                // Check standard allocation
                                 classes.forEach(c => {
                                     let cell = generatedTimetable[d][p][c];
                                     if(cell && cell.teacher.includes(t)) { 
@@ -724,7 +868,19 @@
                                         color = getSubjectColor(cell.subject);
                                     }
                                 });
-                                if(assignedClass !== "-") {
+
+                                // Check relief allocation
+                                let relief = reliefAssignments.find(r => r.day === d && r.period === p && r.reliefTeacher === t);
+                                if(relief) {
+                                    assignedClass = relief.grade + " ශ්‍රේ.";
+                                    let baseCell = generatedTimetable[d][p][relief.grade];
+                                    assignedSubject = baseCell ? baseCell.subject : "හිස් කාලච්ඡේදය";
+                                    isRelief = true;
+                                }
+
+                                if(isRelief) {
+                                    tbl += `<td><div class="card relief-card">${assignedSubject}<br><span class="relief-text">(සහන: ${assignedClass})</span></div></td>`;
+                                } else if(assignedClass !== "-") {
                                     tbl += `<td><div class="card" style="background:${color};">${assignedSubject}<br><span>(${assignedClass})</span></div></td>`;
                                 } else {
                                     tbl += `<td class="cell-empty"><span class="empty-slot">- හිස් -</span></td>`;
@@ -733,7 +889,7 @@
                             tbl += `</tr>`;
                             if(p === intervalPos) tbl += `<tr><td colspan="${days.length+1}" class="interval">විවේක කාලය</td></tr>`;
                         }
-                        tbl += `</tbody></table><div class="print-footer">Generated by SmartSoft</div></div>`;
+                        tbl += `</tbody></table><div class="print-footer">2026 Kelum Konara | SmartSoft | Time Table version 1.0</div></div>`;
                         generatedItems.push(tbl);
                     });
                 }
