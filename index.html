@@ -18,6 +18,7 @@
         .right-panel { flex: 3; display: flex; flex-direction: column; min-width: 0; background-color: #ffffff; overflow: hidden; }
         
         h2.school-title { text-align: center; color: #111827; margin: 0 0 5px 0; font-size: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;}
+        .term-info-display { text-align: center; font-weight: bold; color: #2563eb; margin-bottom: 5px; font-size: 13px; display: none; }
         h3.main-title { text-align: center; color: #4b5563; margin: 0 0 15px 0; font-size: 14px; font-weight: 600; }
         
         /* Modern Buttons */
@@ -141,20 +142,24 @@
             .print-page { page-break-after: always; width: 100%; height: 100vh; box-sizing: border-box; display: flex; flex-direction: column;}
             .timetable-box { break-inside: avoid; flex: 1; display: flex; flex-direction: column; margin-bottom: 5mm;}
             
+            /* Print Layout Styles */
             .layout-1 .timetable-box { width: 100%; height: 100%; }
-            .layout-1 h2.school-title { font-size: 22px; color: black; margin-bottom: 5px; text-align: center; }
+            .layout-1 h2.school-title { font-size: 22px; color: black; margin-bottom: 2px; text-align: center; }
+            .layout-1 .print-term-info { text-align: center; font-weight: bold; font-size: 14px; margin-bottom: 5px; color: black; }
             .layout-1 h3.main-title { font-size: 16px; color: black; margin-bottom: 10px; text-align: center; }
             .layout-1 table { flex: 1; border: 2px solid #000; border-collapse: collapse; width: 100%; height: 100%; border-spacing: 0; table-layout: fixed; }
             .layout-1 th, .layout-1 td { border: 1px solid #000 !important; color: black !important; padding: 4px !important; border-radius: 0; }
             
             .layout-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10mm; align-items: start; height: 100vh;}
             .layout-2 h2.school-title { font-size: 16px; margin-bottom: 2px; text-align: center; color: black;}
+            .layout-2 .print-term-info { text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 3px; color: black; }
             .layout-2 h3.main-title { font-size: 13px; margin-bottom: 5px; text-align: center; color: black;}
             .layout-2 table { flex: 1; border: 2px solid #000; border-collapse: collapse; width: 100%; height: 100%; border-spacing: 0; table-layout: fixed; }
             .layout-2 th, .layout-2 td { border: 1px solid #000 !important; color: black !important; padding: 2px !important; font-size: 10px !important; border-radius: 0;}
             
             .layout-4 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 6mm; height: 100vh;}
             .layout-4 h2.school-title { font-size: 12px; margin-bottom: 1px; text-align: center; color: black;}
+            .layout-4 .print-term-info { text-align: center; font-weight: bold; font-size: 9px; margin-bottom: 2px; color: black; }
             .layout-4 h3.main-title { font-size: 10px; margin-bottom: 3px; text-align: center; color: black;}
             .layout-4 table { flex: 1; border: 1px solid #000; border-collapse: collapse; width: 100%; height: 100%; border-spacing: 0; table-layout: fixed;}
             .layout-4 th, .layout-4 td { border: 1px solid #000 !important; color: black !important; padding: 1px !important; font-size: 8px !important; border-radius: 0;}
@@ -355,8 +360,18 @@
         <div class="panel left-panel">
             <fieldset>
                 <legend>🏢 පාසලේ විස්තර</legend>
-                <div class="form-grid" style="grid-template-columns: 1fr;">
-                    <input type="text" id="schoolNameInput" placeholder="පාසලේ නම මෙහි ඇතුළත් කරන්න" onkeyup="updateSchoolName()" style="font-weight: bold; text-align: center; color: #1d4ed8; font-size: 14px;">
+                <div class="form-grid" style="grid-template-columns: 1fr; margin-bottom: 5px;">
+                    <input type="text" id="schoolNameInput" placeholder="පාසලේ නම මෙහි ඇතුළත් කරන්න" onkeyup="updateSchoolInfo()" style="font-weight: bold; text-align: center; color: #1d4ed8; font-size: 14px;">
+                </div>
+                <!-- අලුතින් එක්කළ වර්ෂය සහ වාරය -->
+                <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 5px;">
+                    <input type="number" id="yearInput" placeholder="වර්ෂය (උදා: 2026)" onkeyup="updateSchoolInfo()" onchange="updateSchoolInfo()" style="text-align: center; font-weight: bold;">
+                    <select id="termInput" onchange="updateSchoolInfo()" style="text-align: center; font-weight: bold;">
+                        <option value="">-- වාරය --</option>
+                        <option value="1 වන වාරය">1 වන වාරය</option>
+                        <option value="2 වන වාරය">2 වන වාරය</option>
+                        <option value="3 වන වාරය">3 වන වාරය</option>
+                    </select>
                 </div>
             </fieldset>
 
@@ -468,6 +483,7 @@
         <!-- Right Panel -->
         <div class="panel right-panel">
             <h2 id="displaySchoolName" class="school-title">ඔබේ පාසලේ නම</h2>
+            <div id="displayTermInfo" class="term-info-display"></div> <!-- අලුතින් එක්කළ වර්ෂය සහ වාරය දර්ශනය කිරීම -->
             <h3 id="mainTitle" class="main-title">පාසල් කාලසටහන</h3>
 
             <div class="view-controls">
@@ -528,7 +544,7 @@
         let classTeacherMap = {}; 
         let masterSubjects = [];
         let teachingRules = [];
-        let teacherConstraints = []; // නව ගුරු නිදහස් නීති ගබඩාව
+        let teacherConstraints = []; 
         let reliefAssignments = []; 
         
         const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -556,6 +572,8 @@
                 classes, masterTeachers, absentTeachers, classTeacherMap, masterSubjects,
                 teachingRules, teacherConstraints, reliefAssignments, generatedTimetable, tempBasketArr,
                 schoolName: document.getElementById('schoolNameInput').value,
+                year: document.getElementById('yearInput').value,
+                term: document.getElementById('termInput').value,
                 interval: document.getElementById('intervalSetting').value
             };
             localStorage.setItem('smartSoftTimetableData', JSON.stringify(data));
@@ -576,10 +594,11 @@
                 generatedTimetable = data.generatedTimetable || {};
                 tempBasketArr = data.tempBasketArr || [];
                 
-                if(data.schoolName) {
-                    document.getElementById('schoolNameInput').value = data.schoolName;
-                    updateSchoolName();
-                }
+                if(data.schoolName) { document.getElementById('schoolNameInput').value = data.schoolName; }
+                if(data.year) { document.getElementById('yearInput').value = data.year; }
+                if(data.term) { document.getElementById('termInput').value = data.term; }
+                updateSchoolInfo();
+
                 if(data.interval) {
                     document.getElementById('intervalSetting').value = data.interval;
                 }
@@ -635,9 +654,22 @@
 
         window.onload = () => { loadData(); };
 
-        function updateSchoolName() {
+        // --- යාවත්කාලීන කළ School Info Function එක ---
+        function updateSchoolInfo() {
             let name = document.getElementById('schoolNameInput').value;
+            let year = document.getElementById('yearInput').value;
+            let term = document.getElementById('termInput').value;
+
             document.getElementById('displaySchoolName').innerText = name ? name : "ඔබේ පාසලේ නම";
+            
+            let termText = "";
+            if(year) termText += year + " වර්ෂය";
+            if(term) termText += (year ? " | " : "") + term;
+            
+            let termDisplay = document.getElementById('displayTermInfo');
+            termDisplay.innerText = termText;
+            termDisplay.style.display = termText ? "block" : "none";
+
             saveData();
         }
         
@@ -950,7 +982,6 @@
             if(classes.length > 0 && !classes.includes(currentSelectedClass)) { currentSelectedClass = classes[0]; }
         }
 
-        // --- නව: ගුරු නිදහස් නීති ක්‍රියාකාරිත්වය ---
         function addConstraint() {
             const t = document.getElementById('cTeacher').value;
             const d = document.getElementById('cDay').value;
@@ -981,7 +1012,6 @@
             });
             document.getElementById('constraintsList').innerHTML = html || "<span style='font-size:11px;color:gray;'>නිදහස් කාල සීමාවන් යොදා නොමැත.</span>";
         }
-        // ---------------------------------------------
 
         function toggleRuleType() {
             let type = document.getElementById('rType').value;
@@ -1055,7 +1085,6 @@
             reliefAssignments = []; 
         }
 
-        // --- EXTREME AI GENERATOR (10,000 Attempts Async) with ALL CONSTRAINTS ---
         function startGenerationAsync() {
             if(teachingRules.length === 0) return alert("කරුණාකර පළමුව නීති ඇතුළත් කරන්න!");
 
@@ -1130,7 +1159,6 @@
                             let placed = false;
                             let dayOrder = [...days].sort(() => Math.random() - 0.5);
 
-                            // Doubles (3 & 6)
                             if ((rule.periods === 3 || rule.periods === 6) && periodsToAssign >= 2 && !hasPlacedDouble) {
                                 for (let d of dayOrder) {
                                     if (!isRelaxed && daysAssigned[d] >= 1) continue; 
@@ -1146,7 +1174,6 @@
                                             let busy = false;
                                             let rTeachers = rule.teacher.split(',');
                                             
-                                            // Check Unavailability Constraints AND other classes
                                             for(let t of rTeachers) {
                                                 let tName = t.trim();
                                                 
@@ -1174,7 +1201,6 @@
                                 }
                             }
 
-                            // Singles
                             if (!placed && periodsToAssign > 0) {
                                 for (let d of dayOrder) {
                                     if (!isRelaxed) {
@@ -1193,7 +1219,6 @@
                                             let busy = false;
                                             let rTeachers = rule.teacher.split(',');
                                             
-                                            // Check Unavailability Constraints AND other classes
                                             for(let t of rTeachers) {
                                                 let tName = t.trim();
                                                 
@@ -1344,11 +1369,20 @@
             
             let pArea = document.getElementById('printArea');
             let schoolName = document.getElementById('schoolNameInput').value || "ඔබේ පාසලේ නම";
+            
+            let yearStr = document.getElementById('yearInput').value;
+            let termStr = document.getElementById('termInput').value;
+            
+            // Layouts සඳහා වර්ෂය සහ වාරය දර්ශනය කරන HTML කොටස
+            let termHtml1 = (yearStr || termStr) ? `<div class="print-term-info">${yearStr ? yearStr + ' වර්ෂය' : ''} ${yearStr && termStr ? ' | ' : ''} ${termStr ? termStr : ''}</div>` : '';
+            let termHtml2 = (yearStr || termStr) ? `<div class="print-term-info">${yearStr ? yearStr + ' වර්ෂය' : ''} ${yearStr && termStr ? ' | ' : ''} ${termStr ? termStr : ''}</div>` : '';
+            let termHtml4 = (yearStr || termStr) ? `<div class="print-term-info">${yearStr ? yearStr + ' වර්ෂය' : ''} ${yearStr && termStr ? ' | ' : ''} ${termStr ? termStr : ''}</div>` : '';
+
             let printHtml = "";
             let generatedItems = [];
 
             if (type === 'all_master') {
-                printHtml += `<div class="print-page layout-1"><div class="timetable-box"><h2 class="school-title">${schoolName}</h2><h3 class="main-title">සම්පූර්ණ ප්‍රධාන කාලසටහන</h3>`;
+                printHtml += `<div class="print-page layout-1"><div class="timetable-box"><h2 class="school-title">${schoolName}</h2>${termHtml1}<h3 class="main-title">සම්පූර්ණ ප්‍රධාන කාලසටහන</h3>`;
                 printHtml += document.getElementById('mainTable').outerHTML;
                 printHtml += `<div class="print-footer">&copy; 2026 Kelum Konara | Smart<span>Soft</span> | Time Table version 1.0</div></div></div>`;
             } 
@@ -1356,7 +1390,8 @@
                 if (type === 'classes') {
                     let colSpan = days.length + 1;
                     classes.forEach(c => {
-                        let tbl = `<div class="timetable-box"><h2 class="school-title">${schoolName}</h2><h3 class="main-title">${c} ශ්‍රේණියේ කාලසටහන</h3>`;
+                        let termHtml = layoutSetting === 1 ? termHtml1 : (layoutSetting === 2 ? termHtml2 : termHtml4);
+                        let tbl = `<div class="timetable-box"><h2 class="school-title">${schoolName}</h2>${termHtml}<h3 class="main-title">${c} ශ්‍රේණියේ කාලසටහන</h3>`;
                         tbl += `<table><thead><tr><th>කාලච්ඡේද</th>` + days.map(d=>`<th>${dayNames[d]}</th>`).join('') + `</tr></thead><tbody>`;
                         for(let p=1; p<=8; p++) {
                             tbl += `<tr class="period-row"><td>කා: ${p}</td>`;
@@ -1372,7 +1407,8 @@
                 else if (type === 'teachers') {
                     let colSpan = days.length + 1;
                     masterTeachers.forEach(t => {
-                        let tbl = `<div class="timetable-box"><h2 class="school-title">${schoolName}</h2><h3 class="main-title">${t} - ගුරු කාලසටහන</h3>`;
+                        let termHtml = layoutSetting === 1 ? termHtml1 : (layoutSetting === 2 ? termHtml2 : termHtml4);
+                        let tbl = `<div class="timetable-box"><h2 class="school-title">${schoolName}</h2>${termHtml}<h3 class="main-title">${t} - ගුරු කාලසටහන</h3>`;
                         tbl += `<table><thead><tr><th>කාලච්ඡේද</th>` + days.map(d=>`<th>${dayNames[d]}</th>`).join('') + `</tr></thead><tbody>`;
                         for(let p=1; p<=8; p++) {
                             tbl += `<tr class="period-row"><td>කා: ${p}</td>`;
