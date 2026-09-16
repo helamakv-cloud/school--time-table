@@ -136,7 +136,6 @@
             tr.period-row { height: 11% !important; }
             tr.special-row { height: auto !important; }
 
-            /* 2D Flat Card Overrides */
             .card { 
                 padding: 2px !important; 
                 margin: 0 !important; 
@@ -277,7 +276,7 @@
         </div>
     </div>
 
-    <!-- Data Management Modal with Backup/Restore -->
+    <!-- Data Management Modal -->
     <div id="dataModal" class="modal-overlay">
         <div class="modal" style="max-width: 800px;">
             <button class="close-btn" onclick="closeModals()">✖</button>
@@ -937,14 +936,14 @@
             }
 
             if(errors.length > 0) {
-                alert("කාලසටහන සෑදීමට පෙර පහත දෝෂ නිවැරදි කරන්න (ගුරුවරයෙකුට හෝ පන්තියකට උපරිම කාලච්ඡේද 40 කි):\n\n" + errors.join('\n'));
+                alert("කාලසටහන සෑදීමට පෙර පහත දෝෂ නිවැරදි කරන්න:\n\n" + errors.join('\n'));
                 return;
             }
 
             let bestTimetable = null;
             let bestUnassigned = null;
             let minUnassignedCount = 9999;
-            let maxAttempts = 100;
+            let maxAttempts = 150; 
 
             for(let attempt = 0; attempt < maxAttempts; attempt++) {
                 let tempTimetable = {};
@@ -958,12 +957,10 @@
 
                 let unassigned = [];
                 
-                // 🌟 Smart Sorting with Class Teacher P1/P2 Priority
                 let sortedRules = [...teachingRules].sort((a, b) => {
                     let aIsCT = (classTeacherMap[a.grade] && a.teacher.includes(classTeacherMap[a.grade])) ? 1 : 0;
                     let bIsCT = (classTeacherMap[b.grade] && b.teacher.includes(classTeacherMap[b.grade])) ? 1 : 0;
-                    
-                    if (aIsCT !== bIsCT) return bIsCT - aIsCT; // පන්තිභාර ගුරුවරුන්ට උසස්ම ප්‍රමුඛතාවය
+                    if (aIsCT !== bIsCT) return bIsCT - aIsCT; 
 
                     let maxWorkloadA = Math.max(...a.teacher.split(',').map(t => teacherSum[t.trim()] || 0));
                     let maxWorkloadB = Math.max(...b.teacher.split(',').map(t => teacherSum[t.trim()] || 0));
@@ -977,7 +974,7 @@
                     let periodsToAssign = rule.periods;
                     let isCT = (classTeacherMap[rule.grade] && rule.teacher.includes(classTeacherMap[rule.grade]));
                     let daysAssigned = { 'Monday':0, 'Tuesday':0, 'Wednesday':0, 'Thursday':0, 'Friday':0 };
-                    let ruleAttempts = 100;
+                    let ruleAttempts = 200;
                     let hasPlacedDouble = false;
 
                     while (periodsToAssign > 0 && ruleAttempts > 0) {
@@ -985,17 +982,17 @@
                         let placed = false;
                         let dayOrder = [...days].sort(() => Math.random() - 0.5);
 
-                        // Doubles
-                        if (rule.periods >= 3 && periodsToAssign >= 2 && !hasPlacedDouble) {
+                        // 🔴 3 සහ 6 සඳහා පමණක් ද්විත්ව කාලච්ඡේද වෙන් කිරීම (ONLY 3 OR 6 PERIODS)
+                        if ((rule.periods === 3 || rule.periods === 6) && periodsToAssign >= 2 && !hasPlacedDouble) {
                             for (let d of dayOrder) {
                                 if (daysAssigned[d] >= 1) continue; 
                                 
                                 let periodOrder;
                                 if(isCT) {
-                                    periodOrder = [1, 2, 3, 4, 5, 6, 7]; // පන්තිභාර ගුරුවරුන්ට උදෑසන
+                                    periodOrder = [1, 2, 3, 4, 5, 6, 7];
                                 } else {
                                     let nonMorn = [3, 4, 5, 6, 7].sort(() => Math.random() - 0.5);
-                                    periodOrder = [...nonMorn, 1, 2]; // අනෙක් අයට උදෑසන අගට
+                                    periodOrder = [...nonMorn, 1, 2]; 
                                 }
 
                                 for (let p of periodOrder) {
@@ -1029,18 +1026,26 @@
                             }
                         }
 
-                        // Singles
+                        // 🔵 තනි කාලච්ඡේද (Singles)
                         if (!placed && periodsToAssign > 0) {
                             for (let d of dayOrder) {
-                                if (daysAssigned[d] > 0 && rule.periods <= 5 && periodsToAssign === 1) continue; 
+                                // දිනකට උපරිම දෙකකට සීමා කිරීම
                                 if (daysAssigned[d] >= 2) continue;
+                                
+                                // දැනටමත් එකක් තිබේ නම්, ඉතිරි හිස් දින ප්‍රමාණය අනුව බෙදා හැරීම
+                                if (daysAssigned[d] === 1) {
+                                    let usedDays = 0;
+                                    for (let dayCheck of days) if (daysAssigned[dayCheck] > 0) usedDays++;
+                                    let daysLeft = 5 - usedDays;
+                                    if (periodsToAssign <= daysLeft) continue; // හිස් දින ඉතිරිව ඇත්නම් ඒවාට යැවීම
+                                }
 
                                 let periodOrder;
                                 if(isCT) {
-                                    periodOrder = [1, 2, 3, 4, 5, 6, 7, 8]; // පන්තිභාර ගුරුවරුන්ට 1 සහ 2 ප්‍රමුඛතාවය
+                                    periodOrder = [1, 2, 3, 4, 5, 6, 7, 8]; 
                                 } else {
                                     let nonMorn = [3, 4, 5, 6, 7, 8].sort(() => Math.random() - 0.5);
-                                    periodOrder = [...nonMorn, 1, 2]; // අනෙක් අයට 1 සහ 2 අගට
+                                    periodOrder = [...nonMorn, 1, 2]; 
                                 }
 
                                 for (let p of periodOrder) {
