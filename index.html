@@ -911,11 +911,9 @@
             reliefAssignments = []; 
         }
 
-        // --- IMPROVED MULTI-TRY TIMETABLE GENERATOR ---
         function generateTimetable() {
             if(teachingRules.length === 0) return alert("කරුණාකර පළමුව නීති ඇතුළත් කරන්න!");
 
-            // Pre-validation: Check for impossible mathematical constraints
             let teacherSum = {};
             let classSum = {};
             let errors = [];
@@ -946,7 +944,7 @@
             let bestTimetable = null;
             let bestUnassigned = null;
             let minUnassignedCount = 9999;
-            let maxAttempts = 100; // Multi-try algorithm runs 100 times to find the perfect fit
+            let maxAttempts = 100;
 
             for(let attempt = 0; attempt < maxAttempts; attempt++) {
                 let tempTimetable = {};
@@ -960,18 +958,24 @@
 
                 let unassigned = [];
                 
-                // Smart sorting based on teacher workload and randomness for permutations
+                // 🌟 Smart Sorting with Class Teacher P1/P2 Priority
                 let sortedRules = [...teachingRules].sort((a, b) => {
+                    let aIsCT = (classTeacherMap[a.grade] && a.teacher.includes(classTeacherMap[a.grade])) ? 1 : 0;
+                    let bIsCT = (classTeacherMap[b.grade] && b.teacher.includes(classTeacherMap[b.grade])) ? 1 : 0;
+                    
+                    if (aIsCT !== bIsCT) return bIsCT - aIsCT; // පන්තිභාර ගුරුවරුන්ට උසස්ම ප්‍රමුඛතාවය
+
                     let maxWorkloadA = Math.max(...a.teacher.split(',').map(t => teacherSum[t.trim()] || 0));
                     let maxWorkloadB = Math.max(...b.teacher.split(',').map(t => teacherSum[t.trim()] || 0));
                     
-                    if (maxWorkloadA !== maxWorkloadB) return maxWorkloadB - maxWorkloadA; // Heaviest workload first
-                    if (a.periods !== b.periods) return b.periods - a.periods; // Doubles first
-                    return Math.random() - 0.5; // Randomness
+                    if (maxWorkloadA !== maxWorkloadB) return maxWorkloadB - maxWorkloadA; 
+                    if (a.periods !== b.periods) return b.periods - a.periods; 
+                    return Math.random() - 0.5; 
                 });
 
                 sortedRules.forEach(rule => {
                     let periodsToAssign = rule.periods;
+                    let isCT = (classTeacherMap[rule.grade] && rule.teacher.includes(classTeacherMap[rule.grade]));
                     let daysAssigned = { 'Monday':0, 'Tuesday':0, 'Wednesday':0, 'Thursday':0, 'Friday':0 };
                     let ruleAttempts = 100;
                     let hasPlacedDouble = false;
@@ -985,7 +989,15 @@
                         if (rule.periods >= 3 && periodsToAssign >= 2 && !hasPlacedDouble) {
                             for (let d of dayOrder) {
                                 if (daysAssigned[d] >= 1) continue; 
-                                let periodOrder = [2, 3, 6, 7].sort(()=>Math.random()-0.5);
+                                
+                                let periodOrder;
+                                if(isCT) {
+                                    periodOrder = [1, 2, 3, 4, 5, 6, 7]; // පන්තිභාර ගුරුවරුන්ට උදෑසන
+                                } else {
+                                    let nonMorn = [3, 4, 5, 6, 7].sort(() => Math.random() - 0.5);
+                                    periodOrder = [...nonMorn, 1, 2]; // අනෙක් අයට උදෑසන අගට
+                                }
+
                                 for (let p of periodOrder) {
                                     let p1 = p, p2 = p + 1;
                                     let intervalPos = parseInt(document.getElementById('intervalSetting').value) || 4;
@@ -1023,7 +1035,14 @@
                                 if (daysAssigned[d] > 0 && rule.periods <= 5 && periodsToAssign === 1) continue; 
                                 if (daysAssigned[d] >= 2) continue;
 
-                                let periodOrder = [1,2,3,4,5,6,7,8].sort(()=>Math.random()-0.5);
+                                let periodOrder;
+                                if(isCT) {
+                                    periodOrder = [1, 2, 3, 4, 5, 6, 7, 8]; // පන්තිභාර ගුරුවරුන්ට 1 සහ 2 ප්‍රමුඛතාවය
+                                } else {
+                                    let nonMorn = [3, 4, 5, 6, 7, 8].sort(() => Math.random() - 0.5);
+                                    periodOrder = [...nonMorn, 1, 2]; // අනෙක් අයට 1 සහ 2 අගට
+                                }
+
                                 for (let p of periodOrder) {
                                     if (tempTimetable[d][p][rule.grade] === null) {
                                         let busy = false;
@@ -1060,7 +1079,7 @@
                     bestUnassigned = unassigned;
                 }
 
-                if (minUnassignedCount === 0) break; // Found a perfect 100% reliable timetable!
+                if (minUnassignedCount === 0) break; 
             }
 
             generatedTimetable = bestTimetable;
