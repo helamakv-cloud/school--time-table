@@ -95,6 +95,25 @@
         .close-btn { position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 18px; font-weight: bold; color: #6b7280; background: none; border: none; }
         .close-btn:hover { color: #ef4444; }
 
+        /* SUCCESS ANIMATION MODAL CSS */
+        .success-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 3000; align-items:center; justify-content:center; backdrop-filter: blur(4px); transition: opacity 0.5s ease;}
+        .success-modal { background: linear-gradient(135deg, #10b981, #059669); padding: 30px 50px; border-radius: 15px; text-align: center; color: white; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); border: 2px solid #34d399; animation: popBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .success-emoji { font-size: 60px; margin-bottom: 10px; animation: tada 1.2s ease-in-out infinite; }
+        .success-text { font-size: 22px; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
+
+        @keyframes popBounce {
+            0% { transform: scale(0.5); opacity: 0; }
+            80% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        @keyframes tada {
+            0% { transform: scale(1); }
+            10%, 20% { transform: scale(0.9) rotate(-3deg); }
+            30%, 50%, 70%, 90% { transform: scale(1.1) rotate(3deg); }
+            40%, 60%, 80% { transform: scale(1.1) rotate(-3deg); }
+            100% { transform: scale(1); }
+        }
+
         @media screen and (max-width: 768px) {
             .layout { flex-direction: column; height: auto; }
             .left-panel { min-width: 100%; max-width: 100%; }
@@ -109,7 +128,7 @@
         @media print {
             @page { margin: 8mm; size: landscape; } 
             body { background-color: white; padding: 0; font-size: 12px; margin: 0; }
-            .layout, .modal-overlay { display: none !important; }
+            .layout, .modal-overlay, .success-overlay { display: none !important; }
             #printArea { display: block !important; width: 100%; }
             
             .print-page { page-break-after: always; width: 100%; height: 100vh; box-sizing: border-box; display: flex; flex-direction: column;}
@@ -183,6 +202,14 @@
     </style>
 </head>
 <body>
+
+    <!-- Success Animation Modal -->
+    <div id="successOverlay" class="success-overlay">
+        <div class="success-modal">
+            <div class="success-emoji">🎉✨</div>
+            <div class="success-text">කාලසටහන සාර්ථකව<br>සැකසී අවසන්!</div>
+        </div>
+    </div>
 
     <!-- Attendance Modal -->
     <div id="attendanceModal" class="modal-overlay">
@@ -596,6 +623,18 @@
             document.getElementById('summaryModal').style.display = 'none';
         }
 
+        function showSuccessAnimation() {
+            let overlay = document.getElementById('successOverlay');
+            overlay.style.display = 'flex';
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    overlay.style.opacity = '1';
+                }, 500);
+            }, 3000); 
+        }
+
         function renderAttendanceList() {
             let html = '';
             if(masterTeachers.length === 0) {
@@ -982,7 +1021,7 @@
                         let placed = false;
                         let dayOrder = [...days].sort(() => Math.random() - 0.5);
 
-                        // 🔴 3 සහ 6 සඳහා පමණක් ද්විත්ව කාලච්ඡේද වෙන් කිරීම (ONLY 3 OR 6 PERIODS)
+                        // 3 සහ 6 සඳහා පමණක් ද්විත්ව කාලච්ඡේද
                         if ((rule.periods === 3 || rule.periods === 6) && periodsToAssign >= 2 && !hasPlacedDouble) {
                             for (let d of dayOrder) {
                                 if (daysAssigned[d] >= 1) continue; 
@@ -1026,18 +1065,15 @@
                             }
                         }
 
-                        // 🔵 තනි කාලච්ඡේද (Singles)
+                        // තනි කාලච්ඡේද
                         if (!placed && periodsToAssign > 0) {
                             for (let d of dayOrder) {
-                                // දිනකට උපරිම දෙකකට සීමා කිරීම
                                 if (daysAssigned[d] >= 2) continue;
-                                
-                                // දැනටමත් එකක් තිබේ නම්, ඉතිරි හිස් දින ප්‍රමාණය අනුව බෙදා හැරීම
                                 if (daysAssigned[d] === 1) {
                                     let usedDays = 0;
                                     for (let dayCheck of days) if (daysAssigned[dayCheck] > 0) usedDays++;
                                     let daysLeft = 5 - usedDays;
-                                    if (periodsToAssign <= daysLeft) continue; // හිස් දින ඉතිරිව ඇත්නම් ඒවාට යැවීම
+                                    if (periodsToAssign <= daysLeft) continue; 
                                 }
 
                                 let periodOrder;
@@ -1091,6 +1127,9 @@
             
             if(bestUnassigned.length > 0) {
                 alert("පරීක්ෂාවන් ගණනාවකින් පසුවද පහත විෂයයන් සඳහා ගැටීම් පවතී. කරුණාකර 'කාලච්ඡේද සාරාංශය' බලා අදාළ ගුරුවරුන්ගේ වැඩ ප්‍රමාණය පරීක්ෂා කරන්න:\n\n" + bestUnassigned.join('\n'));
+            } else {
+                // සීරෝ ක්ලෑෂ් (Zero clashes) නම් ඇනිමේෂන් එක පෙන්වීම
+                showSuccessAnimation();
             }
 
             saveData();
