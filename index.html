@@ -14,10 +14,7 @@
         .layout { display: flex; gap: 10px; height: calc(100vh - 20px); }
         .panel { background: white; padding: 15px; border-radius: 4px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); box-sizing: border-box; }
         
-        /* වම්පස මෙනුව ස්ක්‍රෝල් වීමට ඉඩ හැරීම */
         .left-panel { flex: 1.2; min-width: 340px; max-width: 400px; background-color: #f3f4f6; border-right: 1px solid #e5e7eb; overflow-y: auto; }
-        
-        /* දකුණුපස පැනලය සම්පූර්ණ උස ලබාගැනීම */
         .right-panel { flex: 3; display: flex; flex-direction: column; min-width: 0; background-color: #ffffff; overflow: hidden; }
         
         h2.school-title { text-align: center; color: #111827; margin: 0 0 5px 0; font-size: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;}
@@ -64,17 +61,15 @@
         .radio-group { display: flex; gap: 15px; font-weight: bold; font-size: 12px; justify-content: center; flex-wrap: wrap;}
         .radio-group label { cursor: pointer; display: flex; align-items: center; gap: 4px; color: #374151;}
         
-        /* Table View - Perfect Equal Balancing FIX */
+        /* Table View */
         .table-container { flex: 1; min-height: 0; overflow: auto; border: 2px solid #9ca3af; background: #e5e7eb; padding: 2px;}
         table { width: 100%; height: 100%; border-collapse: separate; border-spacing: 2px; table-layout: fixed; min-width: 700px; }
         
-        /* අනිවාර්යයෙන්ම කාලච්ඡේද පේළි සමාන ප්‍රමාණයක් ගැනීම */
         tr.period-row { height: 11%; } 
         tr.special-row { height: 25px !important; }
         
         th, td { text-align: center; vertical-align: middle; padding: 2px; border-radius: 2px; overflow: hidden; }
         
-        /* Fixed First Column - Normal Size */
         th:first-child, td:first-child { width: 50px !important; max-width: 50px !important; min-width: 50px !important; white-space: nowrap; }
         
         th { background: linear-gradient(to bottom, #e5e7eb, #d1d5db); color: #1f2937; padding: 6px; font-size: 12px; border: 1px solid #9ca3af;}
@@ -138,7 +133,6 @@
             .layout-4 table { flex: 1; border: 1px solid #000; border-collapse: collapse; width: 100%; height: 100%; border-spacing: 0; table-layout: fixed;}
             .layout-4 th, .layout-4 td { border: 1px solid #000 !important; color: black !important; padding: 1px !important; font-size: 8px !important; border-radius: 0;}
 
-            /* Table Row heights for Print */
             tr.period-row { height: 11% !important; }
             tr.special-row { height: auto !important; }
 
@@ -172,7 +166,6 @@
             .layout-4 .card { font-size: 7.5px !important; line-height: 1.0 !important; padding: 1px !important;}
             .layout-4 .card span { font-size: 6px !important; border-top: none; }
 
-            /* 2D Headers and Intervals */
             th { background: #e5e7eb !important; color: black !important; text-shadow: none !important; -webkit-print-color-adjust: exact; border: 1px solid #000 !important;}
             td:first-child { background: #e5e7eb !important; color: black !important; border: 1px solid #000 !important; width: 40px !important; min-width: 40px !important;}
             td.cell-empty { background-color: white !important; }
@@ -918,103 +911,164 @@
             reliefAssignments = []; 
         }
 
+        // --- IMPROVED MULTI-TRY TIMETABLE GENERATOR ---
         function generateTimetable() {
             if(teachingRules.length === 0) return alert("කරුණාකර පළමුව නීති ඇතුළත් කරන්න!");
-            initEmptyTimetable();
-            let unassigned = [];
-            
-            let sortedRules = [...teachingRules].sort((a, b) => {
-                let aIsCT = (classTeacherMap[a.grade] && a.teacher.includes(classTeacherMap[a.grade])) ? 1 : 0;
-                let bIsCT = (classTeacherMap[b.grade] && b.teacher.includes(classTeacherMap[b.grade])) ? 1 : 0;
-                if (aIsCT !== bIsCT) return bIsCT - aIsCT;
-                return b.periods - a.periods;
+
+            // Pre-validation: Check for impossible mathematical constraints
+            let teacherSum = {};
+            let classSum = {};
+            let errors = [];
+
+            teachingRules.forEach(r => {
+                let p = parseInt(r.periods) || 0;
+                classSum[r.grade] = (classSum[r.grade] || 0) + p;
+                
+                let tList = r.teacher.split(',');
+                tList.forEach(t => {
+                    let tName = t.trim();
+                    teacherSum[tName] = (teacherSum[tName] || 0) + p;
+                });
             });
 
-            sortedRules.forEach(rule => {
-                let periodsToAssign = rule.periods;
-                let isCT = (classTeacherMap[rule.grade] && rule.teacher.includes(classTeacherMap[rule.grade]));
-                
-                let daysAssigned = { 'Monday':0, 'Tuesday':0, 'Wednesday':0, 'Thursday':0, 'Friday':0 };
-                let maxAttempts = 150;
-                let doubleAttempts = 0;
-                let hasPlacedDouble = false;
+            for(let c in classSum) {
+                if(classSum[c] > 40) errors.push(`${c} ශ්‍රේණියට සතියකට කාලච්ඡේද 40 කට වඩා ලබා දී ඇත (${classSum[c]}).`);
+            }
+            for(let t in teacherSum) {
+                if(teacherSum[t] > 40) errors.push(`${t} ගුරුතුමාට/තුමියට සතියකට කාලච්ඡේද 40 කට වඩා ලබා දී ඇත (${teacherSum[t]}).`);
+            }
 
-                while (periodsToAssign > 0 && maxAttempts > 0) {
-                    maxAttempts--;
-                    let placed = false;
-                    let dayOrder = [...days].sort(() => Math.random() - 0.5);
+            if(errors.length > 0) {
+                alert("කාලසටහන සෑදීමට පෙර පහත දෝෂ නිවැරදි කරන්න (ගුරුවරයෙකුට හෝ පන්තියකට උපරිම කාලච්ඡේද 40 කි):\n\n" + errors.join('\n'));
+                return;
+            }
 
-                    if (rule.periods === 3 && periodsToAssign >= 2 && !hasPlacedDouble && doubleAttempts < 50) {
-                        doubleAttempts++;
-                        for (let d of dayOrder) {
-                            if (daysAssigned[d] >= 1) continue; 
-                            let periodOrder = isCT ? [1, 2, 3, 4, 5, 6, 7] : [1, 2, 3, 4, 5, 6, 7].sort(()=>Math.random()-0.5);
-                            for (let p of periodOrder) {
-                                let p1 = p, p2 = p + 1;
-                                let intervalPos = parseInt(document.getElementById('intervalSetting').value) || 4;
-                                if (p1 === intervalPos) continue; 
+            let bestTimetable = null;
+            let bestUnassigned = null;
+            let minUnassignedCount = 9999;
+            let maxAttempts = 100; // Multi-try algorithm runs 100 times to find the perfect fit
 
-                                if (generatedTimetable[d][p1][rule.grade] === null && generatedTimetable[d][p2][rule.grade] === null) {
-                                    let busy = false;
-                                    let rTeachers = rule.teacher.split(',');
-                                    for(let c of classes) {
-                                        let c1 = generatedTimetable[d][p1][c];
-                                        let c2 = generatedTimetable[d][p2][c];
-                                        for(let t of rTeachers) {
-                                            if(c1 && c1.teacher.includes(t.trim())) busy = true;
-                                            if(c2 && c2.teacher.includes(t.trim())) busy = true;
-                                        }
-                                    }
-                                    if (!busy) {
-                                        generatedTimetable[d][p1][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
-                                        generatedTimetable[d][p2][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
-                                        daysAssigned[d] += 2;
-                                        periodsToAssign -= 2;
-                                        hasPlacedDouble = true;
-                                        placed = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            if(placed) break;
-                        }
+            for(let attempt = 0; attempt < maxAttempts; attempt++) {
+                let tempTimetable = {};
+                days.forEach(day => {
+                    tempTimetable[day] = {};
+                    for(let p=1; p<=8; p++) {
+                        tempTimetable[day][p] = {};
+                        classes.forEach(c => tempTimetable[day][p][c] = null);
                     }
+                });
 
-                    if (!placed && periodsToAssign > 0) {
-                        for (let d of dayOrder) {
-                            if (daysAssigned[d] > 0 && rule.periods <= 5) continue; 
-                            if (daysAssigned[d] >= 2) continue;
+                let unassigned = [];
+                
+                // Smart sorting based on teacher workload and randomness for permutations
+                let sortedRules = [...teachingRules].sort((a, b) => {
+                    let maxWorkloadA = Math.max(...a.teacher.split(',').map(t => teacherSum[t.trim()] || 0));
+                    let maxWorkloadB = Math.max(...b.teacher.split(',').map(t => teacherSum[t.trim()] || 0));
+                    
+                    if (maxWorkloadA !== maxWorkloadB) return maxWorkloadB - maxWorkloadA; // Heaviest workload first
+                    if (a.periods !== b.periods) return b.periods - a.periods; // Doubles first
+                    return Math.random() - 0.5; // Randomness
+                });
 
-                            let periodOrder = isCT ? [1, 2, 3, 4, 5, 6, 7, 8] : [1, 2, 3, 4, 5, 6, 7, 8].sort(()=>Math.random()-0.5);
-                            for (let p of periodOrder) {
-                                if (generatedTimetable[d][p][rule.grade] === null) {
-                                    let busy = false;
-                                    let rTeachers = rule.teacher.split(',');
-                                    for(let c of classes) {
-                                        let cell = generatedTimetable[d][p][c];
-                                        if (cell) {
+                sortedRules.forEach(rule => {
+                    let periodsToAssign = rule.periods;
+                    let daysAssigned = { 'Monday':0, 'Tuesday':0, 'Wednesday':0, 'Thursday':0, 'Friday':0 };
+                    let ruleAttempts = 100;
+                    let hasPlacedDouble = false;
+
+                    while (periodsToAssign > 0 && ruleAttempts > 0) {
+                        ruleAttempts--;
+                        let placed = false;
+                        let dayOrder = [...days].sort(() => Math.random() - 0.5);
+
+                        // Doubles
+                        if (rule.periods >= 3 && periodsToAssign >= 2 && !hasPlacedDouble) {
+                            for (let d of dayOrder) {
+                                if (daysAssigned[d] >= 1) continue; 
+                                let periodOrder = [2, 3, 6, 7].sort(()=>Math.random()-0.5);
+                                for (let p of periodOrder) {
+                                    let p1 = p, p2 = p + 1;
+                                    let intervalPos = parseInt(document.getElementById('intervalSetting').value) || 4;
+                                    if (p1 === intervalPos || p1 === 1 || p2 === 1) continue; 
+
+                                    if (tempTimetable[d][p1][rule.grade] === null && tempTimetable[d][p2][rule.grade] === null) {
+                                        let busy = false;
+                                        let rTeachers = rule.teacher.split(',');
+                                        for(let c of classes) {
+                                            let c1 = tempTimetable[d][p1][c];
+                                            let c2 = tempTimetable[d][p2][c];
                                             for(let t of rTeachers) {
-                                                if(cell.teacher.includes(t.trim())) { busy = true; break; }
+                                                if(c1 && c1.teacher.includes(t.trim())) busy = true;
+                                                if(c2 && c2.teacher.includes(t.trim())) busy = true;
                                             }
                                         }
-                                    }
-                                    if (!busy) {
-                                        generatedTimetable[d][p][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
-                                        daysAssigned[d]++;
-                                        periodsToAssign--;
-                                        placed = true;
-                                        break;
+                                        if (!busy) {
+                                            tempTimetable[d][p1][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
+                                            tempTimetable[d][p2][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
+                                            daysAssigned[d] += 2;
+                                            periodsToAssign -= 2;
+                                            hasPlacedDouble = true;
+                                            placed = true;
+                                            break;
+                                        }
                                     }
                                 }
+                                if(placed) break;
                             }
-                            if(placed) break;
+                        }
+
+                        // Singles
+                        if (!placed && periodsToAssign > 0) {
+                            for (let d of dayOrder) {
+                                if (daysAssigned[d] > 0 && rule.periods <= 5 && periodsToAssign === 1) continue; 
+                                if (daysAssigned[d] >= 2) continue;
+
+                                let periodOrder = [1,2,3,4,5,6,7,8].sort(()=>Math.random()-0.5);
+                                for (let p of periodOrder) {
+                                    if (tempTimetable[d][p][rule.grade] === null) {
+                                        let busy = false;
+                                        let rTeachers = rule.teacher.split(',');
+                                        for(let c of classes) {
+                                            let cell = tempTimetable[d][p][c];
+                                            if (cell) {
+                                                for(let t of rTeachers) {
+                                                    if(cell.teacher.includes(t.trim())) { busy = true; break; }
+                                                }
+                                            }
+                                        }
+                                        if (!busy) {
+                                            tempTimetable[d][p][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
+                                            daysAssigned[d]++;
+                                            periodsToAssign--;
+                                            placed = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if(placed) break;
+                            }
                         }
                     }
-                }
-                if(periodsToAssign > 0) unassigned.push(rule.subject + " (" + rule.grade + " ශ්‍රේ.)");
-            });
+                    if(periodsToAssign > 0) {
+                        unassigned.push(rule.subject + " (" + rule.grade + " ශ්‍රේ.) - ඉතිරි කා: " + periodsToAssign);
+                    }
+                });
 
-            if(unassigned.length > 0) alert("ගැටීම් නිසා මෙම විෂයයන් සම්පූර්ණයෙන්ම ඇතුළත් කළ නොහැකි විය: \n" + unassigned.join(', '));
+                if (unassigned.length < minUnassignedCount) {
+                    minUnassignedCount = unassigned.length;
+                    bestTimetable = JSON.parse(JSON.stringify(tempTimetable)); 
+                    bestUnassigned = unassigned;
+                }
+
+                if (minUnassignedCount === 0) break; // Found a perfect 100% reliable timetable!
+            }
+
+            generatedTimetable = bestTimetable;
+            
+            if(bestUnassigned.length > 0) {
+                alert("පරීක්ෂාවන් ගණනාවකින් පසුවද පහත විෂයයන් සඳහා ගැටීම් පවතී. කරුණාකර 'කාලච්ඡේද සාරාංශය' බලා අදාළ ගුරුවරුන්ගේ වැඩ ප්‍රමාණය පරීක්ෂා කරන්න:\n\n" + bestUnassigned.join('\n'));
+            }
+
             saveData();
             renderTable();
         }
