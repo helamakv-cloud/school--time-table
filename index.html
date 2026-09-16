@@ -311,7 +311,7 @@
                 </div>
             </fieldset>
             <p style="font-size: 11px; color: #4b5563; margin-bottom: 10px;">මුද්‍රණය කිරීමට අවශ්‍ය කාලසටහන් වර්ගය තෝරන්න:</p>
-            <button class="btn-primary" onclick="triggerPrint('all_master')">🏫 සම්පූර්ණ ප්‍රධාන කාලසටහන (Master View)</button>
+            <button class="btn-primary" style="background: linear-gradient(to bottom, #3b82f6, #2563eb); border-color:#1d4ed8;" onclick="triggerPrint('all_master')">🏫 සම්පූර්ණ ප්‍රධාන කාලසටහන (Master View)</button>
             <button class="btn-primary" style="background: linear-gradient(to bottom, #10b981, #059669); border-color:#047857;" onclick="triggerPrint('classes')">📚 සියලුම පන්ති කාලසටහන්</button>
             <button class="btn-primary" style="background: linear-gradient(to bottom, #f59e0b, #d97706); border-color:#b45309;" onclick="triggerPrint('teachers')">🧑‍🏫 සියලුම ගුරුවරුන්ගේ කාලසටහන්</button>
         </div>
@@ -963,7 +963,7 @@
             reliefAssignments = []; 
         }
 
-        // --- EXTREME AI GENERATOR (10,000 Attempts Async) ---
+        // --- EXTREME AI GENERATOR (10,000 Attempts Async) with CT + Core Priority ---
         function startGenerationAsync() {
             if(teachingRules.length === 0) return alert("කරුණාකර පළමුව නීති ඇතුළත් කරන්න!");
 
@@ -992,8 +992,11 @@
             let maxAttempts = 10000;
             let attempt = 0;
 
+            const coreSubjectsList = ['සිංහල', 'ඉංග්‍රීසි', 'ඉංග්‍රිසි', 'ගණිතය', 'විද්‍යාව'];
+            const isCoreSubject = (sub) => coreSubjectsList.some(cs => sub.includes(cs));
+
             function runChunk() {
-                let chunkLimit = Math.min(attempt + 500, maxAttempts); // Run 500 per frame to avoid freeze
+                let chunkLimit = Math.min(attempt + 500, maxAttempts); 
                 for (; attempt < chunkLimit; attempt++) {
                     let tempTimetable = {};
                     days.forEach(d => {
@@ -1005,20 +1008,29 @@
                     });
 
                     let unassigned = [];
-                    let isRelaxed = attempt > 8000; // Relax rules for the last 20%
+                    let isRelaxed = attempt > 8000; 
                     
-                    // Stochastic Sorting
+                    // Stochastic Sorting - Supreme Priority to CT + Core Subjects
                     let sortedRules = [...teachingRules].sort((a, b) => {
                         let aIsCT = (classTeacherMap[a.grade] && a.teacher.includes(classTeacherMap[a.grade])) ? 1 : 0;
                         let bIsCT = (classTeacherMap[b.grade] && b.teacher.includes(classTeacherMap[b.grade])) ? 1 : 0;
-                        let weightA = (aIsCT * 1000) + (a.periods * 10) + (Math.random() * 20);
-                        let weightB = (bIsCT * 1000) + (b.periods * 10) + (Math.random() * 20);
+                        
+                        let aCTCore = (aIsCT && isCoreSubject(a.subject)) ? 1 : 0;
+                        let bCTCore = (bIsCT && isCoreSubject(b.subject)) ? 1 : 0;
+
+                        if (aCTCore !== bCTCore) return bCTCore - aCTCore; // 1. Highest Priority: CT + Core
+                        if (aIsCT !== bIsCT) return bIsCT - aIsCT; // 2. Second Priority: CT
+
+                        let weightA = (a.periods * 10) + (Math.random() * 20);
+                        let weightB = (b.periods * 10) + (Math.random() * 20);
                         return weightB - weightA;
                     });
 
                     sortedRules.forEach(rule => {
                         let periodsToAssign = rule.periods;
                         let isCT = (classTeacherMap[rule.grade] && rule.teacher.includes(classTeacherMap[rule.grade]));
+                        let isCTCore = isCT && isCoreSubject(rule.subject);
+
                         let daysAssigned = { 'Monday':0, 'Tuesday':0, 'Wednesday':0, 'Thursday':0, 'Friday':0 };
                         let ruleAttempts = 50;
                         let hasPlacedDouble = false;
@@ -1032,7 +1044,14 @@
                             if ((rule.periods === 3 || rule.periods === 6) && periodsToAssign >= 2 && !hasPlacedDouble) {
                                 for (let d of dayOrder) {
                                     if (!isRelaxed && daysAssigned[d] >= 1) continue; 
-                                    let periodOrder = isCT ? [1, 2, 3, 4, 5, 6, 7] : [3, 4, 5, 6, 7].sort(()=>Math.random()-0.5).concat([1, 2]);
+                                    
+                                    let periodOrder;
+                                    if(isCTCore || isCT) {
+                                        periodOrder = [1, 2, 3, 4, 5, 6, 7]; // CTs force attempt 1st Period
+                                    } else {
+                                        let nonMorn = [3, 4, 5, 6, 7].sort(()=>Math.random()-0.5);
+                                        periodOrder = [...nonMorn, 2, 1]; // Others pushed back
+                                    }
 
                                     for (let p of periodOrder) {
                                         let p1 = p, p2 = p + 1;
@@ -1073,9 +1092,15 @@
                                         }
                                     }
 
-                                    let periodOrder = isCT ? [1, 2, 3, 4, 5, 6, 7, 8] : [3, 4, 5, 6, 7, 8].sort(()=>Math.random()-0.5).concat([1, 2]);
+                                    let periodOrderSingle;
+                                    if(isCTCore || isCT) {
+                                        periodOrderSingle = [1, 2, 3, 4, 5, 6, 7, 8]; // CTs force attempt 1st Period
+                                    } else {
+                                        let nonMorn = [3, 4, 5, 6, 7, 8].sort(()=>Math.random()-0.5);
+                                        periodOrderSingle = [...nonMorn, 2, 1]; // Others pushed back
+                                    }
 
-                                    for (let p of periodOrder) {
+                                    for (let p of periodOrderSingle) {
                                         if (tempTimetable[d][p][rule.grade] === null) {
                                             let busy = false;
                                             let rTeachers = rule.teacher.split(',');
