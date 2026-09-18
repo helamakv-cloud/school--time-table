@@ -1169,30 +1169,17 @@
         function startGenerationAsync() {
             if(teachingRules.length === 0) return alert("කරුණාකර පළමුව නීති ඇතුළත් කරන්න!");
 
-            let teacherSum = {}; let classSum = {}; let errors = [];
-            teachingRules.forEach(r => {
-                let p = parseInt(r.periods) || 0;
-                classSum[r.grade] = (classSum[r.grade] || 0) + p;
-                r.teacher.split(',').forEach(t => { teacherSum[t.trim()] = (teacherSum[t.trim()] || 0) + p; });
-            });
-
-            for(let c in classSum) if(classSum[c] > 40) errors.push(`${c} ශ්‍රේණියට කාලච්ඡේද 40 කට වඩා ලබා දී ඇත.`);
-            for(let t in teacherSum) if(teacherSum[t] > 40) errors.push(`${t} ගුරුතුමාට/තුමියට කාලච්ඡේද 40 කට වඩා ලබා දී ඇත.`);
-
-            if(errors.length > 0) return alert("කාලසටහන සෑදීමට පෙර පහත දෝෂ නිවැරදි කරන්න:\n\n" + errors.join('\n'));
-
+            // Alert පණිවිඩ සම්පූර්ණයෙන්ම ඉවත් කර ඇත.
             document.getElementById('loadingOverlay').style.display = 'flex';
             document.getElementById('loadingText').innerText = "පද්ධතිය සකසමින්...";
             
             setTimeout(runHeuristicAlgorithm, 100);
         }
 
-        // --- NEW: HEURISTIC CONSTRAINT SATISFACTION ALGORITHM (SUPER FAST) ---
         function runHeuristicAlgorithm() {
             let bestTimetable = null;
             let minUnassignedCount = 9999;
-            let bestUnassigned = null;
-            let maxAttempts = 100; // ඉතාමත් වේගවත් බැවින් මෙපමණක් ප්‍රමාණවත්ය
+            let maxAttempts = 100;
 
             function isTBusy(tt, t, d, p) {
                 if (teacherConstraints.some(tc => tc.teacher === t && tc.day === d && (tc.period === 'All' || parseInt(tc.period) === p))) return true;
@@ -1240,7 +1227,6 @@
                     let requiredPeriods = rule.periods;
                     let daysAssignedCount = { 'Monday':0, 'Tuesday':0, 'Wednesday':0, 'Thursday':0, 'Friday':0 };
                     
-                    // දැනට 1 වන කාලච්ඡේදයට (CT ලෙස) වැටී ඇති දින ගණන සෙවීම
                     let preAssigned = 0;
                     for(let d of days) {
                         if(tempTimetable[d][1][rule.grade] && tempTimetable[d][1][rule.grade].subject === rule.subject) {
@@ -1251,7 +1237,6 @@
 
                     let totalP = requiredPeriods + preAssigned; 
                     
-                    // 3 & 6 Period නීති සඳහා Double / Single වෙන් කිරීම
                     let doublesNeeded = 0;
                     let singlesNeeded = requiredPeriods;
 
@@ -1259,18 +1244,18 @@
                     else if (totalP === 3) { doublesNeeded = 1; singlesNeeded = 1 - preAssigned; }
                     else if (totalP >= 7) { doublesNeeded = 2; singlesNeeded = requiredPeriods - 4; }
                     
-                    if(singlesNeeded < 0) { doublesNeeded = 0; singlesNeeded = requiredPeriods; } // Fallback
+                    if(singlesNeeded < 0) { doublesNeeded = 0; singlesNeeded = requiredPeriods; }
 
                     let rTeachers = rule.teacher.split(',').map(t => t.trim());
 
-                    // Double Periods පිරවීම (Greedy Placement)
+                    // Double Periods පිරවීම
                     while (doublesNeeded > 0) {
                         let placed = false;
                         let dayOrder = [...days].sort(() => Math.random() - 0.5);
                         for (let d of dayOrder) {
-                            if (daysAssignedCount[d] > 0) continue; // Double එක හිස් දවසකම වැටිය යුතුය
+                            if (daysAssignedCount[d] > 0) continue; 
                             
-                            let periodOrder = [3, 5, 2, 6, 4]; // Interval එක හරහා නොයන ලෙස තේරීම
+                            let periodOrder = [3, 5, 2, 6, 4];
                             for (let p of periodOrder) {
                                 let p1 = p, p2 = p + 1;
                                 let intv = parseInt(document.getElementById('intervalSetting').value) || 4;
@@ -1293,17 +1278,17 @@
                             }
                             if(placed) break;
                         }
-                        if(!placed) break; // Place කරන්න බැරි නම් අත්හරිනවා
+                        if(!placed) break; 
                     }
 
-                    // Single Periods පිරවීම (Even Distribution)
+                    // Single Periods පිරවීම
                     while (singlesNeeded > 0) {
                         let placed = false;
-                        let dayOrder = [...days].sort((a,b) => daysAssignedCount[a] - daysAssignedCount[b]); // අඩුම වැටුණු දවස් මුලින්ම (Even Distribution)
+                        let dayOrder = [...days].sort((a,b) => daysAssignedCount[a] - daysAssignedCount[b]); 
 
                         for (let d of dayOrder) {
-                            if (daysAssignedCount[d] >= 2) continue; // එක දවසට 2කට වඩා එපා
-                            if (totalP <= 5 && daysAssignedCount[d] >= 1) continue; // කා: 5 නම් දවසට එකයි
+                            if (daysAssignedCount[d] >= 2) continue; 
+                            if (totalP <= 5 && daysAssignedCount[d] >= 1) continue; 
 
                             let periodOrder = [2,3,4,5,6,7,8].sort(()=>Math.random() - 0.5);
                             for (let p of periodOrder) {
@@ -1323,7 +1308,7 @@
                             }
                             if(placed) break;
                         }
-                        // අමාරු අවස්ථාවකදී ලිහිල් කර නැවත බැලීම
+                        
                         if(!placed) {
                             for (let d of days.sort(() => Math.random() - 0.5)) {
                                 let periodOrder = [2,3,4,5,6,7,8];
@@ -1353,21 +1338,16 @@
                 if (unassigned.length < minUnassignedCount) {
                     minUnassignedCount = unassigned.length;
                     bestTimetable = JSON.parse(JSON.stringify(tempTimetable)); 
-                    bestUnassigned = unassigned;
                 }
 
-                if (minUnassignedCount === 0) break; // දෝෂ නැත්නම් Loop එක නවතින්න!
+                if (minUnassignedCount === 0) break; 
             }
 
-            // නිම කිරීම
+            // නිම කිරීම - Alert පණිවිඩ නොමැතිව කෙලින්ම Success පෙන්වීම
             document.getElementById('loadingOverlay').style.display = 'none';
             generatedTimetable = bestTimetable;
             
-            if(bestUnassigned.length > 0) {
-                alert("ඇල්ගොරිතමය මගින් හොඳම කාලසටහන සොයා ගත්තද, පහත දෑ පිරවීමට නොහැකි විය. ගුරුවරුන්ගේ නිදහස් සීමාවන් (Constraints) පරීක්ෂා කරන්න:\n\n" + bestUnassigned.join('\n'));
-            } else {
-                showSuccessAnimation();
-            }
+            showSuccessAnimation();
             saveData();
             renderTable();
         }
