@@ -299,6 +299,9 @@
 
             <h4 style="margin-top: 15px; border-bottom: 1px solid #d1d5db;">ලබා දී ඇති සහන ලැයිස්තුව</h4>
             <div class="rules-list" id="activeReliefsList" style="max-height: 150px;"></div>
+            
+            <!-- අලුතින් එක්කළ සහන ලැයිස්තුව Print කිරීමේ බොත්තම -->
+            <button class="btn-primary" style="background: linear-gradient(to bottom, #8b5cf6, #7c3aed); border-color:#6d28d9; margin-top: 10px;" onclick="triggerPrint('relief')">🖨️ සහන ලැයිස්තුව Print / PDF කරන්න</button>
         </div>
     </div>
 
@@ -319,6 +322,7 @@
             <button class="btn-primary" style="background: linear-gradient(to bottom, #3b82f6, #2563eb); border-color:#1d4ed8;" onclick="triggerPrint('all_master')">🏫 සම්පූර්ණ ප්‍රධාන කාලසටහන (Master View)</button>
             <button class="btn-primary" style="background: linear-gradient(to bottom, #10b981, #059669); border-color:#047857;" onclick="triggerPrint('classes')">📚 සියලුම පන්ති කාලසටහන්</button>
             <button class="btn-primary" style="background: linear-gradient(to bottom, #f59e0b, #d97706); border-color:#b45309;" onclick="triggerPrint('teachers')">🧑‍🏫 සියලුම ගුරුවරුන්ගේ කාලසටහන්</button>
+            <button class="btn-primary" style="background: linear-gradient(to bottom, #8b5cf6, #7c3aed); border-color:#6d28d9; margin-top:5px;" onclick="triggerPrint('relief')">👨‍🏫 සහන කාලච්ඡේද ලැයිස්තුව (Relief PDF)</button>
         </div>
     </div>
 
@@ -363,7 +367,6 @@
                 <div class="form-grid" style="grid-template-columns: 1fr; margin-bottom: 5px;">
                     <input type="text" id="schoolNameInput" placeholder="පාසලේ නම මෙහි ඇතුළත් කරන්න" onkeyup="updateSchoolInfo()" style="font-weight: bold; text-align: center; color: #1d4ed8; font-size: 14px;">
                 </div>
-                <!-- අලුතින් එක්කළ වර්ෂය සහ වාරය -->
                 <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 5px;">
                     <input type="number" id="yearInput" placeholder="වර්ෂය (උදා: 2026)" onkeyup="updateSchoolInfo()" onchange="updateSchoolInfo()" style="text-align: center; font-weight: bold;">
                     <select id="termInput" onchange="updateSchoolInfo()" style="text-align: center; font-weight: bold;">
@@ -483,7 +486,7 @@
         <!-- Right Panel -->
         <div class="panel right-panel">
             <h2 id="displaySchoolName" class="school-title">ඔබේ පාසලේ නම</h2>
-            <div id="displayTermInfo" class="term-info-display"></div> <!-- අලුතින් එක්කළ වර්ෂය සහ වාරය දර්ශනය කිරීම -->
+            <div id="displayTermInfo" class="term-info-display"></div>
             <h3 id="mainTitle" class="main-title">පාසල් කාලසටහන</h3>
 
             <div class="view-controls">
@@ -515,28 +518,12 @@
         document.addEventListener('contextmenu', event => event.preventDefault());
 
         document.onkeydown = function(e) {
-            // Disable F12
-            if(e.keyCode == 123) {
-                return false;
-            }
-            // Disable Ctrl+Shift+I
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
-                return false;
-            }
-            // Disable Ctrl+Shift+C
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
-                return false;
-            }
-            // Disable Ctrl+Shift+J
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
-                return false;
-            }
-            // Disable Ctrl+U (View Source)
-            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
-                return false;
-            }
+            if(e.keyCode == 123) return false;
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false;
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
         };
-        // ------------------------------------------------------------
 
         let classes = [];
         let masterTeachers = [];
@@ -654,7 +641,6 @@
 
         window.onload = () => { loadData(); };
 
-        // --- යාවත්කාලීන කළ School Info Function එක ---
         function updateSchoolInfo() {
             let name = document.getElementById('schoolNameInput').value;
             let year = document.getElementById('yearInput').value;
@@ -1361,8 +1347,6 @@
 
         // --- Print Engine ---
         function triggerPrint(type) {
-            if(classes.length === 0) return alert("මුද්‍රණය කිරීමට දත්ත නොමැත!");
-            
             let layoutSetting = parseInt(document.querySelector('input[name="printLayout"]:checked').value);
             let intervalPos = parseInt(document.getElementById('intervalSetting').value) || 4;
             closeModals();
@@ -1373,7 +1357,6 @@
             let yearStr = document.getElementById('yearInput').value;
             let termStr = document.getElementById('termInput').value;
             
-            // Layouts සඳහා වර්ෂය සහ වාරය දර්ශනය කරන HTML කොටස
             let termHtml1 = (yearStr || termStr) ? `<div class="print-term-info">${yearStr ? yearStr + ' වර්ෂය' : ''} ${yearStr && termStr ? ' | ' : ''} ${termStr ? termStr : ''}</div>` : '';
             let termHtml2 = (yearStr || termStr) ? `<div class="print-term-info">${yearStr ? yearStr + ' වර්ෂය' : ''} ${yearStr && termStr ? ' | ' : ''} ${termStr ? termStr : ''}</div>` : '';
             let termHtml4 = (yearStr || termStr) ? `<div class="print-term-info">${yearStr ? yearStr + ' වර්ෂය' : ''} ${yearStr && termStr ? ' | ' : ''} ${termStr ? termStr : ''}</div>` : '';
@@ -1381,12 +1364,61 @@
             let printHtml = "";
             let generatedItems = [];
 
-            if (type === 'all_master') {
+            // --- අලුතින් එක් කළ: සහන ලැයිස්තුව මුද්‍රණය කිරීම ---
+            if (type === 'relief') {
+                if(reliefAssignments.length === 0) {
+                    alert("මුද්‍රණය කිරීමට තරම් සහන (Reliefs) ලබා දී නොමැත!");
+                    return;
+                }
+                
+                let tbl = `<div class="timetable-box" style="padding: 20px;"><h2 class="school-title">${schoolName}</h2>${termHtml1}<h3 class="main-title">සහන කාලච්ඡේද ලැයිස්තුව (Relief Summary)</h3>`;
+                tbl += `<table style="width:100%; border-collapse: collapse; margin-top: 15px; font-size:13px;"><thead><tr>
+                    <th style="padding:10px; border:1px solid #000; background:#e5e7eb;">දවස</th>
+                    <th style="padding:10px; border:1px solid #000; background:#e5e7eb;">කාලච්ඡේදය</th>
+                    <th style="padding:10px; border:1px solid #000; background:#e5e7eb;">පන්තිය (ශ්‍රේණිය)</th>
+                    <th style="padding:10px; border:1px solid #000; background:#e5e7eb;">නොපැමිණි ගුරුවරයා</th>
+                    <th style="padding:10px; border:1px solid #000; background:#e5e7eb;">සහනය සඳහා යන ගුරුවරයා</th>
+                    <th style="padding:10px; border:1px solid #000; background:#e5e7eb; width: 120px;">අත්සන</th>
+                </tr></thead><tbody>`;
+
+                let sortedRelief = [...reliefAssignments].sort((a, b) => {
+                    let d1 = days.indexOf(a.day);
+                    let d2 = days.indexOf(b.day);
+                    if(d1 !== d2) return d1 - d2;
+                    return a.period - b.period;
+                });
+
+                sortedRelief.forEach(r => {
+                    let cell = generatedTimetable[r.day] && generatedTimetable[r.day][r.period] ? generatedTimetable[r.day][r.period][r.grade] : null;
+                    let absentT = "-";
+                    if (cell) {
+                        let rTeachers = cell.teacher.split(',');
+                        let absents = rTeachers.filter(t => absentTeachers.includes(t.trim()));
+                        if(absents.length > 0) absentT = absents.join(', ');
+                    }
+
+                    tbl += `<tr>
+                        <td style="padding:8px; border:1px solid #000; text-align:center;">${dayNames[r.day]}</td>
+                        <td style="padding:8px; border:1px solid #000; text-align:center;">කා: ${r.period}</td>
+                        <td style="padding:8px; border:1px solid #000; text-align:center; font-weight:bold;">${r.grade}</td>
+                        <td style="padding:8px; border:1px solid #000; text-align:center;">${absentT}</td>
+                        <td style="padding:8px; border:1px solid #000; text-align:center; font-weight:bold;">${r.reliefTeacher}</td>
+                        <td style="padding:8px; border:1px solid #000;"></td>
+                    </tr>`;
+                });
+                tbl += `</tbody></table><div class="print-footer" style="margin-top: 20px;">&copy; 2026 Kelum Konara | Smart<span>Soft</span> | Time Table version 1.0</div></div>`;
+                
+                printHtml = `<div class="print-page layout-1">${tbl}</div>`;
+            }
+            // ----------------------------------------------------
+            else if (type === 'all_master') {
+                if(classes.length === 0) return alert("මුද්‍රණය කිරීමට දත්ත නොමැත!");
                 printHtml += `<div class="print-page layout-1"><div class="timetable-box"><h2 class="school-title">${schoolName}</h2>${termHtml1}<h3 class="main-title">සම්පූර්ණ ප්‍රධාන කාලසටහන</h3>`;
                 printHtml += document.getElementById('mainTable').outerHTML;
                 printHtml += `<div class="print-footer">&copy; 2026 Kelum Konara | Smart<span>Soft</span> | Time Table version 1.0</div></div></div>`;
             } 
             else {
+                if(classes.length === 0) return alert("මුද්‍රණය කිරීමට දත්ත නොමැත!");
                 if (type === 'classes') {
                     let colSpan = days.length + 1;
                     classes.forEach(c => {
