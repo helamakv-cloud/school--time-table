@@ -75,7 +75,9 @@
         
         th { background: linear-gradient(to bottom, #e5e7eb, #d1d5db); color: #1f2937; padding: 6px; font-size: 12px; border: 1px solid #9ca3af;}
         td:first-child { background: linear-gradient(to bottom, #d1d5db, #9ca3af); font-weight: bold; font-size: 11px; position: sticky; left: 0; z-index: 1; border: 1px solid #6b7280;}
-        td.cell-empty { background-color: #fee2e2; border: 1px dashed #ef4444; } /* Highlight truly empty slots */
+        
+        /* PURE BLANK EMPTY CELLS */
+        td.cell-empty { background-color: #f8fafc; border: 1px solid #e2e8f0; } 
         
         .attendance-row { background: linear-gradient(to right, #bfdbfe, #93c5fd) !important; color: #1e3a8a !important; font-weight: bold; padding: 4px !important; font-size: 10px; letter-spacing: 1px; border: 1px solid #60a5fa !important; text-transform: uppercase;}
         .interval { background: linear-gradient(to right, #6b7280, #4b5563) !important; color: white !important; font-weight: bold; padding: 4px !important; font-size: 11px; letter-spacing: 2px; border: 1px solid #374151 !important; text-transform: uppercase;}
@@ -86,7 +88,6 @@
         .card::before { content: ''; position: absolute; top:0; left:0; width:100%; height: 30%; background: linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,0)); pointer-events: none;}
         .card-subj { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; display: block; z-index: 2; text-align: center;}
         .card span { font-weight: 600; font-size: 9px; color: #1f2937; display: block; margin-top: 2px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; z-index: 2; text-align: center;}
-        .empty-slot { color: #b91c1c; font-size: 10px; font-style: italic; font-weight:bold; }
 
         .footer { text-align: center; font-size: 12px; font-weight: bold; color: #4b5563; padding-top: 10px; margin-top: 10px; border-top: 1px solid #e5e7eb; }
 
@@ -101,7 +102,7 @@
         .spinner { border: 5px solid rgba(255,255,255,0.1); border-top: 5px solid #3b82f6; border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .loading-title { font-size: 22px; font-weight: bold; margin-bottom: 10px; color: #60a5fa; letter-spacing: 1px;}
-        .loading-sub { font-size: 13px; color: #9ca3af; }
+        .loading-sub { font-size: 13px; color: #9ca3af; text-align: center; max-width: 80%;}
 
         /* SUCCESS ANIMATION MODAL */
         .success-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 3000; align-items:center; justify-content:center; backdrop-filter: blur(4px); transition: opacity 0.5s ease;}
@@ -198,8 +199,7 @@
 
             th { background: #e5e7eb !important; color: black !important; text-shadow: none !important; -webkit-print-color-adjust: exact; border: 1px solid #000 !important;}
             td:first-child { background: #e5e7eb !important; color: black !important; border: 1px solid #000 !important; width: 40px !important; min-width: 40px !important;}
-            td.cell-empty { background-color: white !important; border: 1px solid #000 !important;}
-            .empty-slot { display: none !important; } /* Print කරනවිට හිස් අකුරු මකා දැමීම */
+            td.cell-empty { background-color: white !important; border: 1px solid #000 !important; }
             
             .interval { background: #d1d5db !important; color: black !important; border: 1px solid #000 !important; -webkit-print-color-adjust: exact; letter-spacing: normal; text-transform: none; text-shadow: none !important; box-shadow: none !important;}
             .attendance-row { background: #e2e8f0 !important; color: black !important; border: 1px solid #000 !important; text-shadow: none !important; box-shadow: none !important; -webkit-print-color-adjust: exact; padding: 1px !important;}
@@ -219,8 +219,8 @@
     <!-- AI Loading Animation -->
     <div id="loadingOverlay" class="loading-overlay">
         <div class="spinner"></div>
-        <div class="loading-title">Deep-Swap ඇල්ගොරිතමය ක්‍රියාත්මක වේ...</div>
-        <div id="loadingText" class="loading-sub">සියලුම හිස් තැන් පිරවීම තහවුරු කරමින් පවතී. කරුණාකර රැඳී සිටින්න.</div>
+        <div class="loading-title">Advanced Algorithm ක්‍රියාත්මක වේ...</div>
+        <div id="loadingText" class="loading-sub">කාලසටහන සකසමින් පවතී. කරුණාකර රැඳී සිටින්න.</div>
     </div>
 
     <!-- Success Animation Modal -->
@@ -1170,34 +1170,16 @@
         function startGenerationAsync() {
             if(teachingRules.length === 0) return alert("කරුණාකර පළමුව නීති ඇතුළත් කරන්න!");
 
-            // 1. පීරියඩ් 40 සම්පූර්ණ වී ඇත්දැයි පරීක්ෂා කිරීම සහ පූර්ව දැනුම් දීම
-            let classSum = {};
-            teachingRules.forEach(r => {
-                classSum[r.grade] = (classSum[r.grade] || 0) + parseInt(r.periods);
-            });
-            
-            let warnings = [];
-            for(let c of classes) {
-                let total = classSum[c] || 0;
-                if(total < 40) warnings.push(`${c} ශ්‍රේණිය (ඇත්තේ පීරියඩ් ${total}/40 කි)`);
-            }
-            
-            if(warnings.length > 0) {
-                let msg = "අවධානයට: පහත පන්ති සඳහා පීරියඩ් 40 ම සම්පූර්ණ කර නොමැත. එබැවින් අනිවාර්යයෙන්ම හිස් කාලච්ඡේද ඉතිරි වනු ඇත:\n\n" + warnings.join('\n') + "\n\nඔබට කාලසටහන සෑදීම ඉදිරියට කරගෙන යාමට අවශ්‍යද?";
-                if(!confirm(msg)) return;
-            }
-
             document.getElementById('loadingOverlay').style.display = 'flex';
             document.getElementById('loadingText').innerText = "ගැටුම් නිරාකරණය කරමින් පද්ධතිය සකසමින්...";
             
             setTimeout(runDeepSwapAlgorithm, 100);
         }
 
-        // --- NEW: DEEP-SWAP CONFLICT RESOLUTION ALGORITHM ---
         function runDeepSwapAlgorithm() {
             let bestTimetable = null;
             let minUnassignedCount = 9999;
-            let maxAttempts = 50; // Deep-Swap භාවිතා කරන බැවින් 50ක් ප්‍රමාණවත්ය
+            let maxAttempts = 200; // ඉතා ඉහළ සාර්ථකත්වයක් සඳහා 200ක් යොදා ඇත
 
             function isTBusy(tt, t, d, p, ignoreGrade) {
                 if (teacherConstraints.some(tc => tc.teacher === t && tc.day === d && (tc.period === 'All' || parseInt(tc.period) === p))) return true;
@@ -1391,10 +1373,10 @@
                 }
             } else {
                 if (relief) {
-                    return `<td><div class="card relief-card"><span class="card-subj" style="color:gray;">හිස් කාලච්ඡේදය</span><span class="relief-text">(සහන: ${relief.reliefTeacher})</span></div></td>`;
+                    return `<td><div class="card relief-card"><span class="card-subj" style="color:gray;">නිදහස් කාලය</span><span class="relief-text">(සහන: ${relief.reliefTeacher})</span></div></td>`;
                 }
-                // පැහැදිලිව හිස් බව පෙන්වීමට රතු පැහැය භාවිත කර ඇත
-                return `<td class="cell-empty"><span class="empty-slot">- හිස් -</span></td>`;
+                // කිසිදු කරදරකාරී බවක් නොමැති සම්පූර්ණයෙන්ම පිරිසිදු හිස් කොටුවක්
+                return `<td class="cell-empty"></td>`;
             }
         }
 
@@ -1538,7 +1520,7 @@
                                 } else if(assignedClass !== "-") {
                                     tbl += `<td><div class="card" style="background:${color};"><span class="card-subj">${assignedSubject}</span><span>(${assignedClass})</span></div></td>`;
                                 } else {
-                                    tbl += `<td class="cell-empty"><span class="empty-slot">- හිස් -</span></td>`;
+                                    tbl += `<td class="cell-empty"></td>`;
                                 }
                             });
                             tbl += `</tr>`;
