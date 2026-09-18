@@ -23,7 +23,7 @@
         
         /* Modern Buttons */
         .btn-primary { color: white; width: 100%; padding: 10px; border-radius: 4px; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 8px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.2); border: 1px solid transparent;}
-        .btn-auto { background: linear-gradient(to bottom, #10b981, #059669); border-color: #047857; font-size: 15px; margin-top: 5px; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);}
+        .btn-auto { background: linear-gradient(to bottom, #10b981, #059669); border-color: #047857; font-size: 14px; margin-top: 5px; }
         .btn-auto:hover { background: linear-gradient(to bottom, #059669, #047857); }
         .btn-attendance { background: linear-gradient(to bottom, #14b8a6, #0d9488); border-color: #0f766e; }
         .btn-attendance:hover { background: linear-gradient(to bottom, #0d9488, #0f766e); }
@@ -75,9 +75,7 @@
         
         th { background: linear-gradient(to bottom, #e5e7eb, #d1d5db); color: #1f2937; padding: 6px; font-size: 12px; border: 1px solid #9ca3af;}
         td:first-child { background: linear-gradient(to bottom, #d1d5db, #9ca3af); font-weight: bold; font-size: 11px; position: sticky; left: 0; z-index: 1; border: 1px solid #6b7280;}
-        
-        /* PURE BLANK EMPTY CELLS */
-        td.cell-empty { background-color: #f8fafc; border: 1px solid #e2e8f0; } 
+        td.cell-empty { background-color: #ffffff; border: 1px solid #d1d5db; }
         
         .attendance-row { background: linear-gradient(to right, #bfdbfe, #93c5fd) !important; color: #1e3a8a !important; font-weight: bold; padding: 4px !important; font-size: 10px; letter-spacing: 1px; border: 1px solid #60a5fa !important; text-transform: uppercase;}
         .interval { background: linear-gradient(to right, #6b7280, #4b5563) !important; color: white !important; font-weight: bold; padding: 4px !important; font-size: 11px; letter-spacing: 2px; border: 1px solid #374151 !important; text-transform: uppercase;}
@@ -88,6 +86,7 @@
         .card::before { content: ''; position: absolute; top:0; left:0; width:100%; height: 30%; background: linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,0)); pointer-events: none;}
         .card-subj { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; display: block; z-index: 2; text-align: center;}
         .card span { font-weight: 600; font-size: 9px; color: #1f2937; display: block; margin-top: 2px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; z-index: 2; text-align: center;}
+        .empty-slot { color: #9ca3af; font-size: 10px; font-style: italic; }
 
         .footer { text-align: center; font-size: 12px; font-weight: bold; color: #4b5563; padding-top: 10px; margin-top: 10px; border-top: 1px solid #e5e7eb; }
 
@@ -102,7 +101,7 @@
         .spinner { border: 5px solid rgba(255,255,255,0.1); border-top: 5px solid #3b82f6; border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .loading-title { font-size: 22px; font-weight: bold; margin-bottom: 10px; color: #60a5fa; letter-spacing: 1px;}
-        .loading-sub { font-size: 13px; color: #9ca3af; text-align: center; max-width: 80%;}
+        .loading-sub { font-size: 13px; color: #9ca3af; }
 
         /* SUCCESS ANIMATION MODAL */
         .success-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 3000; align-items:center; justify-content:center; backdrop-filter: blur(4px); transition: opacity 0.5s ease;}
@@ -199,7 +198,7 @@
 
             th { background: #e5e7eb !important; color: black !important; text-shadow: none !important; -webkit-print-color-adjust: exact; border: 1px solid #000 !important;}
             td:first-child { background: #e5e7eb !important; color: black !important; border: 1px solid #000 !important; width: 40px !important; min-width: 40px !important;}
-            td.cell-empty { background-color: white !important; border: 1px solid #000 !important; }
+            td.cell-empty { background-color: white !important; }
             
             .interval { background: #d1d5db !important; color: black !important; border: 1px solid #000 !important; -webkit-print-color-adjust: exact; letter-spacing: normal; text-transform: none; text-shadow: none !important; box-shadow: none !important;}
             .attendance-row { background: #e2e8f0 !important; color: black !important; border: 1px solid #000 !important; text-shadow: none !important; box-shadow: none !important; -webkit-print-color-adjust: exact; padding: 1px !important;}
@@ -219,8 +218,8 @@
     <!-- AI Loading Animation -->
     <div id="loadingOverlay" class="loading-overlay">
         <div class="spinner"></div>
-        <div class="loading-title">Advanced Algorithm ක්‍රියාත්මක වේ...</div>
-        <div id="loadingText" class="loading-sub">කාලසටහන සකසමින් පවතී. කරුණාකර රැඳී සිටින්න.</div>
+        <div class="loading-title">කාලසටහන විශ්ලේෂණය කරමින්...</div>
+        <div id="loadingText" class="loading-sub">උත්සාහයන්: 0/10000</div>
     </div>
 
     <!-- Success Animation Modal -->
@@ -238,16 +237,6 @@
             <h3 style="margin-top:0; color:#0d9488; border-bottom: 2px solid #e5e7eb; padding-bottom:8px;">📅 ගුරු පැමිණීම</h3>
             <p style="font-size: 11px; color: gray;">අද දින නොපැමිණි ගුරුවරුන් ලකුණු කරන්න. මෙය සහන ලබාදීමේදී ප්‍රයෝජනවත් වේ.</p>
             <div id="attendanceList" style="max-height: 300px; overflow-y: auto; padding-right: 5px; margin-top: 15px;"></div>
-        </div>
-    </div>
-
-    <!-- Class Teacher Management Modal -->
-    <div id="classTeacherModal" class="modal-overlay">
-        <div class="modal" style="max-width: 400px;">
-            <button class="close-btn" onclick="closeModals()">✖</button>
-            <h3 style="margin-top:0; color:#db2777; border-bottom: 2px solid #e5e7eb; padding-bottom:8px;">👑 පන්තිභාර ගුරුවරුන්</h3>
-            <p style="font-size: 11px; color: gray;">ගුරුවරුන් මාරුවී යාමේදී හෝ පන්තිභාරකම් වෙනස් වීමේදී, පහත ලැයිස්තුවෙන් නව ගුරුවරයා තෝරන්න.</p>
-            <div id="classTeacherList" style="max-height: 350px; overflow-y: auto; padding-right: 5px; margin-top: 15px;"></div>
         </div>
     </div>
 
@@ -401,7 +390,6 @@
             <button class="btn-primary btn-auto" onclick="startGenerationAsync()">⚡ ස්වයංක්‍රීයව කාලසටහන සකසන්න</button>
             <button class="btn-primary btn-attendance" onclick="openAttendanceModal()">📅 ගුරු පැමිණීම (Attendance)</button>
             <button class="btn-primary btn-relief" onclick="openReliefModal()">👨‍🏫 සහන කාලච්ඡේද (Relief)</button>
-            <button class="btn-primary" style="background: linear-gradient(to bottom, #ec4899, #db2777); border-color:#be185d;" onclick="openClassTeacherModal()">👑 පන්තිභාර ගුරුවරුන්</button>
             <button class="btn-primary btn-summary" onclick="openSummaryModal()">📊 කාලච්ඡේද සාරාංශය (Workload)</button>
             <button class="btn-primary btn-print-menu" onclick="openPrintModal()">🖨️ මුද්‍රණය කිරීම (Print)</button>
             <button class="btn-primary btn-data" onclick="openDataModal()">⚙️ ඇතුළත් කළ දත්ත / Backup</button>
@@ -528,12 +516,28 @@
         document.addEventListener('contextmenu', event => event.preventDefault());
 
         document.onkeydown = function(e) {
-            if(e.keyCode == 123) return false;
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false;
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
-            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+            // Disable F12
+            if(e.keyCode == 123) {
+                return false;
+            }
+            // Disable Ctrl+Shift+I
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+                return false;
+            }
+            // Disable Ctrl+Shift+C
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
+                return false;
+            }
+            // Disable Ctrl+Shift+J
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+                return false;
+            }
+            // Disable Ctrl+U (View Source)
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+                return false;
+            }
         };
+        // ------------------------------------------------------------
 
         let classes = [];
         let masterTeachers = [];
@@ -684,39 +688,6 @@
             renderReliefList();
         }
 
-        function openClassTeacherModal() {
-            if(classes.length === 0) return alert("කරුණාකර පළමුව පන්ති (ශ්‍රේණි) ඇතුළත් කරන්න!");
-            document.getElementById('classTeacherModal').style.display = 'flex';
-            renderClassTeacherList();
-        }
-
-        function renderClassTeacherList() {
-            let html = '';
-            classes.forEach(c => {
-                let currentCT = classTeacherMap[c] || "";
-                let selectHtml = `<select style="width:auto; padding:4px; font-weight:bold; border-color:#db2777;" onchange="updateClassTeacher('${c}', this.value)">
-                    <option value="">-- පන්තිභාර ගුරුවරයෙක් නැත --</option>`;
-                masterTeachers.forEach(t => {
-                    let selected = (t === currentCT) ? "selected" : "";
-                    selectHtml += `<option value="${t}" ${selected}>${t}</option>`;
-                });
-                selectHtml += `</select>`;
-
-                html += `<div class="rule-item" style="justify-content:space-between; padding:8px; border-color:#fbcfe8; background:#fdf2f8;">
-                            <span style="font-weight:bold; color:#be185d; font-size:13px;">${c} ශ්‍රේණිය</span>
-                            ${selectHtml}
-                         </div>`;
-            });
-            document.getElementById('classTeacherList').innerHTML = html;
-        }
-
-        function updateClassTeacher(c, t) {
-            if(t) { classTeacherMap[c] = t; } 
-            else { delete classTeacherMap[c]; }
-            saveData();
-            initDropdowns();
-        }
-
         function openSummaryModal() {
             document.getElementById('summaryModal').style.display = 'flex';
             let teacherSum = {}; let classSum = {};
@@ -748,7 +719,6 @@
             document.getElementById('reliefModal').style.display = 'none';
             document.getElementById('attendanceModal').style.display = 'none';
             document.getElementById('summaryModal').style.display = 'none';
-            document.getElementById('classTeacherModal').style.display = 'none';
         }
 
         function showSuccessAnimation() {
@@ -1170,189 +1140,221 @@
         function startGenerationAsync() {
             if(teachingRules.length === 0) return alert("කරුණාකර පළමුව නීති ඇතුළත් කරන්න!");
 
+            let teacherSum = {}; let classSum = {}; let errors = [];
+            teachingRules.forEach(r => {
+                let p = parseInt(r.periods) || 0;
+                classSum[r.grade] = (classSum[r.grade] || 0) + p;
+                r.teacher.split(',').forEach(t => { teacherSum[t.trim()] = (teacherSum[t.trim()] || 0) + p; });
+            });
+
+            for(let c in classSum) if(classSum[c] > 40) errors.push(`${c} ශ්‍රේණියට කාලච්ඡේද 40 කට වඩා ලබා දී ඇත.`);
+            for(let t in teacherSum) if(teacherSum[t] > 40) errors.push(`${t} ගුරුතුමාට/තුමියට කාලච්ඡේද 40 කට වඩා ලබා දී ඇත.`);
+
+            if(errors.length > 0) return alert("කාලසටහන සෑදීමට පෙර පහත දෝෂ නිවැරදි කරන්න:\n\n" + errors.join('\n'));
+
             document.getElementById('loadingOverlay').style.display = 'flex';
-            document.getElementById('loadingText').innerText = "ගැටුම් නිරාකරණය කරමින් පද්ධතිය සකසමින්...";
+            document.getElementById('loadingText').innerText = "උත්සාහයන්: 0 / 10000";
             
-            setTimeout(runDeepSwapAlgorithm, 100);
+            setTimeout(runAdvancedAlgorithm, 50);
         }
 
-        function runDeepSwapAlgorithm() {
+        function runAdvancedAlgorithm() {
             let bestTimetable = null;
+            let bestUnassigned = null;
             let minUnassignedCount = 9999;
-            let maxAttempts = 200; // ඉතා ඉහළ සාර්ථකත්වයක් සඳහා 200ක් යොදා ඇත
+            let maxAttempts = 10000;
+            let attempt = 0;
 
-            function isTBusy(tt, t, d, p, ignoreGrade) {
-                if (teacherConstraints.some(tc => tc.teacher === t && tc.day === d && (tc.period === 'All' || parseInt(tc.period) === p))) return true;
-                for(let c of classes) {
-                    if (c === ignoreGrade) continue;
-                    if(tt[d][p][c] && tt[d][p][c].teacher.includes(t)) return true;
-                }
-                return false;
-            }
+            const coreSubjectsList = ['සිංහල', 'ඉංග්‍රීසි', 'ඉංග්‍රිසි', 'ගණිතය', 'විද්‍යාව'];
+            const isCoreSubject = (sub) => coreSubjectsList.some(cs => sub.includes(cs));
 
-            for(let attempt = 0; attempt < maxAttempts; attempt++) {
-                let tempTimetable = {};
-                days.forEach(d => {
-                    tempTimetable[d] = {};
-                    for(let p=1; p<=8; p++) {
-                        tempTimetable[d][p] = {};
-                        classes.forEach(c => tempTimetable[d][p][c] = null);
-                    }
-                });
-
-                let unassignedCount = 0;
-                let currentRules = JSON.parse(JSON.stringify(teachingRules));
-
-                // 1. පන්තිභාර ගුරුවරුන්ට පළමු කාලච්ඡේදය වෙන්කිරීම
-                classes.forEach(c => {
-                    let ct = classTeacherMap[c];
-                    if (ct) {
-                        let ctRules = currentRules.filter(r => r.grade === c && r.teacher.includes(ct));
-                        let availableDays = [...days].sort(() => Math.random() - 0.5);
-                        for (let r of ctRules) {
-                            while(r.periods > 0 && availableDays.length > 0) {
-                                let d = availableDays.shift(); 
-                                tempTimetable[d][1][c] = { subject: r.subject, teacher: r.teacher, type: r.type };
-                                r.periods--;
-                            }
+            function runChunk() {
+                let chunkLimit = Math.min(attempt + 500, maxAttempts); 
+                for (; attempt < chunkLimit; attempt++) {
+                    let tempTimetable = {};
+                    days.forEach(d => {
+                        tempTimetable[d] = {};
+                        for(let p=1; p<=8; p++) {
+                            tempTimetable[d][p] = {};
+                            classes.forEach(c => tempTimetable[d][p][c] = null);
                         }
-                    }
-                });
+                    });
 
-                let remainingRules = currentRules.filter(r => r.periods > 0);
-                remainingRules.sort((a, b) => b.periods - a.periods); // අමාරුම ඒව මුලින්
-
-                remainingRules.forEach(rule => {
-                    let requiredPeriods = rule.periods;
-                    let daysAssignedCount = { 'Monday':0, 'Tuesday':0, 'Wednesday':0, 'Thursday':0, 'Friday':0 };
-                    let intv = parseInt(document.getElementById('intervalSetting').value) || 4;
+                    let unassigned = [];
+                    let isRelaxed = attempt > 8000; 
                     
-                    let preAssigned = 0;
-                    for(let d of days) {
-                        if(tempTimetable[d][1][rule.grade] && tempTimetable[d][1][rule.grade].subject === rule.subject) {
-                            daysAssignedCount[d]++; preAssigned++;
+                    // සම්පූර්ණ නීති ලැයිස්තුවේ පිටපතක් ලබා ගැනීම
+                    let currentRules = JSON.parse(JSON.stringify(teachingRules));
+
+                    // --- 1. PRE-ALLOCATION PHASE: පන්තිභාර ගුරුවරුන්ට 1 වන කාලච්ඡේදය ස්ථිරව වෙන්කිරීම ---
+                    classes.forEach(c => {
+                        let ct = classTeacherMap[c];
+                        if (ct) {
+                            let ctRules = currentRules.filter(r => r.grade === c && r.teacher.includes(ct));
+                            ctRules.sort((a,b) => isCoreSubject(b.subject) ? -1 : 1); // ප්‍රධාන විෂයයන් පළමුව
+
+                            let availableDays = [...days].sort(() => Math.random() - 0.5); // දින 5 අහඹු ලෙස ලබාගැනීම
+                            for (let r of ctRules) {
+                                while(r.periods > 0 && availableDays.length > 0) {
+                                    let d = availableDays.shift(); 
+                                    tempTimetable[d][1][c] = { subject: r.subject, teacher: r.teacher, type: r.type };
+                                    r.periods--; // කාලච්ඡේදයක් අඩු කිරීම
+                                }
+                            }
                         }
-                    }
+                    });
 
-                    let totalP = requiredPeriods + preAssigned; 
-                    let doublesNeeded = 0; let singlesNeeded = requiredPeriods;
+                    // 1 වන කාලච්ඡේදය ලැබීමෙන් පසු ඉතිරි වී ඇති නීති පමණක් වෙන් කර ගැනීම
+                    let remainingRules = currentRules.filter(r => r.periods > 0);
 
-                    if (totalP === 6) { doublesNeeded = 1; singlesNeeded = 4 - preAssigned; }
-                    else if (totalP === 3) { doublesNeeded = 1; singlesNeeded = 1 - preAssigned; }
-                    else if (totalP >= 7) { doublesNeeded = 2; singlesNeeded = requiredPeriods - 4; }
-                    if(singlesNeeded < 0) { doublesNeeded = 0; singlesNeeded = requiredPeriods; }
+                    // --- 2. MAIN ALGORITHM PHASE: ඉතිරි කාලච්ඡේද (2-8) පිරවීම ---
+                    let sortedRules = remainingRules.sort((a, b) => {
+                        let aIsCT = (classTeacherMap[a.grade] && a.teacher.includes(classTeacherMap[a.grade])) ? 1 : 0;
+                        let bIsCT = (classTeacherMap[b.grade] && b.teacher.includes(classTeacherMap[b.grade])) ? 1 : 0;
+                        let aCTCore = (aIsCT && isCoreSubject(a.subject)) ? 1 : 0;
+                        let bCTCore = (bIsCT && isCoreSubject(b.subject)) ? 1 : 0;
 
-                    let rTeachers = rule.teacher.split(',').map(t => t.trim());
+                        if (aCTCore !== bCTCore) return bCTCore - aCTCore;
+                        if (aIsCT !== bIsCT) return bIsCT - aIsCT;
 
-                    // --- Double Periods පිරවීම ---
-                    while (doublesNeeded > 0) {
-                        let placed = false;
-                        let dayOrder = [...days].sort(() => Math.random() - 0.5);
-                        for (let d of dayOrder) {
-                            if (daysAssignedCount[d] > 0) continue; 
-                            let periodOrder = [3, 5, 2, 6, 4];
-                            for (let p of periodOrder) {
-                                let p1 = p, p2 = p + 1;
-                                if (p1 === intv) continue; 
+                        let weightA = (a.periods * 10) + (Math.random() * 20);
+                        let weightB = (b.periods * 10) + (Math.random() * 20);
+                        return weightB - weightA;
+                    });
 
-                                if (tempTimetable[d][p1][rule.grade] === null && tempTimetable[d][p2][rule.grade] === null) {
-                                    let isBusy = false;
-                                    for(let t of rTeachers) if(isTBusy(tempTimetable, t, d, p1, rule.grade) || isTBusy(tempTimetable, t, d, p2, rule.grade)) { isBusy = true; break; }
+                    sortedRules.forEach(rule => {
+                        let periodsToAssign = rule.periods;
+                        
+                        // 1 වන කාලච්ඡේදයට මේ වනවිටත් වැටී ඇති දින ගණන සොයා ගැනීම
+                        let daysAssigned = { 'Monday':0, 'Tuesday':0, 'Wednesday':0, 'Thursday':0, 'Friday':0 };
+                        for(let d of days) {
+                            for(let p=1; p<=8; p++) {
+                                if(tempTimetable[d][p][rule.grade] && tempTimetable[d][p][rule.grade].subject === rule.subject) {
+                                    daysAssigned[d]++;
+                                }
+                            }
+                        }
+
+                        let ruleAttempts = 50;
+                        let hasPlacedDouble = false;
+
+                        while (periodsToAssign > 0 && ruleAttempts > 0) {
+                            ruleAttempts--;
+                            let placed = false;
+                            let dayOrder = [...days].sort(() => Math.random() - 0.5);
+
+                            if ((rule.periods === 3 || rule.periods === 6) && periodsToAssign >= 2 && !hasPlacedDouble) {
+                                for (let d of dayOrder) {
+                                    if (!isRelaxed && daysAssigned[d] >= 1) continue; 
                                     
-                                    if (!isBusy) {
-                                        tempTimetable[d][p1][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
-                                        tempTimetable[d][p2][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
-                                        daysAssignedCount[d] += 2; doublesNeeded--; placed = true; break;
-                                    }
-                                }
-                            }
-                            if(placed) break;
-                        }
-                        if(!placed) break; 
-                    }
+                                    let periodOrder = [3, 4, 5, 6, 7].sort(()=>Math.random()-0.5).concat([2, 1]);
 
-                    // --- Single Periods පිරවීම (Deep-Swap සහිතව) ---
-                    while (singlesNeeded > 0) {
-                        let placed = false;
-                        let dayOrder = [...days].sort((a,b) => daysAssignedCount[a] - daysAssignedCount[b]); 
+                                    for (let p of periodOrder) {
+                                        let p1 = p, p2 = p + 1;
+                                        let intervalPos = parseInt(document.getElementById('intervalSetting').value) || 4;
+                                        if (p1 === intervalPos) continue; 
 
-                        // 1. සාමාන්‍ය පිරවීම
-                        for (let d of dayOrder) {
-                            if (daysAssignedCount[d] >= 2) continue; 
-                            if (totalP <= 5 && daysAssignedCount[d] >= 1) continue; 
-
-                            let periodOrder = [2,3,4,5,6,7,8].sort(()=>Math.random() - 0.5);
-                            for (let p of periodOrder) {
-                                if (tempTimetable[d][p][rule.grade] === null) {
-                                    let isBusy = false;
-                                    for(let t of rTeachers) if(isTBusy(tempTimetable, t, d, p, rule.grade)) { isBusy = true; break; }
-                                    if (!isBusy) {
-                                        tempTimetable[d][p][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
-                                        daysAssignedCount[d]++; singlesNeeded--; placed = true; break;
-                                    }
-                                }
-                            }
-                            if(placed) break;
-                        }
-
-                        // 2. ගැටුම් නිරාකරණය (DEEP SWAP) - ඉඩ නැත්නම් බලහත්කාරයෙන් ඉඩ සෑදීම
-                        if(!placed) {
-                            let emptySlotsInClass = [];
-                            for(let d of days) {
-                                for(let p=1; p<=8; p++) {
-                                    if (tempTimetable[d][p][rule.grade] === null && p !== intv) emptySlotsInClass.push({d:d, p:p});
-                                }
-                            }
-
-                            for(let d of days) {
-                                for(let p=1; p<=8; p++) {
-                                    if(placed) break;
-                                    let existingCell = tempTimetable[d][p][rule.grade];
-                                    if (existingCell && p !== intv) {
-                                        // අපේ විෂයය මෙතැනට දැමිය හැකිද?
-                                        let ourBusy = false;
-                                        for(let t of rTeachers) if(isTBusy(tempTimetable, t, d, p, rule.grade)) ourBusy = true;
-                                        
-                                        if(!ourBusy) {
-                                            // ඔව්, එහෙනම් පවතින විෂයය (existingCell) හිස් තැනකට මාරු කරන්න පුළුවන්ද බලමු
-                                            for(let eSlot of emptySlotsInClass) {
-                                                let exBusy = false;
-                                                let exTeachers = existingCell.teacher.split(',').map(t=>t.trim());
-                                                for(let et of exTeachers) if(isTBusy(tempTimetable, et, eSlot.d, eSlot.p, rule.grade)) exBusy = true;
-
-                                                if(!exBusy) {
-                                                    // මාරු කිරීම සාර්ථකයි! (SWAP)
-                                                    tempTimetable[eSlot.d][eSlot.p][rule.grade] = existingCell; // පරණ එක අලුත් තැනට
-                                                    tempTimetable[d][p][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type }; // අපේ එක මේ තැනට
-                                                    daysAssignedCount[d]++; singlesNeeded--; placed = true; break;
+                                        if (tempTimetable[d][p1][rule.grade] === null && tempTimetable[d][p2][rule.grade] === null) {
+                                            let busy = false;
+                                            let rTeachers = rule.teacher.split(',');
+                                            
+                                            for(let t of rTeachers) {
+                                                let tName = t.trim();
+                                                
+                                                if (teacherConstraints.some(tc => tc.teacher === tName && tc.day === d && (tc.period === 'All' || parseInt(tc.period) === p1))) busy = true;
+                                                if (teacherConstraints.some(tc => tc.teacher === tName && tc.day === d && (tc.period === 'All' || parseInt(tc.period) === p2))) busy = true;
+                                                
+                                                for(let c of classes) {
+                                                    if(tempTimetable[d][p1][c] && tempTimetable[d][p1][c].teacher.includes(tName)) busy = true;
+                                                    if(tempTimetable[d][p2][c] && tempTimetable[d][p2][c].teacher.includes(tName)) busy = true;
                                                 }
+                                            }
+
+                                            if (!busy) {
+                                                tempTimetable[d][p1][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
+                                                tempTimetable[d][p2][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
+                                                daysAssigned[d] += 2;
+                                                periodsToAssign -= 2;
+                                                hasPlacedDouble = true;
+                                                placed = true;
+                                                break;
                                             }
                                         }
                                     }
+                                    if(placed) break;
+                                }
+                            }
+
+                            if (!placed && periodsToAssign > 0) {
+                                for (let d of dayOrder) {
+                                    if (!isRelaxed) {
+                                        if (daysAssigned[d] >= 2) continue;
+                                        if (daysAssigned[d] === 1) {
+                                            let usedDays = 0;
+                                            for (let check of days) if (daysAssigned[check] > 0) usedDays++;
+                                            if (periodsToAssign <= (5 - usedDays)) continue; 
+                                        }
+                                    }
+
+                                    let periodOrderSingle = [3, 4, 5, 6, 7, 8].sort(()=>Math.random()-0.5).concat([2, 1]);
+
+                                    for (let p of periodOrderSingle) {
+                                        if (tempTimetable[d][p][rule.grade] === null) {
+                                            let busy = false;
+                                            let rTeachers = rule.teacher.split(',');
+                                            
+                                            for(let t of rTeachers) {
+                                                let tName = t.trim();
+                                                
+                                                if (teacherConstraints.some(tc => tc.teacher === tName && tc.day === d && (tc.period === 'All' || parseInt(tc.period) === p))) { busy = true; break; }
+
+                                                for(let c of classes) {
+                                                    if (tempTimetable[d][p][c] && tempTimetable[d][p][c].teacher.includes(tName)) { busy = true; break; }
+                                                }
+                                            }
+
+                                            if (!busy) {
+                                                tempTimetable[d][p][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
+                                                daysAssigned[d]++;
+                                                periodsToAssign--;
+                                                placed = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if(placed) break;
                                 }
                             }
                         }
-                        if(!placed) break; // Swap කරලත් බැරි නම් අත්හරිනවා
+                        if(periodsToAssign > 0) unassigned.push(rule.subject + " (" + rule.grade + " ශ්‍රේ.) - ඉතිරි කා: " + periodsToAssign);
+                    });
+
+                    if (unassigned.length < minUnassignedCount) {
+                        minUnassignedCount = unassigned.length;
+                        bestTimetable = JSON.parse(JSON.stringify(tempTimetable)); 
+                        bestUnassigned = unassigned;
                     }
-
-                    let unalloc = (doublesNeeded * 2) + singlesNeeded;
-                    unassignedCount += unalloc;
-                });
-
-                if (unassignedCount < minUnassignedCount) {
-                    minUnassignedCount = unassignedCount;
-                    bestTimetable = JSON.parse(JSON.stringify(tempTimetable)); 
+                    if (minUnassignedCount === 0) break; 
                 }
 
-                if (minUnassignedCount === 0) break; // Perfect!
+                if (minUnassignedCount === 0 || attempt >= maxAttempts) {
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                    generatedTimetable = bestTimetable;
+                    
+                    if(bestUnassigned.length > 0) {
+                        alert("උත්සාහයන් 10,000 කට පසුවද පහත විෂයයන් සඳහා ගැටීම් පවතී. ඔබ යොදා ඇති ගුරු නිදහස් නීති (Constraints) හේතුවෙන් මෙය විසඳිය නොහැකි විය හැක:\n\n" + bestUnassigned.join('\n'));
+                    } else {
+                        showSuccessAnimation();
+                    }
+                    saveData();
+                    renderTable();
+                } else {
+                    document.getElementById('loadingText').innerText = `උත්සාහයන්: ${attempt} / ${maxAttempts}`;
+                    requestAnimationFrame(runChunk);
+                }
             }
 
-            document.getElementById('loadingOverlay').style.display = 'none';
-            generatedTimetable = bestTimetable;
-            
-            showSuccessAnimation();
-            saveData();
-            renderTable();
+            requestAnimationFrame(runChunk);
         }
 
         function getCellHTML(cellData, d, p, c) {
@@ -1373,10 +1375,9 @@
                 }
             } else {
                 if (relief) {
-                    return `<td><div class="card relief-card"><span class="card-subj" style="color:gray;">නිදහස් කාලය</span><span class="relief-text">(සහන: ${relief.reliefTeacher})</span></div></td>`;
+                    return `<td><div class="card relief-card"><span class="card-subj" style="color:gray;">හිස් කාලච්ඡේදය</span><span class="relief-text">(සහන: ${relief.reliefTeacher})</span></div></td>`;
                 }
-                // කිසිදු කරදරකාරී බවක් නොමැති සම්පූර්ණයෙන්ම පිරිසිදු හිස් කොටුවක්
-                return `<td class="cell-empty"></td>`;
+                return `<td class="cell-empty"><span class="empty-slot">- හිස් -</span></td>`;
             }
         }
 
@@ -1520,7 +1521,7 @@
                                 } else if(assignedClass !== "-") {
                                     tbl += `<td><div class="card" style="background:${color};"><span class="card-subj">${assignedSubject}</span><span>(${assignedClass})</span></div></td>`;
                                 } else {
-                                    tbl += `<td class="cell-empty"></td>`;
+                                    tbl += `<td class="cell-empty"><span class="empty-slot">- හිස් -</span></td>`;
                                 }
                             });
                             tbl += `</tr>`;
