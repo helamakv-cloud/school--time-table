@@ -298,10 +298,9 @@
             </div>
 
             <h4 style="margin-top: 15px; border-bottom: 1px solid #d1d5db;">ලබා දී ඇති සහන ලැයිස්තුව</h4>
-            <div class="rules-list" id="activeReliefsList" style="max-height: 150px;"></div>
-            
-            <!-- අලුතින් එක්කළ සහන ලැයිස්තුව Print කිරීමේ බොත්තම -->
-            <button class="btn-primary" style="background: linear-gradient(to bottom, #8b5cf6, #7c3aed); border-color:#6d28d9; margin-top: 10px;" onclick="triggerPrint('relief')">🖨️ සහන ලැයිස්තුව Print / PDF කරන්න</button>
+            <div class="rules-list" id="activeReliefsList" style="max-height: 120px;"></div>
+
+            <button class="btn-primary" style="background: linear-gradient(to bottom, #4b5563, #374151); border-color:#1f2937; margin-top: 10px; margin-bottom: 0;" onclick="printReliefList()">🖨️ සහන ලැයිස්තුව මුද්‍රණය / PDF</button>
         </div>
     </div>
 
@@ -322,7 +321,6 @@
             <button class="btn-primary" style="background: linear-gradient(to bottom, #3b82f6, #2563eb); border-color:#1d4ed8;" onclick="triggerPrint('all_master')">🏫 සම්පූර්ණ ප්‍රධාන කාලසටහන (Master View)</button>
             <button class="btn-primary" style="background: linear-gradient(to bottom, #10b981, #059669); border-color:#047857;" onclick="triggerPrint('classes')">📚 සියලුම පන්ති කාලසටහන්</button>
             <button class="btn-primary" style="background: linear-gradient(to bottom, #f59e0b, #d97706); border-color:#b45309;" onclick="triggerPrint('teachers')">🧑‍🏫 සියලුම ගුරුවරුන්ගේ කාලසටහන්</button>
-            <button class="btn-primary" style="background: linear-gradient(to bottom, #8b5cf6, #7c3aed); border-color:#6d28d9; margin-top:5px;" onclick="triggerPrint('relief')">👨‍🏫 සහන කාලච්ඡේද ලැයිස්තුව (Relief PDF)</button>
         </div>
     </div>
 
@@ -486,7 +484,7 @@
         <!-- Right Panel -->
         <div class="panel right-panel">
             <h2 id="displaySchoolName" class="school-title">ඔබේ පාසලේ නම</h2>
-            <div id="displayTermInfo" class="term-info-display"></div>
+            <div id="displayTermInfo" class="term-info-display"></div> 
             <h3 id="mainTitle" class="main-title">පාසල් කාලසටහන</h3>
 
             <div class="view-controls">
@@ -518,12 +516,28 @@
         document.addEventListener('contextmenu', event => event.preventDefault());
 
         document.onkeydown = function(e) {
-            if(e.keyCode == 123) return false;
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false;
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
-            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+            // Disable F12
+            if(e.keyCode == 123) {
+                return false;
+            }
+            // Disable Ctrl+Shift+I
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+                return false;
+            }
+            // Disable Ctrl+Shift+C
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
+                return false;
+            }
+            // Disable Ctrl+Shift+J
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+                return false;
+            }
+            // Disable Ctrl+U (View Source)
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+                return false;
+            }
         };
+        // ------------------------------------------------------------
 
         let classes = [];
         let masterTeachers = [];
@@ -863,6 +877,58 @@
             document.getElementById('activeReliefsList').innerHTML = html || "<span style='font-size:11px;color:gray;'>දැනට සහන ලබා දී නොමැත.</span>";
         }
 
+        function printReliefList() {
+            if(reliefAssignments.length === 0) return alert("මුද්‍රණය කිරීමට සහන දත්ත නොමැත!");
+            
+            closeModals();
+            let pArea = document.getElementById('printArea');
+            let schoolName = document.getElementById('schoolNameInput').value || "ඔබේ පාසලේ නම";
+            let dateStr = new Date().toLocaleDateString('si-LK');
+            
+            let sortedReliefs = [...reliefAssignments].sort((a,b) => {
+                let dayOrder = { 'Monday':1, 'Tuesday':2, 'Wednesday':3, 'Thursday':4, 'Friday':5 };
+                if(dayOrder[a.day] !== dayOrder[b.day]) return dayOrder[a.day] - dayOrder[b.day];
+                return a.period - b.period;
+            });
+
+            let printHtml = `<div class="print-page layout-1"><div class="timetable-box">
+                <h2 class="school-title">${schoolName}</h2>
+                <div class="print-term-info">මුද්‍රණය කළ දිනය: ${dateStr}</div>
+                <h3 class="main-title" style="margin-top: 10px; color: #1d4ed8; text-decoration: underline;">දෛනික සහන කාලච්ඡේද ලැයිස්තුව (Relief Duties)</h3>
+                
+                <table style="width:100%; border-collapse: collapse; border: 2px solid #000; font-size: 14px; text-align: center; margin-top: 15px;">
+                    <thead>
+                        <tr>
+                            <th style="border: 1px solid #000; padding: 10px; background: #e5e7eb; width: 15%;">දවස</th>
+                            <th style="border: 1px solid #000; padding: 10px; background: #e5e7eb; width: 15%;">කාලච්ඡේදය</th>
+                            <th style="border: 1px solid #000; padding: 10px; background: #e5e7eb; width: 20%;">ශ්‍රේණිය / පන්තිය</th>
+                            <th style="border: 1px solid #000; padding: 10px; background: #e5e7eb; width: 30%;">සහනය ලබාදුන් ගුරුවරයා</th>
+                            <th style="border: 1px solid #000; padding: 10px; background: #e5e7eb; width: 20%;">ගුරුවරයාගේ අත්සන</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+            
+            sortedReliefs.forEach(r => {
+                printHtml += `<tr>
+                    <td style="border: 1px solid #000; padding: 10px; font-weight: bold;">${dayNames[r.day]}</td>
+                    <td style="border: 1px solid #000; padding: 10px; font-weight: bold;">${r.period}</td>
+                    <td style="border: 1px solid #000; padding: 10px; font-weight: bold;">${r.grade} ශ්‍රේණිය</td>
+                    <td style="border: 1px solid #000; padding: 10px; color: #1d4ed8; font-weight: bold; font-size: 15px;">${r.reliefTeacher}</td>
+                    <td style="border: 1px solid #000; padding: 10px;"></td>
+                </tr>`;
+            });
+
+            printHtml += `</tbody></table>
+                <div style="margin-top:25px; font-size: 14px; text-align:left; border: 1px dashed #6b7280; padding: 10px; background: #f9fafb;">
+                    <p style="margin: 0;"><b>⚠️ අද දින නොපැමිණි ගුරුවරුන්:</b> <span style="color:#b91c1c;">${absentTeachers.length > 0 ? absentTeachers.join(', ') : 'කිසිවෙකු නැත'}</span></p>
+                </div>
+                <div class="print-footer" style="margin-top: 30px;">&copy; 2026 Kelum Konara | Smart<span>Soft</span> | Time Table version 1.0</div>
+            </div></div>`;
+
+            pArea.innerHTML = printHtml;
+            window.print();
+        }
+
         function renderDataModal() {
             let cHtml = '';
             classes.forEach(c => cHtml += `<div class="rule-item"><span>${c} ශ්‍රේණිය</span><div><button class="btn-small" style="background:#f59e0b;" onclick="editItem('class', '${c}')">✏️</button> <button class="btn-delete" onclick="deleteItem('class', '${c}')">❌</button></div></div>`);
@@ -1117,7 +1183,32 @@
                     let unassigned = [];
                     let isRelaxed = attempt > 8000; 
                     
-                    let sortedRules = [...teachingRules].sort((a, b) => {
+                    // සම්පූර්ණ නීති ලැයිස්තුවේ පිටපතක් ලබා ගැනීම
+                    let currentRules = JSON.parse(JSON.stringify(teachingRules));
+
+                    // --- 1. PRE-ALLOCATION PHASE: පන්තිභාර ගුරුවරුන්ට 1 වන කාලච්ඡේදය ස්ථිරව වෙන්කිරීම ---
+                    classes.forEach(c => {
+                        let ct = classTeacherMap[c];
+                        if (ct) {
+                            let ctRules = currentRules.filter(r => r.grade === c && r.teacher.includes(ct));
+                            ctRules.sort((a,b) => isCoreSubject(b.subject) ? -1 : 1); // ප්‍රධාන විෂයයන් පළමුව
+
+                            let availableDays = [...days].sort(() => Math.random() - 0.5); // දින 5 අහඹු ලෙස ලබාගැනීම
+                            for (let r of ctRules) {
+                                while(r.periods > 0 && availableDays.length > 0) {
+                                    let d = availableDays.shift(); 
+                                    tempTimetable[d][1][c] = { subject: r.subject, teacher: r.teacher, type: r.type };
+                                    r.periods--; // කාලච්ඡේදයක් අඩු කිරීම
+                                }
+                            }
+                        }
+                    });
+
+                    // 1 වන කාලච්ඡේදය ලැබීමෙන් පසු ඉතිරි වී ඇති නීති පමණක් වෙන් කර ගැනීම
+                    let remainingRules = currentRules.filter(r => r.periods > 0);
+
+                    // --- 2. MAIN ALGORITHM PHASE: ඉතිරි කාලච්ඡේද (2-8) පිරවීම ---
+                    let sortedRules = remainingRules.sort((a, b) => {
                         let aIsCT = (classTeacherMap[a.grade] && a.teacher.includes(classTeacherMap[a.grade])) ? 1 : 0;
                         let bIsCT = (classTeacherMap[b.grade] && b.teacher.includes(classTeacherMap[b.grade])) ? 1 : 0;
                         let aCTCore = (aIsCT && isCoreSubject(a.subject)) ? 1 : 0;
@@ -1133,10 +1224,17 @@
 
                     sortedRules.forEach(rule => {
                         let periodsToAssign = rule.periods;
-                        let isCT = (classTeacherMap[rule.grade] && rule.teacher.includes(classTeacherMap[rule.grade]));
-                        let isCTCore = isCT && isCoreSubject(rule.subject);
-
+                        
+                        // 1 වන කාලච්ඡේදයට මේ වනවිටත් වැටී ඇති දින ගණන සොයා ගැනීම
                         let daysAssigned = { 'Monday':0, 'Tuesday':0, 'Wednesday':0, 'Thursday':0, 'Friday':0 };
+                        for(let d of days) {
+                            for(let p=1; p<=8; p++) {
+                                if(tempTimetable[d][p][rule.grade] && tempTimetable[d][p][rule.grade].subject === rule.subject) {
+                                    daysAssigned[d]++;
+                                }
+                            }
+                        }
+
                         let ruleAttempts = 50;
                         let hasPlacedDouble = false;
 
@@ -1149,7 +1247,7 @@
                                 for (let d of dayOrder) {
                                     if (!isRelaxed && daysAssigned[d] >= 1) continue; 
                                     
-                                    let periodOrder = (isCTCore || isCT) ? [1, 2, 3, 4, 5, 6, 7] : [3, 4, 5, 6, 7].sort(()=>Math.random()-0.5).concat([2, 1]);
+                                    let periodOrder = [3, 4, 5, 6, 7].sort(()=>Math.random()-0.5).concat([2, 1]);
 
                                     for (let p of periodOrder) {
                                         let p1 = p, p2 = p + 1;
@@ -1198,7 +1296,7 @@
                                         }
                                     }
 
-                                    let periodOrderSingle = (isCTCore || isCT) ? [1, 2, 3, 4, 5, 6, 7, 8] : [3, 4, 5, 6, 7, 8].sort(()=>Math.random()-0.5).concat([2, 1]);
+                                    let periodOrderSingle = [3, 4, 5, 6, 7, 8].sort(()=>Math.random()-0.5).concat([2, 1]);
 
                                     for (let p of periodOrderSingle) {
                                         if (tempTimetable[d][p][rule.grade] === null) {
@@ -1347,6 +1445,8 @@
 
         // --- Print Engine ---
         function triggerPrint(type) {
+            if(classes.length === 0) return alert("මුද්‍රණය කිරීමට දත්ත නොමැත!");
+            
             let layoutSetting = parseInt(document.querySelector('input[name="printLayout"]:checked').value);
             let intervalPos = parseInt(document.getElementById('intervalSetting').value) || 4;
             closeModals();
@@ -1364,61 +1464,12 @@
             let printHtml = "";
             let generatedItems = [];
 
-            // --- අලුතින් එක් කළ: සහන ලැයිස්තුව මුද්‍රණය කිරීම ---
-            if (type === 'relief') {
-                if(reliefAssignments.length === 0) {
-                    alert("මුද්‍රණය කිරීමට තරම් සහන (Reliefs) ලබා දී නොමැත!");
-                    return;
-                }
-                
-                let tbl = `<div class="timetable-box" style="padding: 20px;"><h2 class="school-title">${schoolName}</h2>${termHtml1}<h3 class="main-title">සහන කාලච්ඡේද ලැයිස්තුව (Relief Summary)</h3>`;
-                tbl += `<table style="width:100%; border-collapse: collapse; margin-top: 15px; font-size:13px;"><thead><tr>
-                    <th style="padding:10px; border:1px solid #000; background:#e5e7eb;">දවස</th>
-                    <th style="padding:10px; border:1px solid #000; background:#e5e7eb;">කාලච්ඡේදය</th>
-                    <th style="padding:10px; border:1px solid #000; background:#e5e7eb;">පන්තිය (ශ්‍රේණිය)</th>
-                    <th style="padding:10px; border:1px solid #000; background:#e5e7eb;">නොපැමිණි ගුරුවරයා</th>
-                    <th style="padding:10px; border:1px solid #000; background:#e5e7eb;">සහනය සඳහා යන ගුරුවරයා</th>
-                    <th style="padding:10px; border:1px solid #000; background:#e5e7eb; width: 120px;">අත්සන</th>
-                </tr></thead><tbody>`;
-
-                let sortedRelief = [...reliefAssignments].sort((a, b) => {
-                    let d1 = days.indexOf(a.day);
-                    let d2 = days.indexOf(b.day);
-                    if(d1 !== d2) return d1 - d2;
-                    return a.period - b.period;
-                });
-
-                sortedRelief.forEach(r => {
-                    let cell = generatedTimetable[r.day] && generatedTimetable[r.day][r.period] ? generatedTimetable[r.day][r.period][r.grade] : null;
-                    let absentT = "-";
-                    if (cell) {
-                        let rTeachers = cell.teacher.split(',');
-                        let absents = rTeachers.filter(t => absentTeachers.includes(t.trim()));
-                        if(absents.length > 0) absentT = absents.join(', ');
-                    }
-
-                    tbl += `<tr>
-                        <td style="padding:8px; border:1px solid #000; text-align:center;">${dayNames[r.day]}</td>
-                        <td style="padding:8px; border:1px solid #000; text-align:center;">කා: ${r.period}</td>
-                        <td style="padding:8px; border:1px solid #000; text-align:center; font-weight:bold;">${r.grade}</td>
-                        <td style="padding:8px; border:1px solid #000; text-align:center;">${absentT}</td>
-                        <td style="padding:8px; border:1px solid #000; text-align:center; font-weight:bold;">${r.reliefTeacher}</td>
-                        <td style="padding:8px; border:1px solid #000;"></td>
-                    </tr>`;
-                });
-                tbl += `</tbody></table><div class="print-footer" style="margin-top: 20px;">&copy; 2026 Kelum Konara | Smart<span>Soft</span> | Time Table version 1.0</div></div>`;
-                
-                printHtml = `<div class="print-page layout-1">${tbl}</div>`;
-            }
-            // ----------------------------------------------------
-            else if (type === 'all_master') {
-                if(classes.length === 0) return alert("මුද්‍රණය කිරීමට දත්ත නොමැත!");
+            if (type === 'all_master') {
                 printHtml += `<div class="print-page layout-1"><div class="timetable-box"><h2 class="school-title">${schoolName}</h2>${termHtml1}<h3 class="main-title">සම්පූර්ණ ප්‍රධාන කාලසටහන</h3>`;
                 printHtml += document.getElementById('mainTable').outerHTML;
                 printHtml += `<div class="print-footer">&copy; 2026 Kelum Konara | Smart<span>Soft</span> | Time Table version 1.0</div></div></div>`;
             } 
             else {
-                if(classes.length === 0) return alert("මුද්‍රණය කිරීමට දත්ත නොමැත!");
                 if (type === 'classes') {
                     let colSpan = days.length + 1;
                     classes.forEach(c => {
