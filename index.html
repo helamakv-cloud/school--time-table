@@ -240,6 +240,16 @@
         </div>
     </div>
 
+    <!-- NEW: Class Teacher Management Modal -->
+    <div id="classTeacherModal" class="modal-overlay">
+        <div class="modal" style="max-width: 400px;">
+            <button class="close-btn" onclick="closeModals()">✖</button>
+            <h3 style="margin-top:0; color:#db2777; border-bottom: 2px solid #e5e7eb; padding-bottom:8px;">👑 පන්තිභාර ගුරුවරුන්</h3>
+            <p style="font-size: 11px; color: gray;">ගුරුවරුන් මාරුවී යාමේදී හෝ පන්තිභාරකම් වෙනස් වීමේදී, පහත ලැයිස්තුවෙන් නව ගුරුවරයා තෝරන්න.</p>
+            <div id="classTeacherList" style="max-height: 350px; overflow-y: auto; padding-right: 5px; margin-top: 15px;"></div>
+        </div>
+    </div>
+
     <!-- Summary Modal -->
     <div id="summaryModal" class="modal-overlay">
         <div class="modal" style="max-width: 600px;">
@@ -390,6 +400,8 @@
             <button class="btn-primary btn-auto" onclick="startGenerationAsync()">⚡ ස්වයංක්‍රීයව කාලසටහන සකසන්න</button>
             <button class="btn-primary btn-attendance" onclick="openAttendanceModal()">📅 ගුරු පැමිණීම (Attendance)</button>
             <button class="btn-primary btn-relief" onclick="openReliefModal()">👨‍🏫 සහන කාලච්ඡේද (Relief)</button>
+            <!-- අලුතින් එක් කළ පන්තිභාර ගුරුවරුන්ගේ බොත්තම -->
+            <button class="btn-primary" style="background: linear-gradient(to bottom, #ec4899, #db2777); border-color:#be185d;" onclick="openClassTeacherModal()">👑 පන්තිභාර ගුරුවරුන්</button>
             <button class="btn-primary btn-summary" onclick="openSummaryModal()">📊 කාලච්ඡේද සාරාංශය (Workload)</button>
             <button class="btn-primary btn-print-menu" onclick="openPrintModal()">🖨️ මුද්‍රණය කිරීම (Print)</button>
             <button class="btn-primary btn-data" onclick="openDataModal()">⚙️ ඇතුළත් කළ දත්ත / Backup</button>
@@ -516,28 +528,12 @@
         document.addEventListener('contextmenu', event => event.preventDefault());
 
         document.onkeydown = function(e) {
-            // Disable F12
-            if(e.keyCode == 123) {
-                return false;
-            }
-            // Disable Ctrl+Shift+I
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
-                return false;
-            }
-            // Disable Ctrl+Shift+C
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
-                return false;
-            }
-            // Disable Ctrl+Shift+J
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
-                return false;
-            }
-            // Disable Ctrl+U (View Source)
-            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
-                return false;
-            }
+            if(e.keyCode == 123) return false;
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false;
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
         };
-        // ------------------------------------------------------------
 
         let classes = [];
         let masterTeachers = [];
@@ -688,6 +684,44 @@
             renderReliefList();
         }
 
+        // --- පන්තිභාර ගුරුවරුන් පෙන්වීමේ/වෙනස් කිරීමේ කාර්යයන් ---
+        function openClassTeacherModal() {
+            if(classes.length === 0) return alert("කරුණාකර පළමුව පන්ති (ශ්‍රේණි) ඇතුළත් කරන්න!");
+            document.getElementById('classTeacherModal').style.display = 'flex';
+            renderClassTeacherList();
+        }
+
+        function renderClassTeacherList() {
+            let html = '';
+            classes.forEach(c => {
+                let currentCT = classTeacherMap[c] || "";
+                let selectHtml = `<select style="width:auto; padding:4px; font-weight:bold; border-color:#db2777;" onchange="updateClassTeacher('${c}', this.value)">
+                    <option value="">-- පන්තිභාර ගුරුවරයෙක් නැත --</option>`;
+                masterTeachers.forEach(t => {
+                    let selected = (t === currentCT) ? "selected" : "";
+                    selectHtml += `<option value="${t}" ${selected}>${t}</option>`;
+                });
+                selectHtml += `</select>`;
+
+                html += `<div class="rule-item" style="justify-content:space-between; padding:8px; border-color:#fbcfe8; background:#fdf2f8;">
+                            <span style="font-weight:bold; color:#be185d; font-size:13px;">${c} ශ්‍රේණිය</span>
+                            ${selectHtml}
+                         </div>`;
+            });
+            document.getElementById('classTeacherList').innerHTML = html;
+        }
+
+        function updateClassTeacher(c, t) {
+            if(t) {
+                classTeacherMap[c] = t;
+            } else {
+                delete classTeacherMap[c];
+            }
+            saveData();
+            initDropdowns(); // Dropdowns යාවත්කාලීන කිරීම සඳහා
+        }
+        // --------------------------------------------------------
+
         function openSummaryModal() {
             document.getElementById('summaryModal').style.display = 'flex';
             let teacherSum = {}; let classSum = {};
@@ -719,6 +753,7 @@
             document.getElementById('reliefModal').style.display = 'none';
             document.getElementById('attendanceModal').style.display = 'none';
             document.getElementById('summaryModal').style.display = 'none';
+            document.getElementById('classTeacherModal').style.display = 'none'; // අලුතින් එක් කළ Modal එක
         }
 
         function showSuccessAnimation() {
@@ -1183,7 +1218,6 @@
                     let unassigned = [];
                     let isRelaxed = attempt > 8000; 
                     
-                    // සම්පූර්ණ නීති ලැයිස්තුවේ පිටපතක් ලබා ගැනීම
                     let currentRules = JSON.parse(JSON.stringify(teachingRules));
 
                     // --- 1. PRE-ALLOCATION PHASE: පන්තිභාර ගුරුවරුන්ට 1 වන කාලච්ඡේදය ස්ථිරව වෙන්කිරීම ---
@@ -1191,23 +1225,22 @@
                         let ct = classTeacherMap[c];
                         if (ct) {
                             let ctRules = currentRules.filter(r => r.grade === c && r.teacher.includes(ct));
-                            ctRules.sort((a,b) => isCoreSubject(b.subject) ? -1 : 1); // ප්‍රධාන විෂයයන් පළමුව
+                            ctRules.sort((a,b) => isCoreSubject(b.subject) ? -1 : 1); 
 
-                            let availableDays = [...days].sort(() => Math.random() - 0.5); // දින 5 අහඹු ලෙස ලබාගැනීම
+                            let availableDays = [...days].sort(() => Math.random() - 0.5);
                             for (let r of ctRules) {
                                 while(r.periods > 0 && availableDays.length > 0) {
                                     let d = availableDays.shift(); 
                                     tempTimetable[d][1][c] = { subject: r.subject, teacher: r.teacher, type: r.type };
-                                    r.periods--; // කාලච්ඡේදයක් අඩු කිරීම
+                                    r.periods--;
                                 }
                             }
                         }
                     });
 
-                    // 1 වන කාලච්ඡේදය ලැබීමෙන් පසු ඉතිරි වී ඇති නීති පමණක් වෙන් කර ගැනීම
                     let remainingRules = currentRules.filter(r => r.periods > 0);
 
-                    // --- 2. MAIN ALGORITHM PHASE: ඉතිරි කාලච්ඡේද (2-8) පිරවීම ---
+                    // --- 2. MAIN ALGORITHM PHASE ---
                     let sortedRules = remainingRules.sort((a, b) => {
                         let aIsCT = (classTeacherMap[a.grade] && a.teacher.includes(classTeacherMap[a.grade])) ? 1 : 0;
                         let bIsCT = (classTeacherMap[b.grade] && b.teacher.includes(classTeacherMap[b.grade])) ? 1 : 0;
@@ -1225,7 +1258,6 @@
                     sortedRules.forEach(rule => {
                         let periodsToAssign = rule.periods;
                         
-                        // 1 වන කාලච්ඡේදයට මේ වනවිටත් වැටී ඇති දින ගණන සොයා ගැනීම
                         let daysAssigned = { 'Monday':0, 'Tuesday':0, 'Wednesday':0, 'Thursday':0, 'Friday':0 };
                         for(let d of days) {
                             for(let p=1; p<=8; p++) {
