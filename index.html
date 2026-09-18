@@ -218,8 +218,8 @@
     <!-- AI Loading Animation -->
     <div id="loadingOverlay" class="loading-overlay">
         <div class="spinner"></div>
-        <div class="loading-title">කාලසටහන විශ්ලේෂණය කරමින්...</div>
-        <div id="loadingText" class="loading-sub">උත්සාහයන්: 0/10000</div>
+        <div class="loading-title">Heuristic Algorithm ක්‍රියාත්මක වේ...</div>
+        <div id="loadingText" class="loading-sub">කරුණාකර රැඳී සිටින්න</div>
     </div>
 
     <!-- Success Animation Modal -->
@@ -1182,193 +1182,158 @@
             if(errors.length > 0) return alert("කාලසටහන සෑදීමට පෙර පහත දෝෂ නිවැරදි කරන්න:\n\n" + errors.join('\n'));
 
             document.getElementById('loadingOverlay').style.display = 'flex';
-            document.getElementById('loadingText').innerText = "උත්සාහයන්: 0 / 10000";
+            document.getElementById('loadingText').innerText = "පද්ධතිය සකසමින්...";
             
-            // Allow UI to update before heavy processing
-            setTimeout(runAdvancedAlgorithm, 50);
+            setTimeout(runHeuristicAlgorithm, 100);
         }
 
-        // --- නවතම EVEN DISTRIBUTION & CONSTRAINT SATISFACTION ALGORITHM ---
-        function runAdvancedAlgorithm() {
+        // --- NEW: HEURISTIC CONSTRAINT SATISFACTION ALGORITHM (SUPER FAST) ---
+        function runHeuristicAlgorithm() {
             let bestTimetable = null;
-            let bestUnassigned = null;
             let minUnassignedCount = 9999;
-            let maxAttempts = 10000;
-            let attempt = 0;
+            let bestUnassigned = null;
+            let maxAttempts = 100; // ඉතාමත් වේගවත් බැවින් මෙපමණක් ප්‍රමාණවත්ය
 
-            const coreSubjectsList = ['සිංහල', 'ඉංග්‍රීසි', 'ඉංග්‍රිසි', 'ගණිතය', 'විද්‍යාව', 'ඉතිහාසය', 'ආගම'];
-            const isCoreSubject = (sub) => coreSubjectsList.some(cs => sub.includes(cs));
+            function isTBusy(tt, t, d, p) {
+                if (teacherConstraints.some(tc => tc.teacher === t && tc.day === d && (tc.period === 'All' || parseInt(tc.period) === p))) return true;
+                for(let c of classes) {
+                    if(tt[d][p][c] && tt[d][p][c].teacher.includes(t)) return true;
+                }
+                return false;
+            }
 
-            function runChunk() {
-                let chunkLimit = Math.min(attempt + 500, maxAttempts); 
-                for (; attempt < chunkLimit; attempt++) {
-                    let tempTimetable = {};
-                    days.forEach(d => {
-                        tempTimetable[d] = {};
-                        for(let p=1; p<=8; p++) {
-                            tempTimetable[d][p] = {};
-                            classes.forEach(c => tempTimetable[d][p][c] = null);
+            for(let attempt = 0; attempt < maxAttempts; attempt++) {
+                let tempTimetable = {};
+                days.forEach(d => {
+                    tempTimetable[d] = {};
+                    for(let p=1; p<=8; p++) {
+                        tempTimetable[d][p] = {};
+                        classes.forEach(c => tempTimetable[d][p][c] = null);
+                    }
+                });
+
+                let unassigned = [];
+                let currentRules = JSON.parse(JSON.stringify(teachingRules));
+
+                // 1. පන්තිභාර ගුරුවරුන්ට පළමු කාලච්ඡේදය අනිවාර්යයෙන් ලබාදීම (Pre-allocation)
+                classes.forEach(c => {
+                    let ct = classTeacherMap[c];
+                    if (ct) {
+                        let ctRules = currentRules.filter(r => r.grade === c && r.teacher.includes(ct));
+                        let availableDays = [...days].sort(() => Math.random() - 0.5);
+                        for (let r of ctRules) {
+                            while(r.periods > 0 && availableDays.length > 0) {
+                                let d = availableDays.shift(); 
+                                tempTimetable[d][1][c] = { subject: r.subject, teacher: r.teacher, type: r.type };
+                                r.periods--;
+                            }
                         }
-                    });
+                    }
+                });
 
-                    let unassigned = [];
-                    let isRelaxed = attempt > 8000; 
+                let remainingRules = currentRules.filter(r => r.periods > 0);
+
+                // 2. අමාරුම නීති මුලින්ම සකසා ගැනීම (Sort by Difficulty - Doubles First)
+                remainingRules.sort((a, b) => b.periods - a.periods);
+
+                remainingRules.forEach(rule => {
+                    let requiredPeriods = rule.periods;
+                    let daysAssignedCount = { 'Monday':0, 'Tuesday':0, 'Wednesday':0, 'Thursday':0, 'Friday':0 };
                     
-                    let currentRules = JSON.parse(JSON.stringify(teachingRules));
-
-                    // PHASE 1: PRE-ALLOCATION (පන්තිභාර ගුරුවරුන්ට 1 වන කාලච්ඡේදය ස්ථිරව වෙන්කිරීම)
-                    classes.forEach(c => {
-                        let ct = classTeacherMap[c];
-                        if (ct) {
-                            let ctRules = currentRules.filter(r => r.grade === c && r.teacher.includes(ct));
-                            ctRules.sort((a,b) => isCoreSubject(b.subject) ? -1 : 1); 
-
-                            let availableDays = [...days].sort(() => Math.random() - 0.5);
-                            for (let r of ctRules) {
-                                while(r.periods > 0 && availableDays.length > 0) {
-                                    let d = availableDays.shift(); 
-                                    tempTimetable[d][1][c] = { subject: r.subject, teacher: r.teacher, type: r.type };
-                                    r.periods--;
-                                }
-                            }
+                    // දැනට 1 වන කාලච්ඡේදයට (CT ලෙස) වැටී ඇති දින ගණන සෙවීම
+                    let preAssigned = 0;
+                    for(let d of days) {
+                        if(tempTimetable[d][1][rule.grade] && tempTimetable[d][1][rule.grade].subject === rule.subject) {
+                            daysAssignedCount[d]++;
+                            preAssigned++;
                         }
-                    });
+                    }
 
-                    let remainingRules = currentRules.filter(r => r.periods > 0);
+                    let totalP = requiredPeriods + preAssigned; 
+                    
+                    // 3 & 6 Period නීති සඳහා Double / Single වෙන් කිරීම
+                    let doublesNeeded = 0;
+                    let singlesNeeded = requiredPeriods;
 
-                    // PHASE 2: MAIN ALGORITHM (ඉතිරි කාලච්ඡේද පිරවීම)
-                    let sortedRules = remainingRules.sort((a, b) => {
-                        let aIsCT = (classTeacherMap[a.grade] && a.teacher.includes(classTeacherMap[a.grade])) ? 1 : 0;
-                        let bIsCT = (classTeacherMap[b.grade] && b.teacher.includes(classTeacherMap[b.grade])) ? 1 : 0;
-                        let aCTCore = (aIsCT && isCoreSubject(a.subject)) ? 1 : 0;
-                        let bCTCore = (bIsCT && isCoreSubject(b.subject)) ? 1 : 0;
+                    if (totalP === 6) { doublesNeeded = 1; singlesNeeded = 4 - preAssigned; }
+                    else if (totalP === 3) { doublesNeeded = 1; singlesNeeded = 1 - preAssigned; }
+                    else if (totalP >= 7) { doublesNeeded = 2; singlesNeeded = requiredPeriods - 4; }
+                    
+                    if(singlesNeeded < 0) { doublesNeeded = 0; singlesNeeded = requiredPeriods; } // Fallback
 
-                        if (aCTCore !== bCTCore) return bCTCore - aCTCore;
-                        if (aIsCT !== bIsCT) return bIsCT - aIsCT;
+                    let rTeachers = rule.teacher.split(',').map(t => t.trim());
 
-                        let weightA = (a.periods * 10) + (Math.random() * 20);
-                        let weightB = (b.periods * 10) + (Math.random() * 20);
-                        return weightB - weightA;
-                    });
+                    // Double Periods පිරවීම (Greedy Placement)
+                    while (doublesNeeded > 0) {
+                        let placed = false;
+                        let dayOrder = [...days].sort(() => Math.random() - 0.5);
+                        for (let d of dayOrder) {
+                            if (daysAssignedCount[d] > 0) continue; // Double එක හිස් දවසකම වැටිය යුතුය
+                            
+                            let periodOrder = [3, 5, 2, 6, 4]; // Interval එක හරහා නොයන ලෙස තේරීම
+                            for (let p of periodOrder) {
+                                let p1 = p, p2 = p + 1;
+                                let intv = parseInt(document.getElementById('intervalSetting').value) || 4;
+                                if (p1 === intv) continue; 
 
-                    sortedRules.forEach(rule => {
-                        let preAssigned = 0;
-                        let daysAssigned = { 'Monday':0, 'Tuesday':0, 'Wednesday':0, 'Thursday':0, 'Friday':0 };
-                        
-                        // දැනට 1 වන කාලච්ඡේදයට වැටී ඇති ප්‍රමාණය ගණනය කිරීම
-                        for(let d of days) {
-                            for(let p=1; p<=8; p++) {
-                                if(tempTimetable[d][p][rule.grade] && tempTimetable[d][p][rule.grade].subject === rule.subject) {
-                                    daysAssigned[d]++;
-                                    preAssigned++;
-                                }
-                            }
-                        }
-
-                        let totalP = rule.periods + preAssigned; // මුළු කාලච්ඡේද ගණන (Original)
-                        let doublesNeeded = 0;
-                        let singlesNeeded = rule.periods; 
-
-                        // ව්‍යූහය තීරණය කිරීම (Structure Definition based on total periods)
-                        if (totalP === 6) { doublesNeeded = 1; singlesNeeded = 4; }
-                        else if (totalP === 3) { doublesNeeded = 1; singlesNeeded = 1; }
-                        else if (totalP === 7) { doublesNeeded = 2; singlesNeeded = 3; }
-                        else if (totalP === 8) { doublesNeeded = 3; singlesNeeded = 2; }
-                        
-                        if(totalP === 6 || totalP === 3 || totalP === 7 || totalP === 8) {
-                            singlesNeeded -= preAssigned;
-                            if (singlesNeeded < 0) {
-                                doublesNeeded = Math.floor(rule.periods / 2);
-                                singlesNeeded = rule.periods % 2;
-                            }
-                        } else {
-                            doublesNeeded = 0;
-                            singlesNeeded = rule.periods;
-                        }
-
-                        if ((doublesNeeded * 2 + singlesNeeded) !== rule.periods) {
-                            doublesNeeded = 0;
-                            singlesNeeded = rule.periods; 
-                        }
-
-                        // ගුරුවරයා නිදහස් දැයි පරීක්ෂා කිරීමේ Helper Function එක
-                        const isTBusy = (t, d, p) => {
-                            if (teacherConstraints.some(tc => tc.teacher === t && tc.day === d && (tc.period === 'All' || parseInt(tc.period) === p))) return true;
-                            for(let c of classes) {
-                                if(tempTimetable[d][p][c] && tempTimetable[d][p][c].teacher.includes(t)) return true;
-                            }
-                            return false;
-                        };
-
-                        // 2A: DOUBLE PERIODS පිරවීම
-                        let ruleAttempts = 100;
-                        while (doublesNeeded > 0 && ruleAttempts > 0) {
-                            ruleAttempts--;
-                            let placed = false;
-                            let dayOrder = [...days].sort(() => Math.random() - 0.5);
-
-                            for (let d of dayOrder) {
-                                // දිනකට උපරිම කාලච්ඡේද ගණන පාලනය
-                                if (!isRelaxed && daysAssigned[d] >= 1) continue; 
-                                if (isRelaxed && daysAssigned[d] >= 2) continue;
-                                
-                                let periodOrder = [3, 4, 5, 6, 7].sort(()=>Math.random()-0.5); 
-
-                                for (let p of periodOrder) {
-                                    let p1 = p, p2 = p + 1;
-                                    let intervalPos = parseInt(document.getElementById('intervalSetting').value) || 4;
-                                    if (p1 === intervalPos) continue; // විවේක කාලය හරහා Double වැටීම වැළැක්වීම
-
-                                    if (tempTimetable[d][p1][rule.grade] === null && tempTimetable[d][p2][rule.grade] === null) {
-                                        let busy = false;
-                                        let rTeachers = rule.teacher.split(',');
-                                        for(let t of rTeachers) {
-                                            let tName = t.trim();
-                                            if(isTBusy(tName, d, p1) || isTBusy(tName, d, p2)) { busy = true; break; }
-                                        }
-
-                                        if (!busy) {
-                                            tempTimetable[d][p1][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
-                                            tempTimetable[d][p2][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
-                                            daysAssigned[d] += 2;
-                                            doublesNeeded--;
-                                            placed = true;
-                                            break;
-                                        }
+                                if (tempTimetable[d][p1][rule.grade] === null && tempTimetable[d][p2][rule.grade] === null) {
+                                    let isBusy = false;
+                                    for(let t of rTeachers) {
+                                        if(isTBusy(tempTimetable, t, d, p1) || isTBusy(tempTimetable, t, d, p2)) { isBusy = true; break; }
+                                    }
+                                    if (!isBusy) {
+                                        tempTimetable[d][p1][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
+                                        tempTimetable[d][p2][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
+                                        daysAssignedCount[d] += 2;
+                                        doublesNeeded--;
+                                        placed = true;
+                                        break;
                                     }
                                 }
-                                if(placed) break;
                             }
+                            if(placed) break;
                         }
+                        if(!placed) break; // Place කරන්න බැරි නම් අත්හරිනවා
+                    }
 
-                        // 2B: SINGLE PERIODS පිරවීම (සමබර ව්‍යාප්තිය)
-                        ruleAttempts = 100;
-                        while (singlesNeeded > 0 && ruleAttempts > 0) {
-                            ruleAttempts--;
-                            let placed = false;
-                            let dayOrder = [...days].sort(() => Math.random() - 0.5);
+                    // Single Periods පිරවීම (Even Distribution)
+                    while (singlesNeeded > 0) {
+                        let placed = false;
+                        let dayOrder = [...days].sort((a,b) => daysAssignedCount[a] - daysAssignedCount[b]); // අඩුම වැටුණු දවස් මුලින්ම (Even Distribution)
 
-                            for (let d of dayOrder) {
-                                // සමබර ව්‍යාප්තිය සහතික කිරීම (Even Distribution Constraints)
-                                if (!isRelaxed) {
-                                    if (totalP <= 5 && daysAssigned[d] >= 1) continue; // කා: 5 ට අඩු නම් දවසකට 1 යි
-                                    if (totalP > 5 && daysAssigned[d] >= 2) continue;  // කා: 5 ට වැඩි නම් දවසකට උපරිම 2 යි
+                        for (let d of dayOrder) {
+                            if (daysAssignedCount[d] >= 2) continue; // එක දවසට 2කට වඩා එපා
+                            if (totalP <= 5 && daysAssignedCount[d] >= 1) continue; // කා: 5 නම් දවසට එකයි
+
+                            let periodOrder = [2,3,4,5,6,7,8].sort(()=>Math.random() - 0.5);
+                            for (let p of periodOrder) {
+                                if (tempTimetable[d][p][rule.grade] === null) {
+                                    let isBusy = false;
+                                    for(let t of rTeachers) {
+                                        if(isTBusy(tempTimetable, t, d, p)) { isBusy = true; break; }
+                                    }
+                                    if (!isBusy) {
+                                        tempTimetable[d][p][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
+                                        daysAssignedCount[d]++;
+                                        singlesNeeded--;
+                                        placed = true;
+                                        break;
+                                    }
                                 }
-
-                                let periodOrderSingle = [3, 4, 5, 6, 7, 8, 2, 1].sort(()=>Math.random()-0.5); 
-
-                                for (let p of periodOrderSingle) {
+                            }
+                            if(placed) break;
+                        }
+                        // අමාරු අවස්ථාවකදී ලිහිල් කර නැවත බැලීම
+                        if(!placed) {
+                            for (let d of days.sort(() => Math.random() - 0.5)) {
+                                let periodOrder = [2,3,4,5,6,7,8];
+                                for (let p of periodOrder) {
                                     if (tempTimetable[d][p][rule.grade] === null) {
-                                        let busy = false;
-                                        let rTeachers = rule.teacher.split(',');
-                                        for(let t of rTeachers) {
-                                            let tName = t.trim();
-                                            if(isTBusy(tName, d, p)) { busy = true; break; }
-                                        }
-
-                                        if (!busy) {
+                                        let isBusy = false;
+                                        for(let t of rTeachers) if(isTBusy(tempTimetable, t, d, p)) isBusy = true;
+                                        if (!isBusy) {
                                             tempTimetable[d][p][rule.grade] = { subject: rule.subject, teacher: rule.teacher, type: rule.type };
-                                            daysAssigned[d]++;
+                                            daysAssignedCount[d]++;
                                             singlesNeeded--;
                                             placed = true;
                                             break;
@@ -1378,38 +1343,33 @@
                                 if(placed) break;
                             }
                         }
-
-                        let unassignedPeriods = (doublesNeeded * 2) + singlesNeeded;
-                        if(unassignedPeriods > 0) unassigned.push(rule.subject + " (" + rule.grade + " ශ්‍රේ.) - ඉතිරි කා: " + unassignedPeriods);
-                    });
-
-                    // හොඳම කාලසටහන තෝරාගැනීම
-                    if (unassigned.length < minUnassignedCount) {
-                        minUnassignedCount = unassigned.length;
-                        bestTimetable = JSON.parse(JSON.stringify(tempTimetable)); 
-                        bestUnassigned = unassigned;
+                        if(!placed) break; 
                     }
-                    if (minUnassignedCount === 0) break; // දෝෂ නොමැති නම් වහාම නවතින්න
+
+                    let unalloc = (doublesNeeded * 2) + singlesNeeded;
+                    if(unalloc > 0) unassigned.push(rule.subject + " (" + rule.grade + " ශ්‍රේ.) - ඉතිරි: " + unalloc);
+                });
+
+                if (unassigned.length < minUnassignedCount) {
+                    minUnassignedCount = unassigned.length;
+                    bestTimetable = JSON.parse(JSON.stringify(tempTimetable)); 
+                    bestUnassigned = unassigned;
                 }
 
-                if (minUnassignedCount === 0 || attempt >= maxAttempts) {
-                    document.getElementById('loadingOverlay').style.display = 'none';
-                    generatedTimetable = bestTimetable;
-                    
-                    if(bestUnassigned.length > 0) {
-                        alert("උත්සාහයන් 10,000 කට පසුවද පහත විෂයයන් සඳහා ගැටීම් පවතී. ඔබ යොදා ඇති ගුරු නිදහස් නීති (Constraints) හේතුවෙන් මෙය විසඳිය නොහැකි විය හැක:\n\n" + bestUnassigned.join('\n'));
-                    } else {
-                        showSuccessAnimation();
-                    }
-                    saveData();
-                    renderTable();
-                } else {
-                    document.getElementById('loadingText').innerText = `උත්සාහයන්: ${attempt} / ${maxAttempts}`;
-                    requestAnimationFrame(runChunk);
-                }
+                if (minUnassignedCount === 0) break; // දෝෂ නැත්නම් Loop එක නවතින්න!
             }
 
-            requestAnimationFrame(runChunk);
+            // නිම කිරීම
+            document.getElementById('loadingOverlay').style.display = 'none';
+            generatedTimetable = bestTimetable;
+            
+            if(bestUnassigned.length > 0) {
+                alert("ඇල්ගොරිතමය මගින් හොඳම කාලසටහන සොයා ගත්තද, පහත දෑ පිරවීමට නොහැකි විය. ගුරුවරුන්ගේ නිදහස් සීමාවන් (Constraints) පරීක්ෂා කරන්න:\n\n" + bestUnassigned.join('\n'));
+            } else {
+                showSuccessAnimation();
+            }
+            saveData();
+            renderTable();
         }
 
         function getCellHTML(cellData, d, p, c) {
