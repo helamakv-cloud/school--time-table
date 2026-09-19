@@ -109,18 +109,8 @@
         .success-emoji { font-size: 60px; margin-bottom: 10px; animation: tada 1.2s ease-in-out infinite; }
         .success-text { font-size: 22px; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
 
-        @keyframes popBounce {
-            0% { transform: scale(0.5); opacity: 0; }
-            80% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(1); }
-        }
-        @keyframes tada {
-            0% { transform: scale(1); }
-            10%, 20% { transform: scale(0.9) rotate(-3deg); }
-            30%, 50%, 70%, 90% { transform: scale(1.1) rotate(3deg); }
-            40%, 60%, 80% { transform: scale(1.1) rotate(-3deg); }
-            100% { transform: scale(1); }
-        }
+        @keyframes popBounce { 0% { transform: scale(0.5); opacity: 0; } 80% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); } }
+        @keyframes tada { 0% { transform: scale(1); } 10%, 20% { transform: scale(0.9) rotate(-3deg); } 30%, 50%, 70%, 90% { transform: scale(1.1) rotate(3deg); } 40%, 60%, 80% { transform: scale(1.1) rotate(-3deg); } 100% { transform: scale(1); } }
 
         @media screen and (max-width: 768px) {
             .layout { flex-direction: column; height: auto; }
@@ -142,7 +132,6 @@
             .print-page { page-break-after: always; width: 100%; height: 100vh; box-sizing: border-box; display: flex; flex-direction: column;}
             .timetable-box { break-inside: avoid; flex: 1; display: flex; flex-direction: column; margin-bottom: 5mm;}
             
-            /* Print Layout Styles */
             .layout-1 .timetable-box { width: 100%; height: 100%; }
             .layout-1 h2.school-title { font-size: 22px; color: black; margin-bottom: 2px; text-align: center; }
             .layout-1 .print-term-info { text-align: center; font-weight: bold; font-size: 14px; margin-bottom: 5px; color: black; }
@@ -167,26 +156,7 @@
             tr.period-row { height: 11% !important; }
             tr.special-row { height: auto !important; }
 
-            .card { 
-                padding: 2px !important; 
-                margin: 0 !important; 
-                box-shadow: none !important; 
-                border: 1px solid #444 !important; 
-                color: #000 !important; 
-                background-image: none !important; 
-                height: 100% !important;
-                min-height: 0 !important;
-                display: flex !important; 
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                overflow: visible !important; 
-                white-space: normal !important; 
-                word-wrap: break-word !important; 
-                border-radius: 0 !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
+            .card { padding: 2px !important; margin: 0 !important; box-shadow: none !important; border: 1px solid #444 !important; color: #000 !important; background-image: none !important; height: 100% !important; min-height: 0 !important; display: flex !important; flex-direction: column; justify-content: center; align-items: center; overflow: visible !important; white-space: normal !important; word-wrap: break-word !important; border-radius: 0 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             .card::before { display: none !important; } 
             .card-subj { white-space: normal !important; overflow: visible !important; display: block !important; font-weight: bold !important; text-align: center;}
             .card span { color: #000 !important; border-top: 1px solid #999; margin-top: 1px; padding-top: 1px; white-space: normal !important; overflow: visible !important; text-align: center;}
@@ -230,13 +200,19 @@
         </div>
     </div>
 
-    <!-- Attendance Modal -->
+    <!-- Attendance Modal (Updated for Day-specific Attendance) -->
     <div id="attendanceModal" class="modal-overlay">
         <div class="modal" style="max-width: 400px;">
             <button class="close-btn" onclick="closeModals()">✖</button>
             <h3 style="margin-top:0; color:#0d9488; border-bottom: 2px solid #e5e7eb; padding-bottom:8px;">📅 ගුරු පැමිණීම</h3>
-            <p style="font-size: 11px; color: gray;">අද දින නොපැමිණි ගුරුවරුන් ලකුණු කරන්න. මෙය සහන ලබාදීමේදී ප්‍රයෝජනවත් වේ.</p>
-            <div id="attendanceList" style="max-height: 300px; overflow-y: auto; padding-right: 5px; margin-top: 15px;"></div>
+            <p style="font-size: 11px; color: gray;">අද දින නොපැමිණි ගුරුවරුන් ලකුණු කරන්න. දවස තෝරා අදාළ ගුරුවරුන් ලකුණු කරන්න.</p>
+            
+            <div class="form-grid" style="margin-top: 10px; background: #f0fdf4; padding: 10px; border-radius: 4px; border: 1px solid #bbf7d0;">
+                <label style="color:#166534;">දවස තෝරන්න:</label>
+                <select id="attendanceDay" onchange="renderAttendanceList()" style="border-color: #4ade80; font-weight: bold; color: #166534;"></select>
+            </div>
+
+            <div id="attendanceList" style="max-height: 250px; overflow-y: auto; padding-right: 5px; margin-top: 15px;"></div>
         </div>
     </div>
 
@@ -344,7 +320,6 @@
                 </div>
             </div>
 
-            <!-- නව පහසුකම: පන්තිභාර ගුරුවරුන් යාවත්කාලීන කිරීම -->
             <hr style="border:0; border-top:1px dashed #d1d5db; margin:20px 0;">
             <h4 style="margin: 0 0 10px 0; color: #047857; border-bottom: 1px solid #d1d5db;">🧑‍🏫 පන්තිභාර ගුරුවරුන් වෙනස් කිරීම (Class Teacher Management)</h4>
             <div id="modalClassTeachers" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; max-height: 200px; overflow-y: auto; background: #ecfdf5; padding: 10px; border: 1px solid #a7f3d0; border-radius: 4px;"></div>
@@ -526,7 +501,8 @@
 
         let classes = [];
         let masterTeachers = [];
-        let absentTeachers = []; 
+        // යාවත්කාලීන කළ ගුරු පැමිණීම් ලැයිස්තුව (දින අනුව)
+        let absentTeachers = { 'Monday': [], 'Tuesday': [], 'Wednesday': [], 'Thursday': [], 'Friday': [] }; 
         let classTeacherMap = {}; 
         let masterSubjects = [];
         let teachingRules = [];
@@ -571,7 +547,18 @@
                 const data = JSON.parse(saved);
                 classes = data.classes || [];
                 masterTeachers = data.masterTeachers || [];
-                absentTeachers = data.absentTeachers || [];
+                
+                // පැරණි Array දත්ත නව Object දත්ත ක්‍රමයට මාරු කිරීම (Data Migration)
+                if (data.absentTeachers) {
+                    if (Array.isArray(data.absentTeachers)) {
+                        absentTeachers = { 'Monday': [], 'Tuesday': [], 'Wednesday': [], 'Thursday': [], 'Friday': [] };
+                    } else {
+                        absentTeachers = data.absentTeachers;
+                    }
+                } else {
+                    absentTeachers = { 'Monday': [], 'Tuesday': [], 'Wednesday': [], 'Thursday': [], 'Friday': [] };
+                }
+
                 classTeacherMap = data.classTeacherMap || {};
                 masterSubjects = data.masterSubjects || [];
                 teachingRules = data.teachingRules || [];
@@ -656,12 +643,20 @@
 
         function openPrintModal() { document.getElementById('printModal').style.display = 'flex'; }
         function openDataModal() { document.getElementById('dataModal').style.display = 'flex'; renderDataModal(); }
-        function openAttendanceModal() { document.getElementById('attendanceModal').style.display = 'flex'; renderAttendanceList(); }
+        
+        function openAttendanceModal() { 
+            document.getElementById('attendanceModal').style.display = 'flex'; 
+            let dayDropdown = document.getElementById('attendanceDay');
+            if(!dayDropdown.value) dayDropdown.value = currentDay; // පවතින දිනය පෙරනිමියෙන් තෝරන්න
+            renderAttendanceList(); 
+        }
+
         function openReliefModal() { 
             if(classes.length === 0) return alert("කරුණාකර පළමුව කාලසටහන සකස් කරන්න!");
             document.getElementById('reliefModal').style.display = 'flex'; 
             initDropdowns(); updateAbsenteeReliefList(); updateReliefUI(); renderReliefList();
         }
+
         function openSummaryModal() {
             document.getElementById('summaryModal').style.display = 'flex';
             let teacherSum = {}; let classSum = {};
@@ -682,6 +677,7 @@
             for(let c in classSum) cHtml += `<div class="rule-item"><span>${c} ශ්‍රේණිය</span> <b>${classSum[c]} කාලච්ඡේද</b></div>`;
             document.getElementById('classSummary').innerHTML = cHtml || "<span style='font-size:11px;color:gray;'>දත්ත නොමැත</span>";
         }
+        
         function closeModals() { 
             document.getElementById('printModal').style.display = 'none'; 
             document.getElementById('dataModal').style.display = 'none';
@@ -697,25 +693,31 @@
         }
 
         function renderAttendanceList() {
+            let day = document.getElementById('attendanceDay').value;
             let html = '';
-            if(masterTeachers.length === 0) html = "<p style='font-size:11px; color:gray;'>පද්ධතියට ගුරුවරුන් ඇතුළත් කර නොමැත.</p>";
-            else {
+            if(masterTeachers.length === 0) {
+                html = "<p style='font-size:11px; color:gray;'>පද්ධතියට ගුරුවරුන් ඇතුළත් කර නොමැත.</p>";
+            } else {
                 masterTeachers.forEach(t => {
-                    let isAbsent = absentTeachers.includes(t);
+                    let isAbsent = absentTeachers[day] && absentTeachers[day].includes(t);
                     let bg = isAbsent ? '#fef2f2' : '#f0fdf4';
                     let border = isAbsent ? '#f87171' : '#86efac';
                     let txtColor = isAbsent ? '#dc2626' : '#166534';
                     let icon = isAbsent ? '❌ නොපැමිණි' : '✔️ පැමිණි';
-                    html += `<div class="rule-item" style="cursor:pointer; background:${bg}; border-color:${border};" onclick="toggleAttendance('${t}')">
+                    html += `<div class="rule-item" style="cursor:pointer; background:${bg}; border-color:${border};" onclick="toggleAttendance('${t}', '${day}')">
                                 <span style="color:${txtColor}; font-weight:bold;">${t}</span><span style="font-weight:bold; font-size:10px;">${icon}</span></div>`;
                 });
             }
             document.getElementById('attendanceList').innerHTML = html;
         }
 
-        function toggleAttendance(t) {
-            if(absentTeachers.includes(t)) absentTeachers = absentTeachers.filter(x => x !== t); 
-            else absentTeachers.push(t);
+        function toggleAttendance(t, day) {
+            if(!absentTeachers[day]) absentTeachers[day] = [];
+            if(absentTeachers[day].includes(t)) {
+                absentTeachers[day] = absentTeachers[day].filter(x => x !== t); 
+            } else {
+                absentTeachers[day].push(t);
+            }
             renderAttendanceList(); saveData(); renderTable(); 
         }
 
@@ -726,8 +728,10 @@
 
         function updateAbsenteeReliefList() {
             let d = document.getElementById('relFilterDay').value;
+            let absents = absentTeachers[d] || [];
             let html = '';
-            absentTeachers.forEach(t => {
+            
+            absents.forEach(t => {
                 for(let p=1; p<=8; p++) {
                     classes.forEach(c => {
                         let cell = generatedTimetable[d] && generatedTimetable[d][p] ? generatedTimetable[d][p][c] : null;
@@ -757,19 +761,23 @@
             if(!d || !p || !c) return;
             let cell = generatedTimetable[d] && generatedTimetable[d][p] ? generatedTimetable[d][p][c] : null;
             let activeRelief = reliefAssignments.find(r => r.day === d && r.period === p && r.grade === c);
+            
             if(!cell) {
                 statusDiv.innerHTML = "මෙම වේලාවට අදාළ පන්තියේ කිසිදු විෂයයක් නොමැත."; statusDiv.style.color = "gray"; statusDiv.style.borderColor = "gray"; teacherDiv.style.display = "none";
             } else {
                 let isTeacherAbsent = false;
-                cell.teacher.split(',').forEach(t => { if(absentTeachers.includes(t.trim())) isTeacherAbsent = true; });
+                cell.teacher.split(',').forEach(t => { if(absentTeachers[d] && absentTeachers[d].includes(t.trim())) isTeacherAbsent = true; });
+                
                 let txt = `පවතින විෂයය: <b>${cell.subject}</b> (${cell.teacher})`;
-                if(isTeacherAbsent) txt += `<br><span style="color:#dc2626; font-size:13px;">⚠️ ගුරුවරයා අද දින නොපැමිණි බැවින් සහනයක් අනිවාර්ය වේ!</span>`;
+                if(isTeacherAbsent) txt += `<br><span style="color:#dc2626; font-size:13px;">⚠️ ගුරුවරයා මෙම දිනයට නොපැමිණි බැවින් සහනයක් අනිවාර්ය වේ!</span>`;
                 if(activeRelief) txt += `<br><span style="color:#7c3aed">දැනටමත් සහනයක් ලබාදී ඇත (සහන: ${activeRelief.reliefTeacher})</span>`;
+                
                 statusDiv.innerHTML = txt; statusDiv.style.color = isTeacherAbsent ? "#991b1b" : "#b91c1c"; statusDiv.style.borderColor = isTeacherAbsent ? "#dc2626" : "#ef4444";
                 teacherDiv.style.display = "grid";
+                
                 let tHtml = "";
                 masterTeachers.forEach(t => {
-                    if(absentTeachers.includes(t)) return;
+                    if(absentTeachers[d] && absentTeachers[d].includes(t)) return; // අදාළ දිනට නොපැමිණි නම් මඟ හරින්න
                     let isBusy = false;
                     classes.forEach(cls => { if(generatedTimetable[d][p][cls] && generatedTimetable[d][p][cls].teacher.includes(t)) isBusy = true; });
                     if(reliefAssignments.find(r => r.day === d && r.period === p && r.reliefTeacher === t)) isBusy = true;
@@ -810,17 +818,31 @@
             if(reliefAssignments.length === 0) return alert("මුද්‍රණය කිරීමට සහන දත්ත නොමැත!");
             closeModals();
             let pArea = document.getElementById('printArea'), schoolName = document.getElementById('schoolNameInput').value || "ඔබේ පාසලේ නම", dateStr = new Date().toLocaleDateString('si-LK');
+            
             let sortedReliefs = [...reliefAssignments].sort((a,b) => {
                 let dayOrder = { 'Monday':1, 'Tuesday':2, 'Wednesday':3, 'Thursday':4, 'Friday':5 };
                 if(dayOrder[a.day] !== dayOrder[b.day]) return dayOrder[a.day] - dayOrder[b.day];
                 return a.period - b.period;
             });
+            
             let printHtml = `<div class="print-page layout-1"><div class="timetable-box"><h2 class="school-title">${schoolName}</h2><div class="print-term-info">මුද්‍රණය කළ දිනය: ${dateStr}</div>
                 <h3 class="main-title" style="margin-top: 10px; color: #1d4ed8; text-decoration: underline;">දෛනික සහන කාලච්ඡේද ලැයිස්තුව (Relief Duties)</h3>
                 <table style="width:100%; border-collapse: collapse; border: 2px solid #000; font-size: 14px; text-align: center; margin-top: 15px;">
                     <thead><tr><th style="border: 1px solid #000; padding: 10px; background: #e5e7eb; width: 15%;">දවස</th><th style="border: 1px solid #000; padding: 10px; background: #e5e7eb; width: 15%;">කාලච්ඡේදය</th><th style="border: 1px solid #000; padding: 10px; background: #e5e7eb; width: 20%;">ශ්‍රේණිය / පන්තිය</th><th style="border: 1px solid #000; padding: 10px; background: #e5e7eb; width: 30%;">සහනය ලබාදුන් ගුරුවරයා</th><th style="border: 1px solid #000; padding: 10px; background: #e5e7eb; width: 20%;">ගුරුවරයාගේ අත්සන</th></tr></thead><tbody>`;
+            
             sortedReliefs.forEach(r => { printHtml += `<tr><td style="border: 1px solid #000; padding: 10px; font-weight: bold;">${dayNames[r.day]}</td><td style="border: 1px solid #000; padding: 10px; font-weight: bold;">${r.period}</td><td style="border: 1px solid #000; padding: 10px; font-weight: bold;">${r.grade} ශ්‍රේණිය</td><td style="border: 1px solid #000; padding: 10px; color: #1d4ed8; font-weight: bold; font-size: 15px;">${r.reliefTeacher}</td><td style="border: 1px solid #000; padding: 10px;"></td></tr>`; });
-            printHtml += `</tbody></table><div style="margin-top:25px; font-size: 14px; text-align:left; border: 1px dashed #6b7280; padding: 10px; background: #f9fafb;"><p style="margin: 0;"><b>⚠️ අද දින නොපැමිණි ගුරුවරුන්:</b> <span style="color:#b91c1c;">${absentTeachers.length > 0 ? absentTeachers.join(', ') : 'කිසිවෙකු නැත'}</span></p></div>
+            printHtml += `</tbody></table>`;
+            
+            // මුද්‍රණයේදී අදාළ දිනවලට පමණක් නොපැමිණි ගුරුවරුන් පෙන්වීම
+            let absWarningHtml = "";
+            days.forEach(d => {
+                if(absentTeachers[d] && absentTeachers[d].length > 0) {
+                    absWarningHtml += `<b>${dayNames[d]}:</b> <span style="color:#b91c1c;">${absentTeachers[d].join(', ')}</span> &nbsp; | &nbsp; `;
+                }
+            });
+            if(absWarningHtml === "") absWarningHtml = "<span style='color:#b91c1c;'>කිසිවෙකු නැත</span>";
+
+            printHtml += `<div style="margin-top:25px; font-size: 14px; text-align:left; border: 1px dashed #6b7280; padding: 10px; background: #f9fafb;"><p style="margin: 0;"><b>⚠️ නොපැමිණි ගුරුවරුන්:</b> <br><br> ${absWarningHtml}</p></div>
                 <div class="print-footer" style="margin-top: 30px;">&copy; 2026 Kelum Konara | Smart<span>Soft</span> | Time Table version 1.0</div></div></div>`;
             pArea.innerHTML = printHtml; window.print();
         }
@@ -833,7 +855,6 @@
             let sHtml = ''; masterSubjects.forEach(s => sHtml += `<div class="rule-item"><span>${s}</span><div><button class="btn-small" style="background:#f59e0b;" onclick="editItem('subject', '${s}')">✏️</button> <button class="btn-delete" onclick="deleteItem('subject', '${s}')">❌</button></div></div>`);
             document.getElementById('modalSubjects').innerHTML = sHtml || "<span style='font-size:11px;color:gray;'>දත්ත නොමැත</span>";
 
-            // නව පන්තිභාර ගුරුවරුන්ගේ අංශය යාවත්කාලීන කිරීම
             let ctHtml = '';
             classes.forEach(c => {
                 let currentCT = classTeacherMap[c] || "";
@@ -847,13 +868,8 @@
             document.getElementById('modalClassTeachers').innerHTML = ctHtml || "<span style='font-size:11px;color:gray;'>පළමුව පන්ති සහ ගුරුවරුන් එක් කරන්න.</span>";
         }
 
-        // නව Function එක: පන්තිභාර ගුරුවරයා යාවත්කාලීන කිරීමට
         function updateClassTeacher(cls, newTeacher) {
-            if(newTeacher) {
-                classTeacherMap[cls] = newTeacher;
-            } else {
-                delete classTeacherMap[cls];
-            }
+            if(newTeacher) { classTeacherMap[cls] = newTeacher; } else { delete classTeacherMap[cls]; }
             saveData();
         }
 
@@ -869,7 +885,11 @@
                 masterTeachers[masterTeachers.indexOf(oldVal)] = newVal;
                 teachingRules.forEach(r => { if(r.teacher.includes(oldVal)) r.teacher = r.teacher.replace(new RegExp(oldVal, 'g'), newVal); });
                 for (let k in classTeacherMap) { if(classTeacherMap[k] === oldVal) classTeacherMap[k] = newVal; }
-                if(absentTeachers.includes(oldVal)) absentTeachers[absentTeachers.indexOf(oldVal)] = newVal;
+                days.forEach(d => {
+                    if(absentTeachers[d] && absentTeachers[d].includes(oldVal)) {
+                        absentTeachers[d][absentTeachers[d].indexOf(oldVal)] = newVal;
+                    }
+                });
                 teacherConstraints.forEach(tc => { if(tc.teacher === oldVal) tc.teacher = newVal; });
             } else if (type === 'subject') {
                 masterSubjects[masterSubjects.indexOf(oldVal)] = newVal;
@@ -883,23 +903,28 @@
             if (type === 'class') {
                 classes = classes.filter(c => c !== val); teachingRules = teachingRules.filter(r => r.grade !== val); delete classTeacherMap[val];
             } else if (type === 'teacher') {
-                masterTeachers = masterTeachers.filter(t => t !== val); absentTeachers = absentTeachers.filter(t => t !== val); teacherConstraints = teacherConstraints.filter(tc => tc.teacher !== val);
+                masterTeachers = masterTeachers.filter(t => t !== val); 
+                days.forEach(d => { if(absentTeachers[d]) absentTeachers[d] = absentTeachers[d].filter(t => t !== val); });
+                teacherConstraints = teacherConstraints.filter(tc => tc.teacher !== val);
                 for (let k in classTeacherMap) { if(classTeacherMap[k] === val) delete classTeacherMap[k]; }
             } else if (type === 'subject') { masterSubjects = masterSubjects.filter(s => s !== val); }
             saveData(); initDropdowns(); initEmptyTimetable(); renderTable(); renderDataModal(); renderRules(); renderConstraints();
         }
 
         function toggleCTGrade() { document.getElementById('inTeacherClass').style.display = document.getElementById('isClassTeacher').checked ? 'block' : 'none'; }
+        
         function addMasterClassMain() {
             let c = document.getElementById('inClass').value.trim();
             if(c && !classes.includes(c)) { classes.push(c); saveData(); initDropdowns(); initEmptyTimetable(); renderTable(); }
             document.getElementById('inClass').value = "";
         }
+        
         function addMasterTeacher() {
             let t = document.getElementById('inTeacher').value.trim(), isCT = document.getElementById('isClassTeacher').checked, c = document.getElementById('inTeacherClass').value;
             if(t && !masterTeachers.includes(t)) { masterTeachers.push(t); if(isCT && c) classTeacherMap[c] = t; saveData(); initDropdowns(); }
             document.getElementById('inTeacher').value = ""; document.getElementById('isClassTeacher').checked = false; toggleCTGrade();
         }
+        
         function addMasterSubject() {
             let s = document.getElementById('inSubject').value.trim();
             if(s && !masterSubjects.includes(s)) { masterSubjects.push(s); saveData(); initDropdowns(); }
@@ -916,7 +941,10 @@
             document.getElementById('rSubjectCore').innerHTML = sHtml; document.getElementById('rSubjectBasket').innerHTML = sHtml; 
             document.getElementById('rClass').innerHTML = cHtml; document.getElementById('classSelector').innerHTML = cHtml; 
             document.getElementById('inTeacherClass').innerHTML = '<option value="">-- පන්තිය --</option>' + cHtml; document.getElementById('relClass').innerHTML = cHtml;
-            document.getElementById('daySelector').innerHTML = dHtml; document.getElementById('relDay').innerHTML = dHtml; document.getElementById('relFilterDay').innerHTML = dHtml; document.getElementById('cDay').innerHTML = dHtml;
+            
+            document.getElementById('daySelector').innerHTML = dHtml; document.getElementById('relDay').innerHTML = dHtml; 
+            document.getElementById('relFilterDay').innerHTML = dHtml; document.getElementById('cDay').innerHTML = dHtml;
+            document.getElementById('attendanceDay').innerHTML = dHtml; // නව දින තේරීම
 
             if(classes.length > 0 && !classes.includes(currentSelectedClass)) currentSelectedClass = classes[0];
         }
@@ -992,17 +1020,13 @@
 
         function startGenerationAsync() {
             if(teachingRules.length === 0) return alert("කරුණාකර පළමුව නීති ඇතුළත් කරන්න!");
-
             let teacherSum = {}; let classSum = {}; let errors = [];
             teachingRules.forEach(r => {
-                let p = parseInt(r.periods) || 0;
-                classSum[r.grade] = (classSum[r.grade] || 0) + p;
+                let p = parseInt(r.periods) || 0; classSum[r.grade] = (classSum[r.grade] || 0) + p;
                 r.teacher.split(',').forEach(t => { teacherSum[t.trim()] = (teacherSum[t.trim()] || 0) + p; });
             });
-
             for(let c in classSum) if(classSum[c] > 40) errors.push(`${c} ශ්‍රේණියට කාලච්ඡේද 40 කට වඩා ලබා දී ඇත.`);
             for(let t in teacherSum) if(teacherSum[t] > 40) errors.push(`${t} ගුරුතුමාට/තුමියට කාලච්ඡේද 40 කට වඩා ලබා දී ඇත.`);
-
             if(errors.length > 0) return alert("කාලසටහන සෑදීමට පෙර පහත දෝෂ නිවැරදි කරන්න:\n\n" + errors.join('\n'));
 
             document.getElementById('loadingOverlay').style.display = 'flex';
@@ -1011,7 +1035,6 @@
             setTimeout(runAdvancedAlgorithm, 50);
         }
 
-        // --- IMPROVED AI ALGORITHM (CSP & MRV Heuristics) ---
         function runAdvancedAlgorithm() {
             let bestTimetable = null, bestUnassigned = null, minUnassignedCount = 9999, maxAttempts = 10000, attempt = 0;
             const coreSubjectsList = ['සිංහල', 'ඉංග්‍රීසි', 'ඉංග්‍රිසි', 'ගණිතය', 'විද්‍යාව'];
@@ -1033,7 +1056,6 @@
                     let isRelaxed = attempt > 8000; 
                     let currentRules = JSON.parse(JSON.stringify(teachingRules));
 
-                    // 1. STRICT PRE-ALLOCATION PHASE: පන්තිභාර ගුරුවරුන්ට 1 වන කාලච්ඡේදය අනිවාර්යය කිරීම (No Overlaps)
                     let availableDaysForCT = {};
                     classes.forEach(c => { availableDaysForCT[c] = [...days].sort(() => Math.random() - 0.5); });
 
@@ -1048,8 +1070,6 @@
                                 for(let i = 0; i < availableDaysForCT[c].length; i++) {
                                     if(r.periods <= 0) break;
                                     let d = availableDaysForCT[c][i];
-                                    
-                                    // ගුරුවරයා වෙනත් පන්තියක හෝ අවහිරතා ලැයිස්තුවේ සිටීදැයි පරීක්ෂාව
                                     let isFree = true;
                                     let teachersInRule = r.teacher.split(',').map(t=>t.trim());
                                     
@@ -1059,11 +1079,9 @@
                                             if(tempTimetable[d][1][otherC] && tempTimetable[d][1][otherC].teacher.includes(tName)) isFree = false;
                                         }
                                     }
-
                                     if(isFree) {
                                         tempTimetable[d][1][c] = { subject: r.subject, teacher: r.teacher, type: r.type, isCT: true };
-                                        r.periods--;
-                                        daysToUse.push(d);
+                                        r.periods--; daysToUse.push(d);
                                     }
                                 }
                                 availableDaysForCT[c] = availableDaysForCT[c].filter(d => !daysToUse.includes(d));
@@ -1073,11 +1091,8 @@
 
                     let remainingRules = currentRules.filter(r => r.periods > 0);
 
-                    // 2. CSP HEURISTIC SORTING (Weight Based)
                     let sortedRules = remainingRules.sort((a, b) => {
-                        let aTeachers = a.teacher.split(',').length;
-                        let bTeachers = b.teacher.split(',').length;
-                        // කාණ්ඩ විෂයයන් සහ වැඩි ගුරුවරුන් සිටින විෂයයන් වලට ප්‍රමුඛතාව
+                        let aTeachers = a.teacher.split(',').length, bTeachers = b.teacher.split(',').length;
                         let weightA = (a.periods * 10) + (aTeachers * 15) + (a.type === 'basket' ? 20 : 0) + (Math.random() * 5);
                         let weightB = (b.periods * 10) + (bTeachers * 15) + (b.type === 'basket' ? 20 : 0) + (Math.random() * 5);
                         return weightB - weightA;
@@ -1087,7 +1102,6 @@
                         let periodsToAssign = rule.periods;
                         let daysAssigned = { 'Monday':0, 'Tuesday':0, 'Wednesday':0, 'Thursday':0, 'Friday':0 };
                         
-                        // දැනටමත් P1 හි ඇතුළත් වී ඇත්දැයි බැලීම
                         for(let d of days) {
                             for(let p=1; p<=8; p++) {
                                 if(tempTimetable[d][p][rule.grade] && tempTimetable[d][p][rule.grade].subject === rule.subject) daysAssigned[d]++;
@@ -1179,14 +1193,12 @@
                 if (minUnassignedCount === 0 || attempt >= maxAttempts) {
                     document.getElementById('loadingOverlay').style.display = 'none';
                     generatedTimetable = bestTimetable;
-                    
                     if(bestUnassigned.length > 0) {
                         alert("උත්සාහයන් 10,000 කට පසුවද පහත විෂයයන් සඳහා ගැටීම් පවතී. ඔබ යොදා ඇති ගුරු නිදහස් නීති (Constraints) හේතුවෙන් මෙය විසඳිය නොහැකි විය හැක:\n\n" + bestUnassigned.join('\n'));
                     } else {
                         showSuccessAnimation();
                     }
-                    saveData();
-                    renderTable();
+                    saveData(); renderTable();
                 } else {
                     document.getElementById('loadingText').innerText = `උත්සාහයන්: ${attempt} / ${maxAttempts}`;
                     requestAnimationFrame(runChunk);
@@ -1204,14 +1216,12 @@
                 } else {
                     let color = getSubjectColor(cellData.subject);
                     let isTeacherAbsent = false;
-                    cellData.teacher.split(',').forEach(t => { if(absentTeachers.includes(t.trim())) isTeacherAbsent = true; });
+                    cellData.teacher.split(',').forEach(t => { if(absentTeachers[d] && absentTeachers[d].includes(t.trim())) isTeacherAbsent = true; });
                     
                     if(isTeacherAbsent) {
                         return `<td><div class="card" style="background-color: #fef2f2; border: 2px dashed #ef4444;"><span class="card-subj" style="color:#ef4444;">${cellData.subject}</span><span style="color:#b91c1c;">(⚠️ ${cellData.teacher} නොපැමිණි)</span></div></td>`;
                     }
-                    // පන්තිභාර ගුරුවරයාගේ 1 වන කාලච්ඡේදය විශේෂ කර පෙන්වීමට 
                     let ctHighlight = cellData.isCT ? 'border: 2px solid #2563eb; box-shadow: 0 0 5px rgba(37, 99, 235, 0.5);' : '';
-                    
                     return `<td><div class="card" style="background-color: ${color}; ${ctHighlight}"><span class="card-subj">${cellData.subject}</span><span>(${cellData.teacher})</span></div></td>`;
                 }
             } else {
