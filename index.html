@@ -92,7 +92,9 @@
 
         /* Modals */
         .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items:center; justify-content:center; padding: 10px; box-sizing: border-box;}
-        .modal { background: #ffffff; padding: 20px; border-radius: 6px; width: 100%; max-width: 500px; border: 1px solid #9ca3af; box-shadow: 0 10px 25px rgba(0,0,0,0.5); position: relative; }
+        .modal { background: #ffffff; padding: 20px; border-radius: 6px; width: 100%; max-width: 500px; border: 1px solid #9ca3af; box-shadow: 0 10px 25px rgba(0,0,0,0.5); position: relative; /* නව වෙනස්කම් - Mobile Scrolling සඳහා */
+    max-height: 90vh; 
+    overflow-y: auto; }
         .close-btn { position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 18px; font-weight: bold; color: #6b7280; background: none; border: none; }
         .close-btn:hover { color: #ef4444; }
 
@@ -589,10 +591,28 @@
             }
         }
 
-        function exportData() {
-            saveData(); 
-            let dataStr = localStorage.getItem('smartSoftTimetableData');
-            if(!dataStr) return alert("සුරැකීමට දත්ත නොමැත!");
+       async function exportData() {
+    saveData(); 
+    let dataStr = localStorage.getItem('smartSoftTimetableData');
+    if(!dataStr) return alert("සුරැකීමට දත්ත නොමැත!");
+
+    try {
+        // නවීන බ්‍රවුසර සඳහා (Save As Dialog එක පෙන්වීමට)
+        if (window.showSaveFilePicker) {
+            const fileHandle = await window.showSaveFilePicker({
+                suggestedName: 'SmartSoft_Timetable_Backup.json',
+                types: [{
+                    description: 'JSON Backup File',
+                    accept: {'application/json': ['.json']}
+                }],
+            });
+            
+            const writable = await fileHandle.createWritable();
+            await writable.write(dataStr);
+            await writable.close();
+            alert("දත්ත සාර්ථකව Save කරන ලදී!");
+        } else {
+            // File Picker එකට සහය නොදක්වන පැරණි බ්‍රවුසර හෝ සමහර Mobile බ්‍රවුසර සඳහා පැරණි ක්‍රමය
             let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
             let exportFileDefaultName = 'SmartSoft_Timetable_Backup.json';
             let linkElement = document.createElement('a');
@@ -600,7 +620,14 @@
             linkElement.setAttribute('download', exportFileDefaultName);
             linkElement.click();
         }
-
+    } catch (err) {
+        // පරිශීලකයා Save කිරීම අවලංගු කළහොත් (Cancel) දෝෂයක් නොපෙන්වීමට
+        if (err.name !== 'AbortError') {
+            console.error(err);
+            alert("දත්ත Save කිරීම අසාර්ථක විය!");
+        }
+    }
+}
         function importData(event) {
             let file = event.target.files[0];
             if(!file) return;
